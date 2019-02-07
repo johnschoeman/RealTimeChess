@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import { AppLoading, Asset, Font, Icon } from 'expo'
 
-import HomeScreen from './src/HomeScreen'
+import AppNavigatorContainer from './src'
 
 class App extends React.Component {
   state = {
@@ -21,7 +21,7 @@ class App extends React.Component {
     } else {
       return (
         <View style={styles.container}>
-          <HomeScreen />
+          <AppNavigatorContainer />
         </View>
       )
     }

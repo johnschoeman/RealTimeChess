@@ -1,7 +1,7 @@
 import React from 'react'
 import { TouchableOpacity, StyleSheet, Text, View } from 'react-native'
 
-import { Colors } from '../styles'
+import { Color } from '../styles'
 
 const LandingScreen = ({ navigation }) => (
   <View style={styles.container}>
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.background,
+    backgroundColor: Color.background,
   },
 })
 

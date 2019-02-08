@@ -1,18 +1,20 @@
 import React from 'react'
 
+import { ArrayHelpers, GameHelpers } from './utils'
+
 const { Provider, Consumer } = React.createContext()
 
 class GameProvider extends React.Component {
-  state = { count: 1 }
+  state = { board: GameHelpers.initialBoard }
 
-  incrementCount = () => {
-    const { count } = this.state
-
-    this.setState({ count: count + 1 })
+  resetBoard = () => {
+    this.setState({ board: GameHelpers.initialBoard })
   }
 
-  resetState = () => {
-    this.setState({ count: 0 })
+  movePiece = (from_y, from_x, to_y, to_x) => {
+    const { board } = this.state
+    const newBoard = ArrayHelpers.updateBoard(board, from_x, from_y, to_x, to_y)
+    this.setState({ board: newBoard })
   }
 
   render() {
@@ -20,8 +22,8 @@ class GameProvider extends React.Component {
       <Provider
         value={{
           ...this.state,
-          incrementCount: this.incrementCount,
-          resetState: this.resetState,
+          movePiece: this.movePiece,
+          resetBoard: this.resetBoard,
         }}
       >
         {this.props.children}

@@ -1,18 +1,33 @@
 import React from 'react'
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native'
 
+import { GameConsumer } from '../GameContext'
+
 import { Colors } from '../styles'
 
 const GameScreen = ({ navigation }) => (
-  <View style={styles.container}>
-    <Text>GameScreen</Text>
-    <TouchableOpacity
-      title="Reset"
-      onPress={() => navigation.navigate('Landing')}
-    >
-      <Text>Reset</Text>
-    </TouchableOpacity>
-  </View>
+  <GameConsumer>
+    {({ count, incrementCount, resetState }) => (
+      <View style={styles.container}>
+        <Text>GameScreen</Text>
+
+        <Text>Number of Snakes: {count}</Text>
+        <TouchableOpacity onPress={() => incrementCount()}>
+          <Text>More Snakes!</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => resetState()}>
+          <Text>No Snakes :(</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          title="Reset"
+          onPress={() => navigation.navigate('Landing')}
+        >
+          <Text>Go Back</Text>
+        </TouchableOpacity>
+      </View>
+    )}
+  </GameConsumer>
 )
 
 const styles = StyleSheet.create({

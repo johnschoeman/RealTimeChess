@@ -1,24 +1,17 @@
 import React from 'react'
-import { View } from 'react-native'
-import { createStackNavigator, createAppContainer } from 'react-navigation'
+import { View, Text } from 'react-native'
 
-import LandingScreen from './Landing'
-import GameScreen from './Game'
+import { GameProvider } from './GameContext'
+import AppNavigatorContainer from './AppNavigatorContainer'
 
-const AppNavigator = createStackNavigator(
-  {
-    Landing: LandingScreen,
-    Game: GameScreen,
-  },
-  {
-    initialRouteName: 'Landing',
-    headerMode: 'none',
-    defaultNavigationOptions: {
-      gesturesEnabled: false,
-    },
-  }
-)
+const RealTimeChess = () => {
+  return (
+    <View style={{ flex: 1 }}>
+      <GameProvider>
+        <AppNavigatorContainer />
+      </GameProvider>
+    </View>
+  )
+}
 
-const AppNavigatorContainer = createAppContainer(AppNavigator)
-
-export default AppNavigatorContainer
+export default RealTimeChess

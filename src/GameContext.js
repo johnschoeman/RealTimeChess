@@ -7,7 +7,7 @@ const { Provider, Consumer } = React.createContext()
 class GameProvider extends React.Component {
   state = {
     board: GameHelpers.initialBoard,
-    userSelection: { rowIdx: null, colIdx: null },
+    selectedTile: { rowIdx: null, colIdx: null },
   }
 
   resetBoard = () => {
@@ -15,21 +15,29 @@ class GameProvider extends React.Component {
   }
 
   selectTile = (toRow, toCol) => {
-    const { userSelection: { rowIdx: fromRow, colIdx: fromCol } } = this.state
+    const {
+      selectedTile: { rowIdx: fromRow, colIdx: fromCol },
+    } = this.state
 
     if (fromRow === toRow && fromCol == toCol) {
-      this.setState({ userSelection: { rowIdx: null, colIdx: null}})
+      this.setState({ selectedTile: { rowIdx: null, colIdx: null } })
     } else if (fromRow === null && fromCol === null) {
-      this.setState({ userSelection: { rowIdx: toRow, colIdx: toCol }})
+      this.setState({ selectedTile: { rowIdx: toRow, colIdx: toCol } })
     } else {
       this.movePiece(fromRow, fromCol, toRow, toCol)
-      this.setState({ userSelection: { rowIdx: null, colIdx: null} })
+      this.setState({ selectedTile: { rowIdx: null, colIdx: null } })
     }
   }
 
   movePiece = (fromRow, fromCol, toRow, toCol) => {
     const { board } = this.state
-    const newBoard = GameHelpers.updateBoard(board, fromRow, fromCol, toRow, toCol)
+    const newBoard = GameHelpers.updateBoard(
+      board,
+      fromRow,
+      fromCol,
+      toRow,
+      toCol
+    )
     this.setState({ board: newBoard })
   }
 

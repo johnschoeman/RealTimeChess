@@ -1,6 +1,7 @@
-export const background = '#ababab'
+export const background = '#efefefef'
 export const black = '#666666'
 export const white = '#eeeeee'
 export const pieceBlack = '#222222'
 export const pieceWhite = '#ffffff'
 export const pieceBorder = '#000000'
+export const selectedTile = '#eede00'

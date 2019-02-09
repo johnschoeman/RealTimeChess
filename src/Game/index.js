@@ -11,7 +11,7 @@ const GameScreen = ({ navigation }) => (
     {({ movePiece, resetBoard }) => (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text>GameScreen</Text>
+          <Text>Real Time Chess</Text>
         </View>
 
         <View style={styles.board}>

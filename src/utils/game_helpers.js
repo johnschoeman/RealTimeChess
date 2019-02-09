@@ -1,6 +1,6 @@
 import Piece from './piece'
 import NullPiece from './null_piece'
-import { deepDup } from './array_helpers'
+import * as ArrayHelpers from './array_helpers'
 
 import { Color } from '../styles'
 
@@ -40,12 +40,12 @@ function createBoard() {
   return board
 }
 
-export function updateBoard(oldBoard, from_x, from_y, to_x, to_y) {
-  const oldPiece = oldBoard[from_y][from_x]
+export function updateBoard(oldBoard, fromRow, fromCol, toRow, toCol) {
+  const oldPiece = oldBoard[fromRow][fromCol]
   if (oldPiece.isPiece) {
-    newBoard = deepDup(oldBoard)
-    newBoard[to_y][to_x] = oldPiece
-    newBoard[from_y][from_x] = new NullPiece()
+    newBoard = ArrayHelpers.deepDup(oldBoard)
+    newBoard[toRow][toCol] = oldPiece
+    newBoard[fromRow][fromCol] = new NullPiece()
     return newBoard
   } else {
     return oldBoard

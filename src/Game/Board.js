@@ -11,10 +11,10 @@ const Board = () => (
     {({ board }) => {
       return (
         <View style={styles.container}>
-          {board.map((row, rowIndex) => {
+          {board.map((row, rowIdx) => {
             return (
-              <View style={styles.row} key={`row-${rowIndex}`}>
-                <BoardRow row={row} rowIndex={rowIndex} />
+              <View style={styles.row} key={`row-${rowIdx}`}>
+                <BoardRow row={row} rowIdx={rowIdx} />
               </View>
             )
           })}

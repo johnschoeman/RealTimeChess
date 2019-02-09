@@ -17,15 +17,11 @@ const GameScreen = ({ navigation }) => (
         <View style={styles.board}>
           <Board />
         </View>
-        <View style={styles.footer}>
-          <TouchableOpacity onPress={() => movePiece(1, 1, 5, 1)}>
-            <Text>Move Piece</Text>
-          </TouchableOpacity>
 
+        <View style={styles.footer}>
           <TouchableOpacity onPress={() => resetBoard()}>
             <Text>Reset Board</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             title="Reset"
             onPress={() => navigation.navigate('Landing')}

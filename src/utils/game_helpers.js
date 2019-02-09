@@ -1,7 +1,8 @@
 import Piece from './piece'
 import NullPiece from './null_piece'
-
 import { deepDup } from './array_helpers'
+
+import { Color } from '../styles'
 
 export const initialBoard = createBoard()
 
@@ -9,12 +10,12 @@ function createBoard() {
   const board = []
   let row = []
   for (j = 0; j < 8; j++) {
-    row.push(new Piece('black'))
+    row.push(new Piece(Color.pieceBlack))
   }
   board.push(row)
   row = []
   for (j = 0; j < 8; j++) {
-    row.push(new Piece('black'))
+    row.push(new Piece(Color.pieceBlack))
   }
   board.push(row)
   for (i = 0; i < 4; i++) {
@@ -28,12 +29,12 @@ function createBoard() {
   }
   row = []
   for (j = 0; j < 8; j++) {
-    row.push(new Piece('white'))
+    row.push(new Piece(Color.pieceWhite))
   }
   board.push(row)
   row = []
   for (j = 0; j < 8; j++) {
-    row.push(new Piece('white'))
+    row.push(new Piece(Color.pieceWhite))
   }
   board.push(row)
   return board

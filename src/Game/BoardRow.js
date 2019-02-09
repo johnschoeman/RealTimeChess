@@ -15,7 +15,7 @@ const BoardRow = ({ row, rowIndex }) => {
             style={[styles.column, { backgroundColor: color }]}
             key={`col-${colIndex}`}
           >
-            <Text>{piece.text}</Text>
+            <View style={[styles.piece, piece.style]} />
           </View>
         )
       })}
@@ -34,6 +34,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  piece: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    maxHeight: 30,
+    width: 30,
   },
 })
 

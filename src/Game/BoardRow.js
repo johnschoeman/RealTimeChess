@@ -8,15 +8,14 @@ const BoardRow = ({ row, rowIndex }) => {
   let piece
   return (
     <View style={styles.container}>
-      {row.map((col, colIndex) => {
+      {row.map((piece, colIndex) => {
         color = (rowIndex + colIndex) % 2 === 0 ? Color.white : Color.black
-        piece = col === 1 ? 'P' : '-'
         return (
           <View
             style={[styles.column, { backgroundColor: color }]}
             key={`col-${colIndex}`}
           >
-            <Text>{piece}</Text>
+            <Text>{piece.text}</Text>
           </View>
         )
       })}

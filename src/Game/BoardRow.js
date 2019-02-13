@@ -8,24 +8,32 @@ import { Color, Spacing, Layout } from '../styles'
 const BoardRow = ({ row, rowIdx }) => {
   return (
     <GameConsumer>
-      {({
-        selectTile,
-        selectedTile: { rowIdx: selectedRowIdx, colIdx: selectedColIdx },
-      }) => {
+      {({ selectUserTile, userSelectedTile, computerSelectedTile }) => {
         return (
           <View style={styles.container}>
             {row.map((piece, colIdx) => {
-              let tileStyle = createTileStyle(rowIdx, colIdx)
-              let selectedStyle = createSelectedStyle(
-                rowIdx,
-                colIdx,
-                selectedRowIdx,
-                selectedColIdx
+              let tile = { rowIdx, colIdx }
+              let tileStyle = createTileStyle(tile)
+              let userSelectedStyle = createSelectedStyle(
+                tile,
+                userSelectedTile,
+                Color.yellow
               )
+              let computerSelectedStyle = createSelectedStyle(
+                tile,
+                computerSelectedTile,
+                Color.purple
+              )
+
               return (
                 <TouchableOpacity
-                  onPress={() => selectTile(rowIdx, colIdx)}
-                  style={[styles.tile, tileStyle, selectedStyle]}
+                  onPress={() => selectUserTile(tile)}
+                  style={[
+                    styles.tile,
+                    tileStyle,
+                    userSelectedStyle,
+                    computerSelectedStyle,
+                  ]}
                   key={`col-${colIdx}`}
                 >
                   <View style={[styles.piece, piece.style]} />
@@ -39,14 +47,17 @@ const BoardRow = ({ row, rowIdx }) => {
   )
 }
 
-function createTileStyle(rowIdx, colIdx) {
+function createTileStyle(tile) {
+  const { rowIdx, colIdx } = tile
   const tileColor = (rowIdx + colIdx) % 2 === 0 ? Color.white : Color.black
   return { backgroundColor: tileColor, borderColor: tileColor }
 }
 
-function createSelectedStyle(rowIdx, colIdx, selectedRowIdx, selectedColIdx) {
+function createSelectedStyle(tile, selectedTile, color) {
+  const { rowIdx, colIdx } = tile
+  const { rowIdx: selectedRowIdx, colIdx: selectedColIdx } = selectedTile
   return rowIdx === selectedRowIdx && colIdx === selectedColIdx
-    ? { borderColor: Color.selectedTile }
+    ? { borderColor: color }
     : {}
 }
 

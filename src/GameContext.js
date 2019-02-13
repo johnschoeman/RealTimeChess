@@ -4,40 +4,65 @@ import { GameHelpers } from './utils'
 
 const { Provider, Consumer } = React.createContext()
 
+const computerClockSpeed = 100
+
 class GameProvider extends React.Component {
   state = {
     board: GameHelpers.initialBoard,
-    selectedTile: { rowIdx: null, colIdx: null },
+    userSelectedTile: { rowIdx: null, colIdx: null },
+    computerSelectedTile: { rowIdx: 0, colIdx: 0 },
+  }
+
+  componentDidMount() {
+    this.startGame()
+  }
+
+  startGame = () => {
+    this.interval = setInterval(this.tick, computerClockSpeed)
+  }
+
+  tick = () => {
+    const tile = GameHelpers.generateRandomSelection()
+    this.selectComputerTile(tile)
   }
 
   resetBoard = () => {
     this.setState({ board: GameHelpers.initialBoard })
   }
 
-  selectTile = (toRow, toCol) => {
-    const {
-      selectedTile: { rowIdx: fromRow, colIdx: fromCol },
-    } = this.state
+  selectComputerTile = toTile => {
+    const { computerSelectedTile: fromTile } = this.state
+    const callBack = tile => {
+      this.setState({ computerSelectedTile: tile })
+    }
+    this.selectTile(fromTile, toTile, callBack)
+  }
+
+  selectUserTile = toTile => {
+    const { userSelectedTile: fromTile } = this.state
+    const callBack = tile => {
+      this.setState({ userSelectedTile: tile })
+    }
+    this.selectTile(fromTile, toTile, callBack)
+  }
+
+  selectTile = (fromTile, toTile, callBack) => {
+    const { rowIdx: fromRow, colIdx: fromCol } = fromTile
+    const { rowIdx: toRow, colIdx: toCol } = toTile
 
     if (fromRow === toRow && fromCol == toCol) {
-      this.setState({ selectedTile: { rowIdx: null, colIdx: null } })
+      callBack({ rowIdx: null, colIdx: null })
     } else if (fromRow === null && fromCol === null) {
-      this.setState({ selectedTile: { rowIdx: toRow, colIdx: toCol } })
+      callBack({ rowIdx: toRow, colIdx: toCol })
     } else {
-      this.movePiece(fromRow, fromCol, toRow, toCol)
-      this.setState({ selectedTile: { rowIdx: null, colIdx: null } })
+      this.movePiece(fromTile, toTile)
+      callBack({ rowIdx: null, colIdx: null })
     }
   }
 
-  movePiece = (fromRow, fromCol, toRow, toCol) => {
+  movePiece = (fromTile, toTile) => {
     const { board } = this.state
-    const newBoard = GameHelpers.updateBoard(
-      board,
-      fromRow,
-      fromCol,
-      toRow,
-      toCol
-    )
+    const newBoard = GameHelpers.updateBoard(board, fromTile, toTile)
     this.setState({ board: newBoard })
   }
 
@@ -47,7 +72,7 @@ class GameProvider extends React.Component {
         value={{
           ...this.state,
           resetBoard: this.resetBoard,
-          selectTile: this.selectTile,
+          selectUserTile: this.selectUserTile,
         }}
       >
         {this.props.children}

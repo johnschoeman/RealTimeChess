@@ -40,7 +40,9 @@ function createBoard() {
   return board
 }
 
-export function updateBoard(oldBoard, fromRow, fromCol, toRow, toCol) {
+export function updateBoard(oldBoard, fromTile, toTile) {
+  const { rowIdx: fromRow, colIdx: fromCol } = fromTile
+  const { rowIdx: toRow, colIdx: toCol } = toTile
   const oldPiece = oldBoard[fromRow][fromCol]
   if (oldPiece.isPiece) {
     newBoard = ArrayHelpers.deepDup(oldBoard)
@@ -50,4 +52,12 @@ export function updateBoard(oldBoard, fromRow, fromCol, toRow, toCol) {
   } else {
     return oldBoard
   }
+}
+
+export function generateRandomSelection() {
+  return { rowIdx: getRandomInt(7), colIdx: getRandomInt(7) }
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max))
 }

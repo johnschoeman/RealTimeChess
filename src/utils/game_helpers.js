@@ -4,18 +4,21 @@ import * as ArrayHelpers from './array_helpers'
 
 import { Color } from '../styles'
 
+const black = 'black'
+const white = 'white'
+
 export const initialBoard = createBoard()
 
 function createBoard() {
   const board = []
   let row = []
   for (j = 0; j < 8; j++) {
-    row.push(new Piece(Color.pieceBlack))
+    row.push(new Piece(black))
   }
   board.push(row)
   row = []
   for (j = 0; j < 8; j++) {
-    row.push(new Piece(Color.pieceBlack))
+    row.push(new Piece(black))
   }
   board.push(row)
   for (i = 0; i < 4; i++) {
@@ -29,12 +32,12 @@ function createBoard() {
   }
   row = []
   for (j = 0; j < 8; j++) {
-    row.push(new Piece(Color.pieceWhite))
+    row.push(new Piece(white))
   }
   board.push(row)
   row = []
   for (j = 0; j < 8; j++) {
-    row.push(new Piece(Color.pieceWhite))
+    row.push(new Piece(white))
   }
   board.push(row)
   return board

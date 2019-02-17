@@ -9,3 +9,13 @@ export function deepDup(array) {
   }
   return newArray
 }
+
+export function contains(array, tile) {
+  let result = false
+  array.forEach(el => {
+    if (el.rowIdx === tile.rowIdx && el.colIdx === tile.colIdx) {
+      result = true
+    }
+  })
+  return result
+}

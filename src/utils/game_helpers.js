@@ -57,6 +57,25 @@ export function updateBoard(oldBoard, fromTile, toTile) {
   }
 }
 
+export function validMove(board, fromTile, toTile) {
+  const { rowIdx: fromRowIdx, colIdx: fromColIdx } = fromTile
+  const { rowIdx: toRowIdx, colIdx: toColIdx } = toTile
+  const { moves, color } = board[fromRowIdx][fromColIdx]
+  let availableTiles
+  if (color === black) {
+    availableTiles = moves.map(move => ({
+      rowIdx: fromRowIdx + move[0],
+      colIdx: fromColIdx + move[1],
+    }))
+  } else {
+    availableTiles = moves.map(move => ({
+      rowIdx: fromRowIdx - move[0],
+      colIdx: fromColIdx + move[1],
+    }))
+  }
+  return ArrayHelpers.contains(availableTiles, toTile)
+}
+
 export function generateRandomSelection() {
   return { rowIdx: getRandomInt(7), colIdx: getRandomInt(7) }
 }

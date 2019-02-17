@@ -1,6 +1,7 @@
 import React from 'react'
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native'
 
+import Piece from './Piece'
 import { GameConsumer } from '../GameContext'
 
 import { Color, Spacing, Layout } from '../styles'
@@ -36,7 +37,7 @@ const BoardRow = ({ row, rowIdx }) => {
                   ]}
                   key={`col-${colIdx}`}
                 >
-                  <View style={[styles.piece, piece.style]} />
+                  <Piece piece={piece}/>
                 </TouchableOpacity>
               )
             })}

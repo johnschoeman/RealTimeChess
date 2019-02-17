@@ -2,7 +2,6 @@ import { Color } from '../styles'
 
 function Piece(color) {
   this.color = color
-  this.text = 'P'
   this.isPiece = true
   this.style = {
     backgroundColor: color,

@@ -16,7 +16,7 @@ const WelcomeText = ({ children }) => (
 const LandingScreen = ({ navigation }) => (
   <View style={styles.container}>
     <View style={styles.welcomeMessage}>
-      <WelcomeText>Welcome To RealTimeChess</WelcomeText>
+      <WelcomeText>Welcome To Real-Time Chess</WelcomeText>
       <WelcomeText>There are no turns</WelcomeText>
       <WelcomeText>Only Chess</WelcomeText>
     </View>

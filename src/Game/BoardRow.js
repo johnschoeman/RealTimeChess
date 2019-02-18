@@ -18,12 +18,12 @@ const BoardRow = ({ row, rowIdx }) => {
               let userSelectedStyle = createSelectedStyle(
                 tile,
                 userSelectedTile,
-                Color.yellow
+                Color.userHighlight
               )
               let computerSelectedStyle = createSelectedStyle(
                 tile,
                 computerSelectedTile,
-                Color.purple
+                Color.computerHighlight
               )
 
               return (
@@ -37,7 +37,7 @@ const BoardRow = ({ row, rowIdx }) => {
                   ]}
                   key={`col-${colIdx}`}
                 >
-                  <Piece piece={piece}/>
+                  <Piece piece={piece} />
                 </TouchableOpacity>
               )
             })}
@@ -50,7 +50,8 @@ const BoardRow = ({ row, rowIdx }) => {
 
 function createTileStyle(tile) {
   const { rowIdx, colIdx } = tile
-  const tileColor = (rowIdx + colIdx) % 2 === 0 ? Color.white : Color.black
+  const tileColor =
+    (rowIdx + colIdx) % 2 === 0 ? Color.tileWhite : Color.tileBlack
   return { backgroundColor: tileColor, borderColor: tileColor }
 }
 

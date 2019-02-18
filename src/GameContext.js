@@ -1,16 +1,16 @@
 import React from 'react'
 
-import { GameHelpers } from './utils'
+import { GameHelpers, NullPiece } from './utils'
 
 const { Provider, Consumer } = React.createContext()
 
-const computerClockSpeed = 100
+const computerClockSpeed = 1000
 
 class GameProvider extends React.Component {
   state = {
     board: GameHelpers.initialBoard,
     userSelectedTile: { rowIdx: null, colIdx: null },
-    computerSelectedTile: { rowIdx: 0, colIdx: 0 },
+    computerSelectedTile: { rowIdx: null, colIdx: null },
   }
 
   componentDidMount() {
@@ -47,16 +47,23 @@ class GameProvider extends React.Component {
   }
 
   selectTile = (fromTile, toTile, callBack) => {
+    const { board } = this.state
     const { rowIdx: fromRow, colIdx: fromCol } = fromTile
     const { rowIdx: toRow, colIdx: toCol } = toTile
+
+    const toPiece = board[toRow][toCol]
 
     if (fromRow === toRow && fromCol == toCol) {
       callBack({ rowIdx: null, colIdx: null })
     } else if (fromRow === null && fromCol === null) {
-      callBack({ rowIdx: toRow, colIdx: toCol })
+      if (toPiece.isPiece) {
+        callBack({ rowIdx: toRow, colIdx: toCol })
+      }
     } else {
-      this.movePiece(fromTile, toTile)
-      callBack({ rowIdx: null, colIdx: null })
+      if (GameHelpers.validMove(board, fromTile, toTile)) {
+        this.movePiece(fromTile, toTile)
+        callBack({ rowIdx: null, colIdx: null })
+      }
     }
   }
 

@@ -1,8 +1,7 @@
 function NullPiece() {
   this.color = null
-  this.text = ''
   this.isPiece = false
-  this.style = {}
+  this.moves = []
 }
 
 export default NullPiece

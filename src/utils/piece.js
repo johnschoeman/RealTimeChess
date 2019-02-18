@@ -3,12 +3,7 @@ import { Color } from '../styles'
 function Piece(color) {
   this.color = color
   this.isPiece = true
-  this.style = {
-    backgroundColor: color,
-    borderWidth: 2,
-    borderRadius: 12,
-    borderColor: Color.pieceBorder,
-  }
+  this.moves = [[1, 0]]
 }
 
 export default Piece

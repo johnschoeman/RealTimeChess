@@ -4,7 +4,7 @@ import { GameHelpers, NullPiece } from './utils'
 
 const { Provider, Consumer } = React.createContext()
 
-const computerClockSpeed = 1000
+const computerClockSpeed = 500
 
 class GameProvider extends React.Component {
   state = {
@@ -22,8 +22,37 @@ class GameProvider extends React.Component {
   }
 
   tick = () => {
-    const tile = GameHelpers.generateRandomSelection()
-    this.selectComputerTile(tile)
+    const computerNextTile = this.getNextComputerTile()
+    this.selectComputerTile(computerNextTile)
+  }
+
+  getNextComputerTile = () => {
+    const { board, computerSelectedTile } = this.state
+    let nextTile
+    if (computerSelectedTile.rowIdx === null) {
+      nextTile = this.getRandomPieceTile("black")
+    } else {
+      const move = this.getRandomMove(board, computerSelectedTile)
+      if (move === null) {
+        nextTile = { rowIdx: null, colIdx: null }
+      } else {
+        nextTile = move
+      }
+    }
+    return nextTile
+  }
+
+  getRandomMove = (board, tile) => {
+    const piece = GameHelpers.getPiece(board, tile)
+    const validMoves = GameHelpers.validMoves(piece, tile)
+    return GameHelpers.sample(validMoves)
+  }
+
+  getRandomPieceTile = (color) => {
+    const { board } = this.state
+    const tiles = GameHelpers.playerPieces(board, color).
+      map((piece) => piece.tile)
+    return GameHelpers.sample(tiles)
   }
 
   resetBoard = () => {
@@ -50,6 +79,11 @@ class GameProvider extends React.Component {
     const { board } = this.state
     const { rowIdx: fromRow, colIdx: fromCol } = fromTile
     const { rowIdx: toRow, colIdx: toCol } = toTile
+
+    if (toRow === null && toCol === null) {
+      callBack({ rowIdx: null, colIdx: null})
+      return
+    }
 
     const toPiece = board[toRow][toCol]
 

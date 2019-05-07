@@ -1,5 +1,4 @@
-import Piece from './piece'
-import NullPiece from './null_piece'
+import * as Pieces from './pieces'
 import * as ArrayHelpers from './array_helpers'
 
 import { Color } from '../styles'
@@ -13,31 +12,31 @@ function createBoard() {
   const board = []
   let row = []
   for (j = 0; j < 8; j++) {
-    row.push(new Piece(black))
+    row.push(new Pieces.knight(black))
   }
   board.push(row)
   row = []
   for (j = 0; j < 8; j++) {
-    row.push(new Piece(black))
+    row.push(new Pieces.pawn(black))
   }
   board.push(row)
   for (i = 0; i < 4; i++) {
     row = []
     let nullPiece
     for (j = 0; j < 8; j++) {
-      nullPiece = new NullPiece()
-      row.push(new NullPiece())
+      nullPiece = new Pieces.nullPiece()
+      row.push(new Pieces.nullPiece())
     }
     board.push(row)
   }
   row = []
   for (j = 0; j < 8; j++) {
-    row.push(new Piece(white))
+    row.push(new Pieces.pawn(white))
   }
   board.push(row)
   row = []
   for (j = 0; j < 8; j++) {
-    row.push(new Piece(white))
+    row.push(new Pieces.knight(white))
   }
   board.push(row)
   return board
@@ -75,7 +74,7 @@ function isOnBoard(tile) {
     tile.rowIdx >= 0 &&
     tile.rowIdx < 8 &&
     tile.colIdx >= 0 &&
-    tile.rowIdx < 8
+    tile.colIdx < 8
   )
 }
 
@@ -86,7 +85,7 @@ export function updateBoard(oldBoard, fromTile, toTile) {
   if (oldPiece.isPiece) {
     newBoard = ArrayHelpers.deepDup(oldBoard)
     newBoard[toRow][toCol] = oldPiece
-    newBoard[fromRow][fromCol] = new NullPiece()
+    newBoard[fromRow][fromCol] = new Pieces.nullPiece()
     return newBoard
   } else {
     return oldBoard

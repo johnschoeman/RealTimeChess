@@ -15,7 +15,7 @@ export function pawn(color) {
   this.style = {
     backgroundColor: color,
     borderWidth: 2,
-    borderRadius: 12,
+    borderRadius: 15,
     width: 30,
     borderColor: Color.pieceBorder,
   }
@@ -34,4 +34,24 @@ export function knight(color) {
     borderColor: Color.pieceBorder,
   }
   this.moves = [[2, -1],[2, 1],[1, 2],[-1, 2],[-2, 1],[-2, -1],[-1, -2],[1, -2]]
+}
+
+export function bishop(color) {
+  this.color = color
+  this.isPiece = true
+  this.name = 'Bishop'
+  this.style = {
+    borderWidth: 15,
+    width: 0,
+    height: 0,
+    borderLeftColor: Color.white,
+    borderRightColor: Color.white,
+    borderBottomColor: color,
+  }
+  this.moves = [
+    ...[...Array(8)].map((_,i) => [i, i]),
+    ...[...Array(8)].map((_,i) => [-i, i]),
+    ...[...Array(8)].map((_,i) => [i, -i]),
+    ...[...Array(8)].map((_,i) => [-i, -i])
+  ]
 }

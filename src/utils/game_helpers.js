@@ -10,36 +10,51 @@ export const initialBoard = createBoard()
 
 function createBoard() {
   const board = []
-  let row = []
-  for (j = 0; j < 8; j++) {
-    row.push(new Pieces.knight(black))
-  }
-  board.push(row)
-  row = []
-  for (j = 0; j < 8; j++) {
-    row.push(new Pieces.pawn(black))
-  }
-  board.push(row)
-  for (i = 0; i < 4; i++) {
-    row = []
-    let nullPiece
-    for (j = 0; j < 8; j++) {
-      nullPiece = new Pieces.nullPiece()
-      row.push(new Pieces.nullPiece())
-    }
-    board.push(row)
-  }
-  row = []
-  for (j = 0; j < 8; j++) {
-    row.push(new Pieces.pawn(white))
-  }
-  board.push(row)
-  row = []
-  for (j = 0; j < 8; j++) {
-    row.push(new Pieces.knight(white))
-  }
-  board.push(row)
+
+  board.push(createBlackKingRow())
+  board.push(createPawnRow(black))
+  board.push(createNullRow())
+  board.push(createNullRow())
+  board.push(createNullRow())
+  board.push(createNullRow())
+  board.push(createPawnRow(white))
+  board.push(createWhiteKingRow())
+
   return board
+}
+
+function createBlackKingRow() {
+  return ([
+    new Pieces.pawn(black),
+    new Pieces.bishop(black),
+    new Pieces.knight(black),
+    new Pieces.pawn(black),
+    new Pieces.pawn(black),
+    new Pieces.knight(black),
+    new Pieces.bishop(black),
+    new Pieces.pawn(black)
+  ])
+}
+
+function createWhiteKingRow() {
+  return ([
+    new Pieces.pawn(white),
+    new Pieces.bishop(white),
+    new Pieces.knight(white),
+    new Pieces.pawn(white),
+    new Pieces.pawn(white),
+    new Pieces.knight(white),
+    new Pieces.bishop(white),
+    new Pieces.pawn(white)
+  ])
+}
+
+function createPawnRow(color) {
+  return [...Array(8)].map((_) => new Pieces.pawn(color))
+}
+
+function createNullRow() {
+  return [...Array(8)].map((_) => new Pieces.nullPiece())
 }
 
 export function playerPieces(board, color) {

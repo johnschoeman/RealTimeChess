@@ -25,27 +25,27 @@ function createBoard() {
 
 function createBlackKingRow() {
   return ([
-    new Pieces.pawn(black),
+    new Pieces.rook(black),
     new Pieces.bishop(black),
     new Pieces.knight(black),
-    new Pieces.pawn(black),
-    new Pieces.pawn(black),
+    new Pieces.king(black),
+    new Pieces.queen(black),
     new Pieces.knight(black),
     new Pieces.bishop(black),
-    new Pieces.pawn(black)
+    new Pieces.rook(black)
   ])
 }
 
 function createWhiteKingRow() {
   return ([
-    new Pieces.pawn(white),
+    new Pieces.rook(white),
     new Pieces.bishop(white),
     new Pieces.knight(white),
-    new Pieces.pawn(white),
-    new Pieces.pawn(white),
+    new Pieces.queen(white),
+    new Pieces.king(white),
     new Pieces.knight(white),
     new Pieces.bishop(white),
-    new Pieces.pawn(white)
+    new Pieces.rook(white)
   ])
 }
 

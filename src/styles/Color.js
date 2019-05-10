@@ -1,13 +1,14 @@
-export const black = '#111111'
-export const darkGray = '#666666'
-export const lightGray = '#eeeeee'
-export const white = '#ffffff'
-export const yellow = '#eede00'
-export const purple = '#de00ee'
-
-export const background = white
-export const tileBlack = darkGray
-export const tileWhite = lightGray
-export const userHighlight = yellow
-export const computerHightlight = purple
-export const pieceBorder = black
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.black = '#111111';
+exports.darkGray = '#666666';
+exports.lightGray = '#eeeeee';
+exports.white = '#ffffff';
+exports.yellow = '#eede00';
+exports.purple = '#de00ee';
+exports.background = exports.white;
+exports.tileBlack = exports.darkGray;
+exports.tileWhite = exports.lightGray;
+exports.userHighlight = exports.yellow;
+exports.computerHightlight = exports.purple;
+exports.pieceBorder = exports.black;

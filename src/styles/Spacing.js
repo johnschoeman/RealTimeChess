@@ -1,4 +1,5 @@
-export const base = 10
-
-export const tileWidth = base
-export const tileHeight = base
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.base = 10;
+exports.tileWidth = exports.base;
+exports.tileHeight = exports.base;

@@ -1,21 +1,24 @@
-export function deepDup(array) {
-  newArray = []
-  for (let i = 0; i < array.length; i++) {
-    row = []
-    for (let j = 0; j < array[i].length; j++) {
-      row.push(array[i][j])
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function deepDup(array) {
+    var newArray = [];
+    for (var i = 0; i < array.length; i++) {
+        var row = [];
+        for (var j = 0; j < array[i].length; j++) {
+            row.push(array[i][j]);
+        }
+        newArray.push(row);
     }
-    newArray.push(row)
-  }
-  return newArray
+    return newArray;
 }
-
-export function contains(array, tile) {
-  let result = false
-  array.forEach(el => {
-    if (el.rowIdx === tile.rowIdx && el.colIdx === tile.colIdx) {
-      result = true
-    }
-  })
-  return result
+exports.deepDup = deepDup;
+function contains(array, tile) {
+    var result = false;
+    array.forEach(function (el) {
+        if (el.rowIdx === tile.rowIdx && el.colIdx === tile.colIdx) {
+            result = true;
+        }
+    });
+    return result;
 }
+exports.contains = contains;

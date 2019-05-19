@@ -49,7 +49,7 @@ function createWhiteKingRow() {
     ];
 }
 function createPawnRow(color) {
-    Array.apply(null, Array(8)).map(function () {
+    return Array.apply(null, Array(8)).map(function () {
         return new pieces_1.pawn(color);
     });
 }

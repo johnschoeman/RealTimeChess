@@ -20,9 +20,14 @@ export interface Tile {
   colIdx: number
 }
 
+interface PieceWithTile {
+  tile: Tile
+  piece: Piece
+}
+
 export const initialBoard = createBoard()
 
-function createBoard() {
+function createBoard(): Piece[][] {
   const board = []
 
   board.push(createBlackKingRow())
@@ -37,7 +42,7 @@ function createBoard() {
   return board
 }
 
-function createBlackKingRow() {
+function createBlackKingRow(): Piece[] {
   return [
     new rook(black),
     new bishop(black),
@@ -50,7 +55,7 @@ function createBlackKingRow() {
   ]
 }
 
-function createWhiteKingRow() {
+function createWhiteKingRow(): Piece[] {
   return [
     new rook(white),
     new bishop(white),
@@ -63,19 +68,19 @@ function createWhiteKingRow() {
   ]
 }
 
-function createPawnRow(color: string) {
-  Array.apply(null, Array(8)).map(() => {
+function createPawnRow(color: string): Piece[] {
+  return Array.apply(null, Array(8)).map(() => {
     return new pawn(color)
   })
 }
 
-function createNullRow() {
+function createNullRow(): Piece[] {
   return Array.apply(null, Array(8)).map(() => {
     return new nullPiece()
   })
 }
 
-export function playerPieces(board: Piece[][], color: string) {
+export function playerPieces(board: Piece[][], color: string): PieceWithTile[] {
   const pieces = []
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
@@ -90,7 +95,7 @@ export function playerPieces(board: Piece[][], color: string) {
   return pieces
 }
 
-export function getPiece(board: Piece[][], tile: Tile) {
+export function getPiece(board: Piece[][], tile: Tile): Piece {
   return board[tile.rowIdx][tile.colIdx]
 }
 
@@ -104,13 +109,17 @@ export function validMoves(piece: Piece, tile: Tile) {
     })
 }
 
-function isOnBoard(tile: Tile) {
+function isOnBoard(tile: Tile): boolean {
   return (
     tile.rowIdx >= 0 && tile.rowIdx < 8 && tile.colIdx >= 0 && tile.colIdx < 8
   )
 }
 
-export function updateBoard(oldBoard: Piece[][], fromTile: Tile, toTile: Tile) {
+export function updateBoard(
+  oldBoard: Piece[][],
+  fromTile: Tile,
+  toTile: Tile
+): Piece[][] {
   const { rowIdx: fromRow, colIdx: fromCol } = fromTile
   const { rowIdx: toRow, colIdx: toCol } = toTile
   const oldPiece = oldBoard[fromRow][fromCol]
@@ -124,7 +133,11 @@ export function updateBoard(oldBoard: Piece[][], fromTile: Tile, toTile: Tile) {
   }
 }
 
-export function validMove(board: Piece[][], fromTile: Tile, toTile: Tile) {
+export function validMove(
+  board: Piece[][],
+  fromTile: Tile,
+  toTile: Tile
+): boolean {
   const { rowIdx: fromRowIdx, colIdx: fromColIdx } = fromTile
   const { rowIdx: toRowIdx, colIdx: toColIdx } = toTile
   const { moves, color } = board[fromRowIdx][fromColIdx]
@@ -143,10 +156,10 @@ export function validMove(board: Piece[][], fromTile: Tile, toTile: Tile) {
   return ArrayHelpers.contains(availableTiles, toTile)
 }
 
-export function sample(array: Piece[]) {
+export function sample(array: Piece[]): Piece | null {
   return array.length === 0 ? null : array[getRandomInt(array.length)]
 }
 
-function getRandomInt(max: number) {
+function getRandomInt(max: number): number {
   return Math.floor(Math.random() * Math.floor(max))
 }

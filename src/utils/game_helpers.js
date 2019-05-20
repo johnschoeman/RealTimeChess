@@ -49,12 +49,12 @@ function createWhiteKingRow() {
     ];
 }
 function createPawnRow(color) {
-    return Array.apply(null, Array(8)).map(function () {
+    return Array.apply(undefined, Array(8)).map(function () {
         return new pieces_1.pawn(color);
     });
 }
 function createNullRow() {
-    return Array.apply(null, Array(8)).map(function () {
+    return Array.apply(undefined, Array(8)).map(function () {
         return new pieces_1.nullPiece();
     });
 }
@@ -126,7 +126,7 @@ function validMove(board, fromTile, toTile) {
 }
 exports.validMove = validMove;
 function sample(array) {
-    return array.length === 0 ? null : array[getRandomInt(array.length)];
+    return array.length === 0 ? undefined : array[getRandomInt(array.length)];
 }
 exports.sample = sample;
 function getRandomInt(max) {

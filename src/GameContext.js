@@ -1,17 +1,20 @@
 import React from 'react'
 
-import { GameHelpers, NullPiece } from './utils'
+import { GameHelpers } from './utils'
+import { Piece } from './utils/pieces'
+import { Tile } from './utils/game_helpers'
 
-const { Provider, Consumer } = React.createContext()
+const { Provider, Consumer } = React.createContext(undefined)
 
 const computerClockSpeed = 500
 
 class GameProvider extends React.Component {
   state = {
     board: GameHelpers.initialBoard,
-    userSelectedTile: { rowIdx: null, colIdx: null },
-    computerSelectedTile: { rowIdx: null, colIdx: null },
+    userSelectedTile: { rowIdx: undefined, colIdx: undefined },
+    computerSelectedTile: { rowIdx: undefined, colIdx: undefined },
   }
+  interval = 0
 
   componentDidMount() {
     this.startGame()
@@ -29,12 +32,12 @@ class GameProvider extends React.Component {
   getNextComputerTile = () => {
     const { board, computerSelectedTile } = this.state
     let nextTile
-    if (computerSelectedTile.rowIdx === null) {
-      nextTile = this.getRandomPieceTile("black")
+    if (computerSelectedTile.rowIdx === undefined) {
+      nextTile = this.getRandomPieceTile('black')
     } else {
       const move = this.getRandomMove(board, computerSelectedTile)
-      if (move === null) {
-        nextTile = { rowIdx: null, colIdx: null }
+      if (move === undefined) {
+        nextTile = { rowIdx: undefined, colIdx: undefined }
       } else {
         nextTile = move
       }
@@ -42,16 +45,17 @@ class GameProvider extends React.Component {
     return nextTile
   }
 
-  getRandomMove = (board, tile) => {
+  getRandomMove = (board: Piece[][], tile: Tile) => {
     const piece = GameHelpers.getPiece(board, tile)
     const validMoves = GameHelpers.validMoves(piece, tile)
     return GameHelpers.sample(validMoves)
   }
 
-  getRandomPieceTile = (color) => {
+  getRandomPieceTile = color => {
     const { board } = this.state
-    const tiles = GameHelpers.playerPieces(board, color).
-      map((piece) => piece.tile)
+    const tiles = GameHelpers.playerPieces(board, color).map(
+      piece => piece.tile
+    )
     return GameHelpers.sample(tiles)
   }
 
@@ -80,23 +84,23 @@ class GameProvider extends React.Component {
     const { rowIdx: fromRow, colIdx: fromCol } = fromTile
     const { rowIdx: toRow, colIdx: toCol } = toTile
 
-    if (toRow === null && toCol === null) {
-      callBack({ rowIdx: null, colIdx: null})
+    if (toRow === undefined && toCol === undefined) {
+      callBack({ rowIdx: undefined, colIdx: undefined })
       return
     }
 
     const toPiece = board[toRow][toCol]
 
-    if (fromRow === toRow && fromCol == toCol) {
-      callBack({ rowIdx: null, colIdx: null })
-    } else if (fromRow === null && fromCol === null) {
+    if (fromRow === toRow && fromCol === toCol) {
+      callBack({ rowIdx: undefined, colIdx: undefined })
+    } else if (fromRow === undefined && fromCol === undefined) {
       if (toPiece.isPiece) {
         callBack({ rowIdx: toRow, colIdx: toCol })
       }
     } else {
       if (GameHelpers.validMove(board, fromTile, toTile)) {
         this.movePiece(fromTile, toTile)
-        callBack({ rowIdx: null, colIdx: null })
+        callBack({ rowIdx: undefined, colIdx: undefined })
       }
     }
   }

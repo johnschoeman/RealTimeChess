@@ -1,9 +1,10 @@
-import React from 'react'
-import { View } from 'react-native'
-import { createStackNavigator, createAppContainer } from 'react-navigation'
+import React from "react"
+import { View } from "react-native"
+import { createAppContainer } from "react-navigation"
+import { createStackNavigator } from "react-navigation-stack"
 
-import LandingScreen from './Landing'
-import GameScreen from './Game'
+import LandingScreen from "./Landing"
+import GameScreen from "./Game"
 
 const AppNavigator = createStackNavigator(
   {
@@ -11,8 +12,8 @@ const AppNavigator = createStackNavigator(
     Game: GameScreen,
   },
   {
-    initialRouteName: 'Landing',
-    headerMode: 'none',
+    initialRouteName: "Landing",
+    headerMode: "none",
     defaultNavigationOptions: {
       gesturesEnabled: false,
     },

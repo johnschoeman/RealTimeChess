@@ -69,13 +69,13 @@ function createWhiteKingRow(): Piece[] {
 }
 
 function createPawnRow(color: string): Piece[] {
-  return Array.apply(null, Array(8)).map(() => {
+  return Array.apply(undefined, Array(8)).map(() => {
     return new pawn(color)
   })
 }
 
 function createNullRow(): Piece[] {
-  return Array.apply(null, Array(8)).map(() => {
+  return Array.apply(undefined, Array(8)).map(() => {
     return new nullPiece()
   })
 }
@@ -156,8 +156,8 @@ export function validMove(
   return ArrayHelpers.contains(availableTiles, toTile)
 }
 
-export function sample(array: Piece[]): Piece | null {
-  return array.length === 0 ? null : array[getRandomInt(array.length)]
+export function sample(array: Piece[]): Piece | undefined {
+  return array.length === 0 ? undefined : array[getRandomInt(array.length)]
 }
 
 function getRandomInt(max: number): number {

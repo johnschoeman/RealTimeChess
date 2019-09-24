@@ -1,8 +1,8 @@
-import React from 'react'
-import { SafeAreaView, Text } from 'react-native'
+import React from "react"
+import { SafeAreaView } from "react-native"
 
-import { GameProvider } from './GameContext'
-import AppNavigatorContainer from './AppNavigatorContainer'
+import { GameProvider } from "./GameContext"
+import AppNavigatorContainer from "./AppNavigatorContainer"
 
 const RealTimeChess = () => {
   return (

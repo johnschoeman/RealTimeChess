@@ -1,27 +1,28 @@
-import * as Color from './color'
-import * as Typography from './typography'
+import { ViewStyle } from "react-native"
 
-const base = {
-  alignItems: 'center',
-  justifyContent: 'center',
+import * as Color from "./color"
+
+const base: ViewStyle = {
+  alignItems: "center",
+  justifyContent: "center",
 }
 
-const large = {
+const large: ViewStyle = {
   maxHeight: 60,
   padding: 10,
 }
 
-const rounded = {
+const rounded: ViewStyle = {
   borderRadius: 20,
 }
 
-export const largeRounded = {
+export const largeRounded: ViewStyle = {
   ...base,
   ...large,
   ...rounded,
 }
 
-export const startGame = {
+export const startGame: ViewStyle = {
   ...largeRounded,
   backgroundColor: Color.white,
   borderWidth: 4,

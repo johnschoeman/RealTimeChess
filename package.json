@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "react-native start",
+    "run-ios": "./bin/run-ios",
     "test": "jest"
   },
   "jest": {

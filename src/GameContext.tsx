@@ -1,10 +1,29 @@
-import React from 'react'
+import React from "react"
 
-import { GameHelpers } from './utils'
-import { Piece } from './utils/pieces'
-import { Tile } from './utils/game_helpers'
+import { GameHelpers } from "./utils"
+import { Piece } from "./utils/pieces"
+import { Tile } from "./utils/game_helpers"
 
-const { Provider, Consumer } = React.createContext(undefined)
+interface GameState {
+  board: GameHelpers.Board
+  userSelectedTile: { rowIdx: number | undefined; colIdx: number | undefined }
+  computerSelectedTile: {
+    rowIdx: number | undefined
+    colIdx: number | undefined
+  }
+  resetBoard: any
+  selectUserTile: any
+}
+
+const initialGameState: GameState = {
+  board: GameHelpers.initialBoard,
+  userSelectedTile: { rowIdx: undefined, colIdx: undefined },
+  computerSelectedTile: { rowIdx: undefined, colIdx: undefined },
+  resetBoard: () => {},
+  selectUserTile: () => {},
+}
+
+const { Provider, Consumer } = React.createContext<GameState>(initialGameState)
 
 const computerClockSpeed = 500
 
@@ -29,11 +48,11 @@ class GameProvider extends React.Component {
     this.selectComputerTile(computerNextTile)
   }
 
-  getNextComputerTile = () => {
+  getNextComputerTile = (): Tile | null => {
     const { board, computerSelectedTile } = this.state
-    let nextTile
+    let nextTile: Tile | null
     if (computerSelectedTile.rowIdx === undefined) {
-      nextTile = this.getRandomPieceTile('black')
+      nextTile = this.getRandomPieceTile("black")
     } else {
       const move = this.getRandomMove(board, computerSelectedTile)
       if (move === undefined) {
@@ -51,9 +70,9 @@ class GameProvider extends React.Component {
     return GameHelpers.sample(validMoves)
   }
 
-  getRandomPieceTile = color => {
+  getRandomPieceTile = (color: string): Tile | null => {
     const { board } = this.state
-    const tiles = GameHelpers.playerPieces(board, color).map(
+    const tiles: Array<Tile> = GameHelpers.playerPieces(board, color).map(
       piece => piece.tile
     )
     return GameHelpers.sample(tiles)
@@ -63,28 +82,32 @@ class GameProvider extends React.Component {
     this.setState({ board: GameHelpers.initialBoard })
   }
 
-  selectComputerTile = toTile => {
-    const { computerSelectedTile: fromTile } = this.state
-    const callBack = tile => {
-      this.setState({ computerSelectedTile: tile })
+  selectComputerTile = (toTile: Tile | null) => {
+    if (toTile !== null) {
+      const { computerSelectedTile: fromTile } = this.state
+      const callBack = (tile: Tile) => {
+        this.setState({ computerSelectedTile: tile })
+      }
+      this.selectTile(fromTile, toTile, callBack)
+    } else {
+      console.error("Tried to select null tile")
     }
-    this.selectTile(fromTile, toTile, callBack)
   }
 
-  selectUserTile = toTile => {
+  selectUserTile = (toTile: Tile) => {
     const { userSelectedTile: fromTile } = this.state
-    const callBack = tile => {
+    const callBack = (tile: Tile) => {
       this.setState({ userSelectedTile: tile })
     }
     this.selectTile(fromTile, toTile, callBack)
   }
 
-  selectTile = (fromTile, toTile, callBack) => {
+  selectTile = (fromTile: Tile, toTile: Tile, callBack: any) => {
     const { board } = this.state
     const { rowIdx: fromRow, colIdx: fromCol } = fromTile
     const { rowIdx: toRow, colIdx: toCol } = toTile
 
-    if (toRow === undefined && toCol === undefined) {
+    if (toRow === undefined || toCol === undefined) {
       callBack({ rowIdx: undefined, colIdx: undefined })
       return
     }
@@ -105,7 +128,7 @@ class GameProvider extends React.Component {
     }
   }
 
-  movePiece = (fromTile, toTile) => {
+  movePiece = (fromTile: Tile, toTile: Tile) => {
     const { board } = this.state
     const newBoard = GameHelpers.updateBoard(board, fromTile, toTile)
     this.setState({ board: newBoard })

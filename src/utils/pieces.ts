@@ -1,6 +1,6 @@
-import { Color } from '../styles'
+import { Color } from "../styles"
 
-interface Piece {
+export interface Piece {
   color: string
   isPiece: boolean
   name: string
@@ -9,9 +9,9 @@ interface Piece {
 }
 
 const nullPiece = (function nullPiece(this: Piece) {
-  this.color = ''
+  this.color = ""
   this.isPiece = false
-  this.name = 'Null'
+  this.name = "Null"
   this.style = {}
   this.moves = []
 } as any) as { new (): Piece }
@@ -19,7 +19,7 @@ const nullPiece = (function nullPiece(this: Piece) {
 const pawn = (function pawn(this: Piece, color: string) {
   this.color = color
   this.isPiece = true
-  this.name = 'Pawn'
+  this.name = "Pawn"
   this.style = {
     backgroundColor: color,
     borderWidth: 2,
@@ -34,7 +34,7 @@ const pawn = (function pawn(this: Piece, color: string) {
 const knight = (function knight(this: Piece, color: string) {
   this.color = color
   this.isPiece = true
-  this.name = 'Knight'
+  this.name = "Knight"
   this.style = {
     backgroundColor: color,
     borderWidth: 2,
@@ -57,13 +57,13 @@ const knight = (function knight(this: Piece, color: string) {
 const bishop = (function bishop(this: Piece, color: string) {
   this.color = color
   this.isPiece = true
-  this.name = 'Bishop'
+  this.name = "Bishop"
   this.style = {
     backgroundColor: color,
     width: 15,
     maxHeight: 25,
     borderWidth: 2,
-    transform: [{ skewX: '135deg' }],
+    transform: [{ skewX: "135deg" }],
   }
   this.moves = generateBishopMoves()
 } as any) as { new (color: string): Piece }
@@ -71,7 +71,7 @@ const bishop = (function bishop(this: Piece, color: string) {
 const rook = (function rook(this: Piece, color: string) {
   this.color = color
   this.isPiece = true
-  this.name = 'Rook'
+  this.name = "Rook"
   this.style = {
     backgroundColor: color,
     borderWidth: 2,
@@ -84,11 +84,11 @@ const rook = (function rook(this: Piece, color: string) {
 const queen = (function queen(this: Piece, color: string) {
   this.color = color
   this.isPiece = true
-  this.name = 'Queen'
+  this.name = "Queen"
   this.style = {
     backgroundColor: color,
     borderWidth: 2,
-    transform: [{ rotate: '45deg' }],
+    transform: [{ rotate: "45deg" }],
     width: 25,
     maxHeight: 25,
   }
@@ -98,7 +98,7 @@ const queen = (function queen(this: Piece, color: string) {
 const king = (function king(this: Piece, color: string) {
   this.color = color
   this.isPiece = true
-  this.name = 'King'
+  this.name = "King"
   this.style = {
     backgroundColor: color,
     borderWidth: 15,
@@ -156,4 +156,4 @@ function generateRookMoves() {
   return moves
 }
 
-export { Piece, nullPiece, pawn, knight, bishop, rook, queen, king }
+export { nullPiece, pawn, knight, bishop, rook, queen, king }

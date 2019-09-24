@@ -1,18 +1,28 @@
-import React from 'react'
-import { TouchableOpacity, View, Text, StyleSheet } from 'react-native'
+import React from "react"
+import { TouchableOpacity, View, StyleSheet } from "react-native"
 
-import Piece from './Piece'
-import { GameConsumer } from '../GameContext'
+import Piece from "./Piece"
+import { GameConsumer } from "../GameContext"
+import { Piece as PieceType } from "../utils/pieces"
+import { Tile } from "../utils/game_helpers"
 
-import { Color, Spacing, Layout } from '../styles'
+import { Color } from "../styles"
 
-const BoardRow = ({ row, rowIdx }) => {
+const BoardRow = ({ row, rowIdx }: { row: any; rowIdx: number }) => {
   return (
     <GameConsumer>
-      {({ selectUserTile, userSelectedTile, computerSelectedTile }) => {
+      {({
+        selectUserTile,
+        userSelectedTile,
+        computerSelectedTile,
+      }: {
+        selectUserTile: any
+        userSelectedTile: Tile
+        computerSelectedTile: Tile
+      }) => {
         return (
           <View style={styles.container}>
-            {row.map((piece, colIdx) => {
+            {row.map((piece: PieceType, colIdx: number) => {
               let tile = { rowIdx, colIdx }
               let tileStyle = createTileStyle(tile)
               let userSelectedStyle = createSelectedStyle(
@@ -48,14 +58,14 @@ const BoardRow = ({ row, rowIdx }) => {
   )
 }
 
-function createTileStyle(tile) {
+function createTileStyle(tile: Tile) {
   const { rowIdx, colIdx } = tile
   const tileColor =
     (rowIdx + colIdx) % 2 === 0 ? Color.tileWhite : Color.tileBlack
   return { backgroundColor: tileColor, borderColor: tileColor }
 }
 
-function createSelectedStyle(tile, selectedTile, color) {
+function createSelectedStyle(tile: Tile, selectedTile: Tile, color: string) {
   const { rowIdx, colIdx } = tile
   const { rowIdx: selectedRowIdx, colIdx: selectedColIdx } = selectedTile
   return rowIdx === selectedRowIdx && colIdx === selectedColIdx
@@ -66,20 +76,20 @@ function createSelectedStyle(tile, selectedTile, color) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
-    width: '100%',
-    height: '100%',
+    flexDirection: "row",
+    width: "100%",
+    height: "100%",
   },
   tile: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderWidth: 4,
   },
   piece: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     maxHeight: 30,
     width: 30,
   },

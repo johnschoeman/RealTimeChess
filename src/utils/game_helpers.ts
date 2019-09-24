@@ -7,13 +7,13 @@ import {
   rook,
   queen,
   king,
-} from './pieces'
-import * as ArrayHelpers from './array_helpers'
+} from "./pieces"
+import * as ArrayHelpers from "./array_helpers"
 
-import { Color } from '../styles'
+const black = "black"
+const white = "white"
 
-const black = 'black'
-const white = 'white'
+export type Board = Piece[][]
 
 export interface Tile {
   rowIdx: number
@@ -139,7 +139,6 @@ export function validMove(
   toTile: Tile
 ): boolean {
   const { rowIdx: fromRowIdx, colIdx: fromColIdx } = fromTile
-  const { rowIdx: toRowIdx, colIdx: toColIdx } = toTile
   const { moves, color } = board[fromRowIdx][fromColIdx]
   let availableTiles
   if (color === black) {
@@ -156,8 +155,8 @@ export function validMove(
   return ArrayHelpers.contains(availableTiles, toTile)
 }
 
-export function sample(array: Piece[]): Piece | undefined {
-  return array.length === 0 ? undefined : array[getRandomInt(array.length)]
+export function sample<T>(array: Array<T>): T | null {
+  return array.length === 0 ? null : array[getRandomInt(array.length)]
 }
 
 function getRandomInt(max: number): number {

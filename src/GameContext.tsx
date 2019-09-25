@@ -1,4 +1,4 @@
-import React from "react"
+import React, { createContext, useState, useEffect } from "react"
 
 import { GameHelpers } from "./utils"
 import { Piece } from "./utils/pieces"
@@ -20,80 +20,88 @@ const initialGameState: GameState = {
   selectUserTile: () => {},
 }
 
-const { Provider, Consumer } = React.createContext<GameState>(initialGameState)
+const GameContext = createContext<GameState>(initialGameState)
 
 const computerClockSpeed = 500
 
-class GameProvider extends React.Component {
-  state = {
-    board: GameHelpers.initialBoard,
-    userSelectedTile: null,
-    computerSelectedTile: null,
-  }
-  interval = 0
+interface GameProviderProps {
+  children: JSX.Element
+}
 
-  componentDidMount() {
-    this.startGame()
+const GameProvider = ({ children }: GameProviderProps) => {
+  const [board, setBoard] = useState<GameHelpers.Board>(
+    GameHelpers.initialBoard
+  )
+  const [userSelectedTile, setUserSelectedTile] = useState<Tile | null>(null)
+  const [computerSelectedTile, setComputerSelectedTile] = useState<Tile | null>(
+    null
+  )
+  const [gameStep, setGameStep] = useState<number>(0)
+
+  const tick = (): void => {
+    setGameStep(gameStep + 1)
+    const computerNextTile = getNextComputerTile()
+    selectComputerTile(computerNextTile)
   }
 
-  startGame = () => {
-    this.interval = setInterval(this.tick, computerClockSpeed)
-  }
+  useEffect(() => {
+    const intervalID = setInterval(tick, computerClockSpeed)
 
-  tick = () => {
-    const computerNextTile = this.getNextComputerTile()
-    this.selectComputerTile(computerNextTile)
-  }
+    return () => {
+      clearInterval(intervalID)
+    }
+  })
 
-  getNextComputerTile = (): Tile | null => {
-    const { board, computerSelectedTile } = this.state
+  const getNextComputerTile = (): Tile | null => {
     if (computerSelectedTile) {
-      const move = this.getRandomMove(board, computerSelectedTile)
+      const move = getRandomMove(board, computerSelectedTile)
       return move
     } else {
-      const tile = this.getRandomPieceTile("black")
+      const tile = getRandomPieceTile("black")
       return tile
     }
   }
 
-  getRandomMove = (board: Piece[][], tile: Tile): Tile | null => {
+  const getRandomMove = (board: Piece[][], tile: Tile): Tile | null => {
     const piece = GameHelpers.getPiece(board, tile)
     const validMoves = GameHelpers.validMoves(piece, tile)
     return GameHelpers.sample<Tile>(validMoves)
   }
 
-  getRandomPieceTile = (color: string): Tile | null => {
-    const { board } = this.state
+  const getRandomPieceTile = (color: string): Tile | null => {
     const tiles: Array<Tile> = GameHelpers.playerPieces(board, color).map(
       piece => piece.tile
     )
     return GameHelpers.sample(tiles)
   }
 
-  resetBoard = () => {
-    this.setState({ board: GameHelpers.initialBoard })
+  const resetBoard = () => {
+    setBoard(GameHelpers.initialBoard)
   }
 
-  selectComputerTile = (toTile: Tile | null) => {
+  const selectComputerTile = (toTile: Tile | null) => {
     const callBack = (tile: Tile) => {
-      this.setState({ computerSelectedTile: tile })
+      setComputerSelectedTile(tile)
     }
     if (toTile !== null) {
-      const { computerSelectedTile: fromTile } = this.state
-      this.selectTile(fromTile, toTile, callBack)
+      const fromTile = computerSelectedTile
+      selectTile(fromTile, toTile, callBack)
     }
   }
 
-  selectUserTile = (toTile: Tile) => {
-    const { userSelectedTile: fromTile } = this.state
+  const selectUserTile = (toTile: Tile) => {
+    const fromTile = userSelectedTile
     const callBack = (tile: Tile) => {
-      this.setState({ userSelectedTile: tile })
+      setUserSelectedTile(tile)
     }
-    this.selectTile(fromTile, toTile, callBack)
+    selectTile(fromTile, toTile, callBack)
   }
 
-  selectTile = (fromTile: Tile | null, toTile: Tile | null, callBack: any) => {
-    const { board } = this.state
+  const selectTile = (
+    fromTile: Tile | null,
+    toTile: Tile | null,
+    callBack: any
+  ) => {
     if (toTile === null) {
       callBack(null)
       return
@@ -110,31 +118,31 @@ class GameProvider extends React.Component {
       callBack(null)
     } else {
       if (GameHelpers.validMove(board, fromTile, toTile)) {
-        this.movePiece(fromTile, toTile)
+        movePiece(fromTile, toTile)
         callBack(null)
       }
     }
   }
 
-  movePiece = (fromTile: Tile, toTile: Tile) => {
-    const { board } = this.state
+  const movePiece = (fromTile: Tile, toTile: Tile) => {
     const newBoard = GameHelpers.updateBoard(board, fromTile, toTile)
-    this.setState({ board: newBoard })
+    setBoard(newBoard)
   }
 
-  render() {
-    return (
-      <Provider
-        value={{
-          ...this.state,
-          resetBoard: this.resetBoard,
-          selectUserTile: this.selectUserTile,
-        }}
-      >
-        {this.props.children}
-      </Provider>
-    )
-  }
+  return (
+    <GameContext.Provider
+      value={{
+        board,
+        userSelectedTile,
+        computerSelectedTile,
+        resetBoard: resetBoard,
+        selectUserTile: selectUserTile,
+      }}
+    >
+      {children}
+    </GameContext.Provider>
+  )
 }
 
-export { GameProvider, Consumer as GameConsumer }
+export { GameProvider }
+export default GameContext

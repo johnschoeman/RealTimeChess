@@ -1,37 +1,34 @@
-import React from "react"
+import React, { useContext } from "react"
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native"
 
 import Board from "./Board"
-import { GameConsumer } from "../GameContext"
+import GameContext from "../GameContext"
 
 import { Color } from "../styles"
 
-const GameScreen = ({ navigation }: { navigation: any }) => (
-  <GameConsumer>
-    {({ resetBoard }) => {
-      return (
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text>Real Time Chess</Text>
-          </View>
+const GameScreen = ({ navigation }: { navigation: any }) => {
+  const { resetBoard } = useContext(GameContext)
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text>Real Time Chess</Text>
+      </View>
 
-          <View style={styles.board}>
-            <Board />
-          </View>
+      <View style={styles.board}>
+        <Board />
+      </View>
 
-          <View style={styles.footer}>
-            <TouchableOpacity onPress={() => resetBoard()}>
-              <Text>Reset Board</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("Landing")}>
-              <Text>Go Back</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )
-    }}
-  </GameConsumer>
-)
+      <View style={styles.footer}>
+        <TouchableOpacity onPress={() => resetBoard()}>
+          <Text>Reset Board</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Landing")}>
+          <Text>Go Back</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  )
+}
 
 const styles = StyleSheet.create({
   container: {

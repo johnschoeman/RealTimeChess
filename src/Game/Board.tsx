@@ -1,26 +1,23 @@
-import React from "react"
+import React, { useContext } from "react"
 import { View, StyleSheet } from "react-native"
 
 import BoardRow from "./BoardRow"
-import { GameConsumer } from "../GameContext"
+import GameContext from "../GameContext"
 
-const Board = () => (
-  <GameConsumer>
-    {({ board }) => {
-      return (
-        <View style={styles.container}>
-          {board.map((row, rowIdx) => {
-            return (
-              <View style={styles.row} key={`row-${rowIdx}`}>
-                <BoardRow row={row} rowIdx={rowIdx} />
-              </View>
-            )
-          })}
-        </View>
-      )
-    }}
-  </GameConsumer>
-)
+const Board = () => {
+  const { board } = useContext(GameContext)
+  return (
+    <View style={styles.container}>
+      {board.map((row, rowIdx) => {
+        return (
+          <View style={styles.row} key={`row-${rowIdx}`}>
+            <BoardRow row={row} rowIdx={rowIdx} />
+          </View>
+        )
+      })}
+    </View>
+  )
+}
 
 const styles = StyleSheet.create({
   container: {

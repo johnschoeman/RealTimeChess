@@ -1,57 +1,48 @@
-import React from "react"
+import React, { useContext } from "react"
 import { TouchableOpacity, View, StyleSheet } from "react-native"
 
 import Piece from "./Piece"
-import { GameConsumer } from "../GameContext"
 import { Piece as PieceType } from "../utils/pieces"
 import { Tile } from "../utils/game_helpers"
+import GameContext from "../GameContext"
 
 import { Color } from "../styles"
 
 const BoardRow = ({ row, rowIdx }: { row: any; rowIdx: number }) => {
+  const { userSelectedTile, computerSelectedTile, selectUserTile } = useContext(
+    GameContext
+  )
   return (
-    <GameConsumer>
-      {({
-        selectUserTile,
-        userSelectedTile,
-        computerSelectedTile,
-      }: {
-        selectUserTile: (tile: Tile) => void
-        userSelectedTile: Tile | null
-        computerSelectedTile: Tile | null
-      }) => (
-        <View style={styles.container}>
-          {row.map((piece: PieceType, colIdx: number) => {
-            let tile = { rowIdx, colIdx }
-            let tileStyle = createTileStyle(tile)
-            let userSelectedStyle = createSelectedStyle(
-              tile,
-              userSelectedTile,
-              Color.userHighlight
-            )
-            let computerSelectedStyle = createSelectedStyle(
-              tile,
-              computerSelectedTile,
-              Color.computerHighlight
-            )
-            return (
-              <TouchableOpacity
-                onPress={() => selectUserTile(tile)}
-                style={[
-                  styles.tile,
-                  tileStyle,
-                  userSelectedStyle,
-                  computerSelectedStyle,
-                ]}
-                key={`col-${colIdx}`}
-              >
-                <Piece piece={piece} />
-              </TouchableOpacity>
-            )
-          })}
-        </View>
-      )}
-    </GameConsumer>
+    <View style={styles.container}>
+      {row.map((piece: PieceType, colIdx: number) => {
+        let tile = { rowIdx, colIdx }
+        let tileStyle = createTileStyle(tile)
+        let userSelectedStyle = createSelectedStyle(
+          tile,
+          userSelectedTile,
+          Color.userHighlight
+        )
+        let computerSelectedStyle = createSelectedStyle(
+          tile,
+          computerSelectedTile,
+          Color.computerHighlight
+        )
+        return (
+          <TouchableOpacity
+            onPress={() => selectUserTile(tile)}
+            style={[
+              styles.tile,
+              tileStyle,
+              userSelectedStyle,
+              computerSelectedStyle,
+            ]}
+            key={`col-${colIdx}`}
+          >
+            <Piece piece={piece} />
+          </TouchableOpacity>
+        )
+      })}
+    </View>
   )
 }
 

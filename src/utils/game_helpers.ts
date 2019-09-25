@@ -99,7 +99,7 @@ export function getPiece(board: Piece[][], tile: Tile): Piece {
   return board[tile.rowIdx][tile.colIdx]
 }
 
-export function validMoves(piece: Piece, tile: Tile) {
+export function validMoves(piece: Piece, tile: Tile): Array<Tile> {
   return piece.moves
     .map(move => {
       return { rowIdx: move[0] + tile.rowIdx, colIdx: move[1] + tile.colIdx }

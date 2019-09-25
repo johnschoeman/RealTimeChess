@@ -16,44 +16,41 @@ const BoardRow = ({ row, rowIdx }: { row: any; rowIdx: number }) => {
         userSelectedTile,
         computerSelectedTile,
       }: {
-        selectUserTile: any
-        userSelectedTile: Tile
-        computerSelectedTile: Tile
-      }) => {
-        return (
-          <View style={styles.container}>
-            {row.map((piece: PieceType, colIdx: number) => {
-              let tile = { rowIdx, colIdx }
-              let tileStyle = createTileStyle(tile)
-              let userSelectedStyle = createSelectedStyle(
-                tile,
-                userSelectedTile,
-                Color.userHighlight
-              )
-              let computerSelectedStyle = createSelectedStyle(
-                tile,
-                computerSelectedTile,
-                Color.computerHighlight
-              )
-
-              return (
-                <TouchableOpacity
-                  onPress={() => selectUserTile(tile)}
-                  style={[
-                    styles.tile,
-                    tileStyle,
-                    userSelectedStyle,
-                    computerSelectedStyle,
-                  ]}
-                  key={`col-${colIdx}`}
-                >
-                  <Piece piece={piece} />
-                </TouchableOpacity>
-              )
-            })}
-          </View>
-        )
-      }}
+        selectUserTile: (tile: Tile) => void
+        userSelectedTile: Tile | null
+        computerSelectedTile: Tile | null
+      }) => (
+        <View style={styles.container}>
+          {row.map((piece: PieceType, colIdx: number) => {
+            let tile = { rowIdx, colIdx }
+            let tileStyle = createTileStyle(tile)
+            let userSelectedStyle = createSelectedStyle(
+              tile,
+              userSelectedTile,
+              Color.userHighlight
+            )
+            let computerSelectedStyle = createSelectedStyle(
+              tile,
+              computerSelectedTile,
+              Color.computerHighlight
+            )
+            return (
+              <TouchableOpacity
+                onPress={() => selectUserTile(tile)}
+                style={[
+                  styles.tile,
+                  tileStyle,
+                  userSelectedStyle,
+                  computerSelectedStyle,
+                ]}
+                key={`col-${colIdx}`}
+              >
+                <Piece piece={piece} />
+              </TouchableOpacity>
+            )
+          })}
+        </View>
+      )}
     </GameConsumer>
   )
 }
@@ -65,12 +62,20 @@ function createTileStyle(tile: Tile) {
   return { backgroundColor: tileColor, borderColor: tileColor }
 }
 
-function createSelectedStyle(tile: Tile, selectedTile: Tile, color: string) {
-  const { rowIdx, colIdx } = tile
-  const { rowIdx: selectedRowIdx, colIdx: selectedColIdx } = selectedTile
-  return rowIdx === selectedRowIdx && colIdx === selectedColIdx
-    ? { borderColor: color }
-    : {}
+const createSelectedStyle = (
+  tile: Tile,
+  selectedTile: Tile | null,
+  color: string
+) => {
+  if (selectedTile !== null) {
+    const { rowIdx, colIdx } = tile
+    const { rowIdx: selectedRowIdx, colIdx: selectedColIdx } = selectedTile
+    return rowIdx === selectedRowIdx && colIdx === selectedColIdx
+      ? { borderColor: color }
+      : {}
+  } else {
+    return {}
+  }
 }
 
 const styles = StyleSheet.create({

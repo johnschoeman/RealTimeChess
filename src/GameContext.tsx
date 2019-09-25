@@ -6,19 +6,16 @@ import { Tile } from "./utils/game_helpers"
 
 interface GameState {
   board: GameHelpers.Board
-  userSelectedTile: { rowIdx: number | undefined; colIdx: number | undefined }
-  computerSelectedTile: {
-    rowIdx: number | undefined
-    colIdx: number | undefined
-  }
+  userSelectedTile: Tile | null
+  computerSelectedTile: Tile | null
   resetBoard: any
   selectUserTile: any
 }
 
 const initialGameState: GameState = {
   board: GameHelpers.initialBoard,
-  userSelectedTile: { rowIdx: undefined, colIdx: undefined },
-  computerSelectedTile: { rowIdx: undefined, colIdx: undefined },
+  userSelectedTile: null,
+  computerSelectedTile: null,
   resetBoard: () => {},
   selectUserTile: () => {},
 }
@@ -30,8 +27,8 @@ const computerClockSpeed = 500
 class GameProvider extends React.Component {
   state = {
     board: GameHelpers.initialBoard,
-    userSelectedTile: { rowIdx: undefined, colIdx: undefined },
-    computerSelectedTile: { rowIdx: undefined, colIdx: undefined },
+    userSelectedTile: null,
+    computerSelectedTile: null,
   }
   interval = 0
 
@@ -50,24 +47,19 @@ class GameProvider extends React.Component {
 
   getNextComputerTile = (): Tile | null => {
     const { board, computerSelectedTile } = this.state
-    let nextTile: Tile | null
-    if (computerSelectedTile.rowIdx === undefined) {
-      nextTile = this.getRandomPieceTile("black")
-    } else {
+    if (computerSelectedTile) {
       const move = this.getRandomMove(board, computerSelectedTile)
-      if (move === undefined) {
-        nextTile = { rowIdx: undefined, colIdx: undefined }
-      } else {
-        nextTile = move
-      }
+      return move
+    } else {
+      const tile = this.getRandomPieceTile("black")
+      return tile
     }
-    return nextTile
   }
 
-  getRandomMove = (board: Piece[][], tile: Tile) => {
+  getRandomMove = (board: Piece[][], tile: Tile): Tile | null => {
     const piece = GameHelpers.getPiece(board, tile)
     const validMoves = GameHelpers.validMoves(piece, tile)
-    return GameHelpers.sample(validMoves)
+    return GameHelpers.sample<Tile>(validMoves)
   }
 
   getRandomPieceTile = (color: string): Tile | null => {
@@ -83,14 +75,12 @@ class GameProvider extends React.Component {
   }
 
   selectComputerTile = (toTile: Tile | null) => {
+    const callBack = (tile: Tile) => {
+      this.setState({ computerSelectedTile: tile })
+    }
     if (toTile !== null) {
       const { computerSelectedTile: fromTile } = this.state
-      const callBack = (tile: Tile) => {
-        this.setState({ computerSelectedTile: tile })
-      }
       this.selectTile(fromTile, toTile, callBack)
-    } else {
-      console.error("Tried to select null tile")
     }
   }
 
@@ -102,28 +92,26 @@ class GameProvider extends React.Component {
     this.selectTile(fromTile, toTile, callBack)
   }
 
-  selectTile = (fromTile: Tile, toTile: Tile, callBack: any) => {
+  selectTile = (fromTile: Tile | null, toTile: Tile | null, callBack: any) => {
     const { board } = this.state
-    const { rowIdx: fromRow, colIdx: fromCol } = fromTile
-    const { rowIdx: toRow, colIdx: toCol } = toTile
-
-    if (toRow === undefined || toCol === undefined) {
-      callBack({ rowIdx: undefined, colIdx: undefined })
+    if (toTile === null) {
+      callBack(null)
       return
-    }
-
-    const toPiece = board[toRow][toCol]
-
-    if (fromRow === toRow && fromCol === toCol) {
-      callBack({ rowIdx: undefined, colIdx: undefined })
-    } else if (fromRow === undefined && fromCol === undefined) {
+    } else if (fromTile === null) {
+      const { rowIdx: toRow, colIdx: toCol } = toTile
+      const toPiece = board[toRow][toCol]
       if (toPiece.isPiece) {
         callBack({ rowIdx: toRow, colIdx: toCol })
       }
+    } else if (
+      fromTile.rowIdx === toTile.rowIdx &&
+      fromTile.colIdx === toTile.colIdx
+    ) {
+      callBack(null)
     } else {
       if (GameHelpers.validMove(board, fromTile, toTile)) {
         this.movePiece(fromTile, toTile)
-        callBack({ rowIdx: undefined, colIdx: undefined })
+        callBack(null)
       }
     }
   }

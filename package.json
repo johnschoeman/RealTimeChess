@@ -5,12 +5,14 @@
   "scripts": {
     "start": "react-native start",
     "run-ios": "./bin/run-ios",
-    "test": "jest"
+    "run-android": "./bin/run-android",
+    "test": "./bin/test"
   },
   "jest": {
     "preset": "react-native"
   },
   "dependencies": {
+    "chess.js": "^0.10.2",
     "react": "16.8.6",
     "react-native": "0.60.5",
     "react-native-gesture-handler": "^1.4.1",
@@ -23,7 +25,8 @@
     "@babel/core": "^7.6.0",
     "@babel/runtime": "^7.6.0",
     "@react-native-community/eslint-config": "^0.0.5",
-    "@types/jest": "^24.0.12",
+    "@types/chess.js": "^0.10.0",
+    "@types/jest": "^24.0.18",
     "@types/react": "^16.8.17",
     "@types/react-dom": "^16.8.4",
     "@types/react-native": "^0.57.53",

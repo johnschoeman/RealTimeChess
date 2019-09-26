@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react"
 
-import { GameHelpers } from "./utils"
+import { GameHelpers, ArrayHelpers } from "./utils"
 import { Tile, Board } from "./utils/game_helpers"
 import { Side } from "./utils/pieces"
 
@@ -65,14 +65,14 @@ const GameProvider = ({ children }: GameProviderProps) => {
   const getRandomMove = (board: Board, tile: Tile): Tile | null => {
     const piece = GameHelpers.getPiece(board, tile)
     const validMoves = GameHelpers.validMoves(piece, tile)
-    return GameHelpers.sample<Tile>(validMoves)
+    return ArrayHelpers.sample<Tile>(validMoves)
   }
 
   const getRandomPieceTile = (side: Side): Tile | null => {
     const tiles: Array<Tile> = GameHelpers.playerPieces(board, side).map(
       piece => piece.tile
     )
-    return GameHelpers.sample(tiles)
+    return ArrayHelpers.sample(tiles)
   }
 
   const resetBoard = () => {
@@ -85,7 +85,7 @@ const GameProvider = ({ children }: GameProviderProps) => {
     }
     if (toTile !== null) {
       const fromTile = computerSelectedTile
-      selectTile(fromTile, toTile, callBack)
+      selectTile(fromTile, toTile, "black", callBack)
     }
   }
 
@@ -94,12 +94,13 @@ const GameProvider = ({ children }: GameProviderProps) => {
     const callBack = (tile: Tile) => {
       setUserSelectedTile(tile)
     }
-    selectTile(fromTile, toTile, callBack)
+    selectTile(fromTile, toTile, "white", callBack)
   }
 
   const selectTile = (
     fromTile: Tile | null,
     toTile: Tile | null,
+    side: Side,
     callBack: any
   ) => {
     if (toTile === null) {
@@ -117,7 +118,7 @@ const GameProvider = ({ children }: GameProviderProps) => {
     ) {
       callBack(null)
     } else {
-      if (GameHelpers.validMove(board, fromTile, toTile)) {
+      if (GameHelpers.validMove(board, fromTile, toTile, side)) {
         movePiece(fromTile, toTile)
         callBack(null)
       }

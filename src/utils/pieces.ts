@@ -5,6 +5,7 @@ interface Piece {
   side: Side
   isPiece: boolean
   moves: number[][]
+  fenCode: string
 }
 
 interface Empty extends Piece {}
@@ -22,6 +23,7 @@ const empty = (function empty(this: Empty) {
   this.side = ""
   this.isPiece = false
   this.moves = []
+  this.fenCode = "0"
 } as any) as { new (): Empty }
 
 const pawn = (function pawn(this: Pawn, side: Side) {
@@ -29,6 +31,7 @@ const pawn = (function pawn(this: Pawn, side: Side) {
   this.side = side
   this.isPiece = true
   this.moves = [[1, 0]]
+  this.fenCode = side === "black" ? "p" : "P"
 } as any) as { new (side: Side): Pawn }
 
 const knight = (function knight(this: Knight, side: Side) {
@@ -45,6 +48,7 @@ const knight = (function knight(this: Knight, side: Side) {
     [-1, -2],
     [1, -2],
   ]
+  this.fenCode = side === "black" ? "n" : "N"
 } as any) as { new (side: Side): Knight }
 
 const bishop = (function bishop(this: Bishop, side: Side) {
@@ -52,6 +56,7 @@ const bishop = (function bishop(this: Bishop, side: Side) {
   this.side = side
   this.isPiece = true
   this.moves = generateBishopMoves()
+  this.fenCode = side === "black" ? "b" : "B"
 } as any) as { new (side: Side): Bishop }
 
 const rook = (function rook(this: Rook, side: Side) {
@@ -59,6 +64,7 @@ const rook = (function rook(this: Rook, side: Side) {
   this.side = side
   this.isPiece = true
   this.moves = generateRookMoves()
+  this.fenCode = side === "black" ? "r" : "R"
 } as any) as { new (side: Side): Rook }
 
 const queen = (function queen(this: Queen, side: Side) {
@@ -66,6 +72,7 @@ const queen = (function queen(this: Queen, side: Side) {
   this.side = side
   this.isPiece = true
   this.moves = generateQueenMoves()
+  this.fenCode = side === "black" ? "q" : "Q"
 } as any) as { new (side: Side): Queen }
 
 const king = (function king(this: King, side: Side) {
@@ -82,6 +89,7 @@ const king = (function king(this: King, side: Side) {
     [0, -1],
     [1, -1],
   ]
+  this.fenCode = side === "black" ? "k" : "K"
 } as any) as { new (side: Side): King }
 
 function generateQueenMoves() {

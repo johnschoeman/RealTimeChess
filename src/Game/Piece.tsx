@@ -1,13 +1,58 @@
 import React from "react"
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, ViewStyle } from "react-native"
 
-import { Piece as PieceType } from "../utils/pieces"
+import { Pieces } from "../utils"
+import { Pieces as PieceStyles } from "../styles"
 
-const Piece = ({ piece }: { piece: PieceType }) => (
+const Piece = ({ piece }: { piece: Pieces.PieceInterface }) => (
   <View style={styles.container}>
-    <View style={[styles.piece, piece.style]} />
+    <View style={[styles.piece, pieceStyle(piece), pieceColor(piece)]} />
   </View>
 )
+
+const pieceStyle = (piece: Pieces.PieceType): ViewStyle => {
+  switch (piece.kind) {
+    case "empty": {
+      return PieceStyles.empty
+    }
+    case "pawn": {
+      return PieceStyles.pawn
+    }
+    case "knight": {
+      return PieceStyles.knight
+    }
+    case "bishop": {
+      return PieceStyles.bishop
+    }
+    case "rook": {
+      return PieceStyles.rook
+    }
+    case "queen": {
+      return PieceStyles.queen
+    }
+    case "king": {
+      return PieceStyles.king
+    }
+    default: {
+      console.error(`Piece: ${piece} has unknown kind: ${piece.kind}`)
+      return {}
+    }
+  }
+}
+
+const pieceColor = (piece: Pieces.PieceType): ViewStyle => {
+  switch (piece.side) {
+    case "black": {
+      return PieceStyles.black
+    }
+    case "white": {
+      return PieceStyles.white
+    }
+    default: {
+      return {}
+    }
+  }
+}
 
 const styles = StyleSheet.create({
   container: {

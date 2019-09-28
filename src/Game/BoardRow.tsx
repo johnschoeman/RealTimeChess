@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 import { TouchableOpacity, View, StyleSheet } from "react-native"
 
 import Piece from "./Piece"
-import { Piece as PieceType } from "../utils/pieces"
+import { PieceType } from "../utils/pieces"
 import { Tile } from "../utils/game_helpers"
 import GameContext from "../GameContext"
 

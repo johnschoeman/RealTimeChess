@@ -1,6 +1,7 @@
 import {
-  Piece,
-  nullPiece,
+  PieceType,
+  Side,
+  empty,
   pawn,
   knight,
   bishop,
@@ -10,10 +11,10 @@ import {
 } from "./pieces"
 import * as ArrayHelpers from "./array_helpers"
 
-const black = "black"
-const white = "white"
+const black: Side = "black"
+const white: Side = "white"
 
-export type Board = Piece[][]
+export type Board = PieceType[][]
 
 export interface Tile {
   rowIdx: number
@@ -22,12 +23,12 @@ export interface Tile {
 
 interface PieceWithTile {
   tile: Tile
-  piece: Piece
+  piece: PieceType
 }
 
 export const initialBoard = createBoard()
 
-function createBoard(): Piece[][] {
+function createBoard(): Board {
   const board = []
 
   board.push(createBlackKingRow())
@@ -42,7 +43,7 @@ function createBoard(): Piece[][] {
   return board
 }
 
-function createBlackKingRow(): Piece[] {
+function createBlackKingRow(): PieceType[] {
   return [
     new rook(black),
     new bishop(black),
@@ -55,7 +56,7 @@ function createBlackKingRow(): Piece[] {
   ]
 }
 
-function createWhiteKingRow(): Piece[] {
+function createWhiteKingRow(): PieceType[] {
   return [
     new rook(white),
     new bishop(white),
@@ -68,24 +69,27 @@ function createWhiteKingRow(): Piece[] {
   ]
 }
 
-function createPawnRow(color: string): Piece[] {
+function createPawnRow(side: Side): PieceType[] {
   return Array.apply(undefined, Array(8)).map(() => {
-    return new pawn(color)
+    return new pawn(side)
   })
 }
 
-function createNullRow(): Piece[] {
+function createNullRow(): PieceType[] {
   return Array.apply(undefined, Array(8)).map(() => {
-    return new nullPiece()
+    return new empty()
   })
 }
 
-export function playerPieces(board: Piece[][], color: string): PieceWithTile[] {
+export function playerPieces(
+  board: PieceType[][],
+  side: Side
+): PieceWithTile[] {
   const pieces = []
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
       const piece = board[i][j]
-      if (piece.color === color) {
+      if (piece.side === side) {
         const tile = { rowIdx: i, colIdx: j }
         const pieceWithTile = { piece, tile }
         pieces.push(pieceWithTile)
@@ -95,11 +99,11 @@ export function playerPieces(board: Piece[][], color: string): PieceWithTile[] {
   return pieces
 }
 
-export function getPiece(board: Piece[][], tile: Tile): Piece {
+export function getPiece(board: Board, tile: Tile): PieceType {
   return board[tile.rowIdx][tile.colIdx]
 }
 
-export function validMoves(piece: Piece, tile: Tile): Array<Tile> {
+export function validMoves(piece: PieceType, tile: Tile): Array<Tile> {
   return piece.moves
     .map(move => {
       return { rowIdx: move[0] + tile.rowIdx, colIdx: move[1] + tile.colIdx }
@@ -116,32 +120,28 @@ function isOnBoard(tile: Tile): boolean {
 }
 
 export function updateBoard(
-  oldBoard: Piece[][],
+  oldBoard: Board,
   fromTile: Tile,
   toTile: Tile
-): Piece[][] {
+): Board {
   const { rowIdx: fromRow, colIdx: fromCol } = fromTile
   const { rowIdx: toRow, colIdx: toCol } = toTile
   const oldPiece = oldBoard[fromRow][fromCol]
   if (oldPiece.isPiece) {
     const newBoard = ArrayHelpers.deepDup(oldBoard)
     newBoard[toRow][toCol] = oldPiece
-    newBoard[fromRow][fromCol] = new nullPiece()
+    newBoard[fromRow][fromCol] = new empty()
     return newBoard
   } else {
     return oldBoard
   }
 }
 
-export function validMove(
-  board: Piece[][],
-  fromTile: Tile,
-  toTile: Tile
-): boolean {
+export function validMove(board: Board, fromTile: Tile, toTile: Tile): boolean {
   const { rowIdx: fromRowIdx, colIdx: fromColIdx } = fromTile
-  const { moves, color } = board[fromRowIdx][fromColIdx]
+  const { moves, side } = board[fromRowIdx][fromColIdx]
   let availableTiles
-  if (color === black) {
+  if (side === black) {
     availableTiles = moves.map(move => ({
       rowIdx: fromRowIdx + move[0],
       colIdx: fromColIdx + move[1],

@@ -11,3 +11,5 @@ export const tileWhite = lightGray
 export const userHighlight = yellow
 export const computerHighlight = purple
 export const pieceBorder = black
+export const blackPiece = black
+export const whitePiece = white

@@ -1,6 +1,7 @@
-import * as Color from './color'
-import * as Spacing from './spacing'
-import * as Buttons from './buttons'
-import * as Typography from './typography'
+import * as Buttons from "./buttons"
+import * as Color from "./color"
+import * as Pieces from "./pieces"
+import * as Spacing from "./spacing"
+import * as Typography from "./typography"
 
-export { Color, Spacing, Buttons, Typography }
+export { Buttons, Color, Pieces, Spacing, Typography }

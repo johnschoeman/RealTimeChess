@@ -1,47 +1,40 @@
-import { Color } from "../styles"
+type Side = "black" | "white" | ""
 
-export interface Piece {
-  color: string
+interface Piece {
+  kind: string
+  side: Side
   isPiece: boolean
-  name: string
-  style: object
   moves: number[][]
 }
 
-const nullPiece = (function nullPiece(this: Piece) {
-  this.color = ""
+interface Empty extends Piece {}
+interface Pawn extends Piece {}
+interface Knight extends Piece {}
+interface Bishop extends Piece {}
+interface Rook extends Piece {}
+interface Queen extends Piece {}
+interface King extends Piece {}
+
+type PieceType = Empty | Pawn | Knight | Bishop | Rook | Queen | King
+
+const empty = (function empty(this: Empty) {
+  this.kind = "empty"
+  this.side = ""
   this.isPiece = false
-  this.name = "Null"
-  this.style = {}
   this.moves = []
-} as any) as { new (): Piece }
+} as any) as { new (): Empty }
 
-const pawn = (function pawn(this: Piece, color: string) {
-  this.color = color
+const pawn = (function pawn(this: Pawn, side: Side) {
+  this.kind = "pawn"
+  this.side = side
   this.isPiece = true
-  this.name = "Pawn"
-  this.style = {
-    backgroundColor: color,
-    borderWidth: 2,
-    borderRadius: 15,
-    width: 20,
-    maxHeight: 20,
-    borderColor: Color.pieceBorder,
-  }
   this.moves = [[1, 0]]
-} as any) as { new (color: string): Piece }
+} as any) as { new (side: Side): Pawn }
 
-const knight = (function knight(this: Piece, color: string) {
-  this.color = color
+const knight = (function knight(this: Knight, side: Side) {
+  this.kind = "knight"
+  this.side = side
   this.isPiece = true
-  this.name = "Knight"
-  this.style = {
-    backgroundColor: color,
-    borderWidth: 2,
-    borderRadius: 6,
-    width: 20,
-    borderColor: Color.pieceBorder,
-  }
   this.moves = [
     [2, -1],
     [2, 1],
@@ -52,61 +45,33 @@ const knight = (function knight(this: Piece, color: string) {
     [-1, -2],
     [1, -2],
   ]
-} as any) as { new (color: string): Piece }
+} as any) as { new (side: Side): Knight }
 
-const bishop = (function bishop(this: Piece, color: string) {
-  this.color = color
+const bishop = (function bishop(this: Bishop, side: Side) {
+  this.kind = "bishop"
+  this.side = side
   this.isPiece = true
-  this.name = "Bishop"
-  this.style = {
-    backgroundColor: color,
-    width: 15,
-    maxHeight: 25,
-    borderWidth: 2,
-    transform: [{ skewX: "135deg" }],
-  }
   this.moves = generateBishopMoves()
-} as any) as { new (color: string): Piece }
+} as any) as { new (side: Side): Bishop }
 
-const rook = (function rook(this: Piece, color: string) {
-  this.color = color
+const rook = (function rook(this: Rook, side: Side) {
+  this.kind = "rook"
+  this.side = side
   this.isPiece = true
-  this.name = "Rook"
-  this.style = {
-    backgroundColor: color,
-    borderWidth: 2,
-    width: 25,
-    height: 30,
-  }
   this.moves = generateRookMoves()
-} as any) as { new (color: string): Piece }
+} as any) as { new (side: Side): Rook }
 
-const queen = (function queen(this: Piece, color: string) {
-  this.color = color
+const queen = (function queen(this: Queen, side: Side) {
+  this.kind = "queen"
+  this.side = side
   this.isPiece = true
-  this.name = "Queen"
-  this.style = {
-    backgroundColor: color,
-    borderWidth: 2,
-    transform: [{ rotate: "45deg" }],
-    width: 25,
-    maxHeight: 25,
-  }
   this.moves = generateQueenMoves()
-} as any) as { new (color: string): Piece }
+} as any) as { new (side: Side): Queen }
 
-const king = (function king(this: Piece, color: string) {
-  this.color = color
+const king = (function king(this: King, side: Side) {
+  this.kind = "king"
+  this.side = side
   this.isPiece = true
-  this.name = "King"
-  this.style = {
-    backgroundColor: color,
-    borderWidth: 15,
-    borderLeftColor: Color.tileBlack,
-    borderRightColor: Color.tileBlack,
-    borderTopColor: color,
-    borderBottomColor: color,
-  }
   this.moves = [
     [1, 0],
     [1, 1],
@@ -117,7 +82,7 @@ const king = (function king(this: Piece, color: string) {
     [0, -1],
     [1, -1],
   ]
-} as any) as { new (color: string): Piece }
+} as any) as { new (side: Side): King }
 
 function generateQueenMoves() {
   let moves = []
@@ -156,4 +121,16 @@ function generateRookMoves() {
   return moves
 }
 
-export { nullPiece, pawn, knight, bishop, rook, queen, king }
+export { empty, pawn, knight, bishop, rook, queen, king }
+export {
+  Piece as PieceInterface,
+  PieceType,
+  Side,
+  Empty,
+  Pawn,
+  Knight,
+  Bishop,
+  Rook,
+  Queen,
+  King,
+}

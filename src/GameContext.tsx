@@ -1,8 +1,8 @@
 import React, { createContext, useState, useEffect } from "react"
 
 import { GameHelpers } from "./utils"
-import { Piece } from "./utils/pieces"
-import { Tile } from "./utils/game_helpers"
+import { Tile, Board } from "./utils/game_helpers"
+import { Side } from "./utils/pieces"
 
 interface GameState {
   board: GameHelpers.Board
@@ -62,14 +62,14 @@ const GameProvider = ({ children }: GameProviderProps) => {
     }
   }
 
-  const getRandomMove = (board: Piece[][], tile: Tile): Tile | null => {
+  const getRandomMove = (board: Board, tile: Tile): Tile | null => {
     const piece = GameHelpers.getPiece(board, tile)
     const validMoves = GameHelpers.validMoves(piece, tile)
     return GameHelpers.sample<Tile>(validMoves)
   }
 
-  const getRandomPieceTile = (color: string): Tile | null => {
-    const tiles: Array<Tile> = GameHelpers.playerPieces(board, color).map(
+  const getRandomPieceTile = (side: Side): Tile | null => {
+    const tiles: Array<Tile> = GameHelpers.playerPieces(board, side).map(
       piece => piece.tile
     )
     return GameHelpers.sample(tiles)

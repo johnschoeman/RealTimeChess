@@ -1,17 +1,21 @@
 import React, { useContext } from "react"
-import { TouchableOpacity, View, Text, StyleSheet } from "react-native"
+import { Image, TouchableOpacity, View, Text, StyleSheet } from "react-native"
 
 import Board from "./Board"
 import GameContext from "../GameContext"
 
 import { Color } from "../styles"
 
-const GameScreen = ({ navigation }: { navigation: any }) => {
+const GameScreen = () => {
   const { resetBoard } = useContext(GameContext)
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text>Real Time Chess</Text>
+        <Image
+          style={styles.headerImage}
+          resizeMode="contain"
+          source={require("../../assets/images/BoardHeader.png")}
+        />
       </View>
 
       <View style={styles.board}>
@@ -20,10 +24,7 @@ const GameScreen = ({ navigation }: { navigation: any }) => {
 
       <View style={styles.footer}>
         <TouchableOpacity onPress={() => resetBoard()}>
-          <Text>Reset Board</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("Landing")}>
-          <Text>Go Back</Text>
+          <Text style={styles.heading}>Reset Board</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -33,14 +34,19 @@ const GameScreen = ({ navigation }: { navigation: any }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "stretch",
+    justifyContent: "space-between",
     backgroundColor: Color.background,
   },
   header: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  },
+  headerImage: {
+    flex: 1,
+    width: undefined,
+    height: undefined,
+  },
+  heading: {
+    color: Color.white,
   },
   board: {
     flex: 3,
@@ -50,7 +56,7 @@ const styles = StyleSheet.create({
   footer: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "center",
     alignItems: "center",
   },
 })

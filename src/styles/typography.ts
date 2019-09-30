@@ -1,9 +1,9 @@
-import * as Color from './color'
+import * as Color from "./color"
 
 export const baseFontSize = 12
 export const largeFontSize = 24
 
-export const helvetica = 'Helvetica-Bold'
+export const helvetica = "Helvetica-Bold"
 const baseFont = helvetica
 
 export const landing = {

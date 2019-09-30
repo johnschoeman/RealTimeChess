@@ -1,11 +1,11 @@
 export const black = "#111111"
-export const darkGray = "#666666"
-export const lightGray = "#eeeeee"
+export const darkGray = "#888888"
+export const lightGray = "#bdbdbd"
 export const white = "#ffffff"
 export const yellow = "#eede00"
 export const purple = "#de00ee"
 
-export const background = white
+export const background = black
 export const tileBlack = darkGray
 export const tileWhite = lightGray
 export const userHighlight = yellow

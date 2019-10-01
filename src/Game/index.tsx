@@ -34,7 +34,6 @@ const GameScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between",
     backgroundColor: Color.background,
   },
   header: {
@@ -49,12 +48,12 @@ const styles = StyleSheet.create({
     color: Color.white,
   },
   board: {
-    flex: 3,
+    flex: 4,
     justifyContent: "center",
     alignItems: "center",
   },
   footer: {
-    flex: 1,
+    flex: 2,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",

@@ -1,7 +1,8 @@
 import React, { createContext, useState, useEffect } from "react"
+import { Move } from "chess.js"
 
 import { GameHelpers, ArrayHelpers } from "./utils"
-import { Tile, Board } from "./utils/game_helpers"
+import { Tile } from "./utils/game_helpers"
 import { Side } from "./utils/pieces"
 
 interface GameState {
@@ -22,7 +23,7 @@ const initialGameState: GameState = {
 
 const GameContext = createContext<GameState>(initialGameState)
 
-const computerClockSpeed = 500
+const computerClockSpeed = 300
 
 interface GameProviderProps {
   children: JSX.Element
@@ -34,6 +35,9 @@ const GameProvider = ({ children }: GameProviderProps) => {
   )
   const [userSelectedTile, setUserSelectedTile] = useState<Tile | null>(null)
   const [computerSelectedTile, setComputerSelectedTile] = useState<Tile | null>(
+    null
+  )
+  const [computerCurrentMove, setComputerCurrentMove] = useState<Move | null>(
     null
   )
   const [gameStep, setGameStep] = useState<number>(0)
@@ -53,30 +57,27 @@ const GameProvider = ({ children }: GameProviderProps) => {
   })
 
   const getNextComputerTile = (): Tile | null => {
-    if (computerSelectedTile) {
-      const move = getRandomMove(board, computerSelectedTile)
-      return move
+    if (computerCurrentMove == null) {
+      const validMoves = GameHelpers.validMoves(board, "black")
+      const move = ArrayHelpers.sample<Move>(validMoves)
+      if (move == null) {
+        return null
+      }
+      setComputerCurrentMove(move)
+      return null
+    } else if (computerSelectedTile == null) {
+      return GameHelpers.squareToRCTile(computerCurrentMove.from)
     } else {
-      const tile = getRandomPieceTile("black")
-      return tile
+      setComputerCurrentMove(null)
+      return GameHelpers.squareToRCTile(computerCurrentMove.to)
     }
-  }
-
-  const getRandomMove = (board: Board, tile: Tile): Tile | null => {
-    const piece = GameHelpers.getPiece(board, tile)
-    const validMoves = GameHelpers.validMoves(piece, tile)
-    return ArrayHelpers.sample<Tile>(validMoves)
-  }
-
-  const getRandomPieceTile = (side: Side): Tile | null => {
-    const tiles: Array<Tile> = GameHelpers.playerPieces(board, side).map(
-      piece => piece.tile
-    )
-    return ArrayHelpers.sample(tiles)
   }
 
   const resetBoard = () => {
     setBoard(GameHelpers.initialBoard)
+    setComputerCurrentMove(null)
+    setComputerSelectedTile(null)
+    setUserSelectedTile(null)
   }
 
   const selectComputerTile = (toTile: Tile | null) => {
@@ -102,7 +103,7 @@ const GameProvider = ({ children }: GameProviderProps) => {
     toTile: Tile | null,
     side: Side,
     callBack: any
-  ) => {
+  ): void => {
     if (toTile === null) {
       callBack(null)
       return

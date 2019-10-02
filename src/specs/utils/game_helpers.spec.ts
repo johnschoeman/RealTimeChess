@@ -3,6 +3,7 @@ import {
   Tile,
   ANTile,
   createBoard,
+  validMoves,
   validMove,
   tileRCtoAN,
   tileANtoRC,
@@ -156,6 +157,68 @@ describe("generateFen", () => {
       expect(fen).toBe(
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1"
       )
+    })
+  })
+})
+
+describe("validMoves", () => {
+  describe("when the current player is white", () => {
+    test("it returns all valid moves for the white player", () => {
+      const fenCodeWithOnePiece = "4q3/8/8/8/8/8/P7/RK6 b KQkq - 0 1"
+      const board: Board = createBoard(fenCodeWithOnePiece)
+
+      const moves = validMoves(board, "white")
+
+      expect(moves).toEqual([
+        {
+          color: "w",
+          from: "a2",
+          to: "a3",
+          flags: "n",
+          piece: "p",
+          san: "a3",
+        },
+        {
+          color: "w",
+          from: "a2",
+          to: "a4",
+          flags: "b",
+          piece: "p",
+          san: "a4",
+        },
+        {
+          color: "w",
+          from: "b1",
+          to: "b2",
+          flags: "n",
+          piece: "k",
+          san: "Kb2",
+        },
+        {
+          color: "w",
+          from: "b1",
+          to: "c2",
+          flags: "n",
+          piece: "k",
+          san: "Kc2",
+        },
+        {
+          color: "w",
+          from: "b1",
+          to: "c1",
+          flags: "n",
+          piece: "k",
+          san: "Kc1",
+        },
+        {
+          color: "w",
+          from: "b1",
+          to: "d1",
+          flags: "k",
+          piece: "k",
+          san: "O-O",
+        },
+      ])
     })
   })
 })

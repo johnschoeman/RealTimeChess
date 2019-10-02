@@ -1,4 +1,4 @@
-import { Chess, ChessInstance, ShortMove, Square } from "chess.js"
+import { Chess, ChessInstance, ShortMove, Move, Square } from "chess.js"
 
 import {
   PieceType,
@@ -33,6 +33,28 @@ export interface ANTile {
 interface PieceWithTile {
   tile: Tile
   piece: PieceType
+}
+
+const FileToCol: { [key: string]: number } = {
+  a: 0,
+  b: 1,
+  c: 2,
+  d: 3,
+  e: 4,
+  f: 5,
+  g: 6,
+  h: 7,
+}
+
+const RankToRow: { [key: string]: number } = {
+  "8": 0,
+  "7": 1,
+  "6": 2,
+  "5": 3,
+  "4": 4,
+  "3": 5,
+  "2": 6,
+  "1": 7,
 }
 
 const initialBoardFenCode =
@@ -115,31 +137,18 @@ export const tileRCtoAN = (tile: Tile): ANTile => {
   }
 }
 
-export const tileANtoRC = (tile: ANTile) => {
-  const fileToCol: { [key: string]: number } = {
-    a: 0,
-    b: 1,
-    c: 2,
-    d: 3,
-    e: 4,
-    f: 5,
-    g: 6,
-    h: 7,
-  }
-  const rankToRow: { [key: string]: number } = {
-    "8": 0,
-    "7": 1,
-    "6": 2,
-    "5": 3,
-    "4": 4,
-    "3": 5,
-    "2": 6,
-    "1": 7,
-  }
-
+export const tileANtoRC = (tile: ANTile): Tile => {
   return {
-    colIdx: fileToCol[tile.file],
-    rowIdx: rankToRow[tile.rank],
+    colIdx: FileToCol[tile.file],
+    rowIdx: RankToRow[tile.rank],
+  }
+}
+
+export const squareToRCTile = (square: Square): Tile => {
+  const [file, rank] = square.split("")
+  return {
+    colIdx: FileToCol[file],
+    rowIdx: RankToRow[rank],
   }
 }
 
@@ -165,20 +174,10 @@ export function getPiece(board: Board, tile: Tile): PieceType {
   return board[tile.rowIdx][tile.colIdx]
 }
 
-export function validMoves(piece: PieceType, tile: Tile): Array<Tile> {
-  return piece.moves
-    .map(move => {
-      return { rowIdx: move[0] + tile.rowIdx, colIdx: move[1] + tile.colIdx }
-    })
-    .filter(move => {
-      return isOnBoard(move)
-    })
-}
-
-function isOnBoard(tile: Tile): boolean {
-  return (
-    tile.rowIdx >= 0 && tile.rowIdx < 8 && tile.colIdx >= 0 && tile.colIdx < 8
-  )
+export function validMoves(board: Board, side: Side): Array<Move> {
+  const fen = generateFen(board, side)
+  const chessClient: ChessInstance = new Chess(fen)
+  return chessClient.moves({ verbose: true })
 }
 
 export function updateBoard(

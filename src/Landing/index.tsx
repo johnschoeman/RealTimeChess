@@ -1,51 +1,64 @@
 import React from "react"
-import { TouchableOpacity, StyleSheet, Text, View } from "react-native"
+import {
+  ImageBackground,
+  TouchableOpacity,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native"
 
-import { Color, Buttons, Typography } from "../styles"
-
-const WelcomeText = ({ children }: { children: any }) => (
-  <Text style={Typography.landing}>{children}</Text>
-)
+import { Color, Buttons, Spacing, Typography } from "../styles"
 
 const LandingScreen = ({ navigation }: { navigation: any }) => (
-  <View style={styles.container}>
-    <View style={styles.welcomeMessage}>
-      <WelcomeText>Welcome To Real-Time Chess</WelcomeText>
-      <WelcomeText>There are no turns</WelcomeText>
-      <WelcomeText>Only Chess</WelcomeText>
-    </View>
-
+  <ImageBackground
+    source={require("../../assets/images/Welcome.png")}
+    style={styles.container}
+  >
     <View style={styles.footer}>
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Game")}
-        style={styles.button}
-      >
-        <Text style={Typography.mainButton}>Start Game</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Game")}
+          style={styles.button}
+        >
+          <Text style={Typography.mainButton}>PLAY</Text>
+        </TouchableOpacity>
+      </View>
     </View>
-  </View>
+  </ImageBackground>
 )
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: Color.black,
-  },
-  welcomeMessage: {
-    flex: 2,
-    alignItems: "center",
-    justifyContent: "center",
+    paddingHorizontal: Spacing.medium,
+    paddingBottom: Spacing.xLarge,
   },
   footer: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-end",
+  },
+  buttonContainer: {
+    backgroundColor: Color.white,
+    height: Spacing.huge,
+    borderRadius: Spacing.huge / 2,
+    padding: Spacing.base,
   },
   button: {
     flex: 1,
-    ...Buttons.startGame,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: Color.black,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 2.5,
+    borderRadius: Spacing.huge / 2,
+    elevation: 8,
+    borderWidth: 1,
+    backgroundColor: Color.white,
+    borderColor: Color.darkGray,
   },
 })
 

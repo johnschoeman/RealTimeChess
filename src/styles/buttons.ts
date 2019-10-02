@@ -1,7 +1,5 @@
 import { ViewStyle } from "react-native"
 
-import * as Color from "./color"
-
 const base: ViewStyle = {
   alignItems: "center",
   justifyContent: "center",
@@ -13,18 +11,11 @@ const large: ViewStyle = {
 }
 
 const rounded: ViewStyle = {
-  borderRadius: 20,
+  borderRadius: 30,
 }
 
 export const largeRounded: ViewStyle = {
   ...base,
   ...large,
   ...rounded,
-}
-
-export const startGame: ViewStyle = {
-  ...largeRounded,
-  backgroundColor: Color.white,
-  borderWidth: 4,
-  borderColor: Color.white,
 }

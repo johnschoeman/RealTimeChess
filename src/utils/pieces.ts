@@ -1,8 +1,8 @@
-type Side = "black" | "white" | ""
+import { Side } from "./game_helpers"
 
 interface Piece {
   kind: string
-  side: Side
+  side: Side | null
   isPiece: boolean
   fenCode: string
 }
@@ -19,7 +19,7 @@ type PieceType = Empty | Pawn | Knight | Bishop | Rook | Queen | King
 
 const empty = (function empty(this: Empty) {
   this.kind = "empty"
-  this.side = ""
+  this.side = null
   this.isPiece = false
   this.fenCode = "0"
 } as any) as { new (): Empty }
@@ -70,7 +70,6 @@ export { empty, pawn, knight, bishop, rook, queen, king }
 export {
   Piece as PieceInterface,
   PieceType,
-  Side,
   Empty,
   Pawn,
   Knight,

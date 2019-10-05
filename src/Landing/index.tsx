@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native"
 
-import { Color, Buttons, Spacing, Typography } from "../styles"
+import { Color, Spacing, Typography } from "../styles"
 
 const LandingScreen = ({ navigation }: { navigation: any }) => (
   <ImageBackground

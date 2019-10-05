@@ -2,7 +2,6 @@ import { Chess, ChessInstance, ShortMove, Move, Square } from "chess.js"
 
 import {
   PieceType,
-  Side,
   empty,
   pawn,
   knight,
@@ -13,6 +12,7 @@ import {
 } from "./pieces"
 import * as ArrayHelpers from "./array_helpers"
 
+export type Side = "black" | "white"
 export const black: Side = "black"
 export const white: Side = "white"
 
@@ -59,6 +59,11 @@ const RankToRow: { [key: string]: number } = {
 
 const initialBoardFenCode =
   "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+
+const createChessInstance = (board: Board, side: Side): ChessInstance => {
+  const fen = generateFen(board, side)
+  return new Chess(fen)
+}
 
 export const createBoard = (fenCode: string = initialBoardFenCode): Board => {
   const boardString = fenCode.split(" ")[0]
@@ -123,6 +128,26 @@ function createPieceByFenCode(fenCode: string): PieceType {
   }
 }
 
+export const winner = (board: Board): Side | null => {
+  const kingColors: Array<Side | null> = board.flatMap((rank: BoardRow) => {
+    return rank
+      .filter((piece: PieceType) => {
+        return piece.kind === "king"
+      })
+      .map((piece: PieceType) => {
+        return piece.side
+      })
+  })
+
+  if (kingColors.includes("black") && kingColors.includes("white")) {
+    return null
+  } else if (kingColors.includes("black")) {
+    return "black"
+  } else {
+    return "white"
+  }
+}
+
 export const tileRCtoAN = (tile: Tile): ANTile => {
   const colToFile = ["a", "b", "c", "d", "e", "f", "g", "h"]
   const rowToRank = ["8", "7", "6", "5", "4", "3", "2", "1"]
@@ -175,9 +200,15 @@ export function getPiece(board: Board, tile: Tile): PieceType {
 }
 
 export function validMoves(board: Board, side: Side): Array<Move> {
+  const chessInstance: ChessInstance = createChessInstance(board, side)
   const fen = generateFen(board, side)
-  const chessClient: ChessInstance = new Chess(fen)
-  return chessClient.moves({ verbose: true })
+  const validation = chessInstance.validate_fen(fen)
+  if (validation.valid) {
+    return chessInstance.moves({ verbose: true })
+  } else {
+    console.log("invalid fen: ", validation)
+    return []
+  }
 }
 
 export function updateBoard(

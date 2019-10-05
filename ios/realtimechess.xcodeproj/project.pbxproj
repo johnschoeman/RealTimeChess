@@ -44,7 +44,7 @@
 		00E356EE1AD99517003FC87E /* RealTimeChessTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RealTimeChessTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* RealTimeChessTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RealTimeChessTests.m; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* Chess.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chess.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* RealTimeChess.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RealTimeChess.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = RealTimeChess/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = RealTimeChess/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -189,7 +189,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* Chess.app */,
+				13B07F961A680F5B00A75B9A /* RealTimeChess.app */,
 				00E356EE1AD99517003FC87E /* RealTimeChessTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* RealTimeChess-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* RealTimeChess-tvOSTests.xctest */,
@@ -236,7 +236,7 @@
 			);
 			name = RealTimeChess;
 			productName = RealTimeChess;
-			productReference = 13B07F961A680F5B00A75B9A /* Chess.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* RealTimeChess.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2D02E47A1E0B4A5D006451C7 /* RealTimeChess-tvOS */ = {
@@ -645,7 +645,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.johnschoeman.realtimechess;
-				PRODUCT_NAME = Chess;
+				PRODUCT_NAME = RealTimeChess;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -667,7 +667,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.johnschoeman.realtimechess;
-				PRODUCT_NAME = Chess;
+				PRODUCT_NAME = RealTimeChess;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

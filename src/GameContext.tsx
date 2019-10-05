@@ -2,21 +2,22 @@ import React, { createContext, useState, useEffect } from "react"
 import { Move } from "chess.js"
 
 import { GameHelpers, ArrayHelpers } from "./utils"
-import { Tile } from "./utils/game_helpers"
-import { Side } from "./utils/pieces"
+import { Side } from "./utils/game_helpers"
 
-interface GameState {
+export interface GameState {
   board: GameHelpers.Board
-  userSelectedTile: Tile | null
-  computerSelectedTile: Tile | null
+  userSelectedTile: GameHelpers.Tile | null
+  computerSelectedTile: GameHelpers.Tile | null
+  winner: GameHelpers.Side | null
   resetBoard: any
   selectUserTile: any
 }
 
-const initialGameState: GameState = {
+export const initialGameState: GameState = {
   board: GameHelpers.initialBoard,
   userSelectedTile: null,
   computerSelectedTile: null,
+  winner: null,
   resetBoard: () => {},
   selectUserTile: () => {},
 }
@@ -33,19 +34,29 @@ const GameProvider = ({ children }: GameProviderProps) => {
   const [board, setBoard] = useState<GameHelpers.Board>(
     GameHelpers.initialBoard
   )
-  const [userSelectedTile, setUserSelectedTile] = useState<Tile | null>(null)
-  const [computerSelectedTile, setComputerSelectedTile] = useState<Tile | null>(
-    null
-  )
+  const [
+    userSelectedTile,
+    setUserSelectedTile,
+  ] = useState<GameHelpers.Tile | null>(null)
+  const [
+    computerSelectedTile,
+    setComputerSelectedTile,
+  ] = useState<GameHelpers.Tile | null>(null)
   const [computerCurrentMove, setComputerCurrentMove] = useState<Move | null>(
     null
   )
+  const [winner, setWinner] = useState<GameHelpers.Side | null>(null)
   const [gameStep, setGameStep] = useState<number>(0)
 
   const tick = (): void => {
     setGameStep(gameStep + 1)
-    const computerNextTile = getNextComputerTile()
-    selectComputerTile(computerNextTile)
+    const currentWinner: Side | null = GameHelpers.winner(board)
+    if (currentWinner == null) {
+      const computerNextTile = getNextComputerTile()
+      selectComputerTile(computerNextTile)
+    } else {
+      setWinner(currentWinner)
+    }
   }
 
   useEffect(() => {
@@ -56,7 +67,7 @@ const GameProvider = ({ children }: GameProviderProps) => {
     }
   })
 
-  const getNextComputerTile = (): Tile | null => {
+  const getNextComputerTile = (): GameHelpers.Tile | null => {
     if (computerCurrentMove == null) {
       const validMoves = GameHelpers.validMoves(board, "black")
       const move = ArrayHelpers.sample<Move>(validMoves)
@@ -78,10 +89,12 @@ const GameProvider = ({ children }: GameProviderProps) => {
     setComputerCurrentMove(null)
     setComputerSelectedTile(null)
     setUserSelectedTile(null)
+    setWinner(null)
+    setGameStep(0)
   }
 
-  const selectComputerTile = (toTile: Tile | null) => {
-    const callBack = (tile: Tile) => {
+  const selectComputerTile = (toTile: GameHelpers.Tile | null) => {
+    const callBack = (tile: GameHelpers.Tile) => {
       setComputerSelectedTile(tile)
     }
     if (toTile !== null) {
@@ -90,18 +103,18 @@ const GameProvider = ({ children }: GameProviderProps) => {
     }
   }
 
-  const selectUserTile = (toTile: Tile) => {
+  const selectUserTile = (toTile: GameHelpers.Tile) => {
     const fromTile = userSelectedTile
-    const callBack = (tile: Tile) => {
+    const callBack = (tile: GameHelpers.Tile) => {
       setUserSelectedTile(tile)
     }
     selectTile(fromTile, toTile, "white", callBack)
   }
 
   const selectTile = (
-    fromTile: Tile | null,
-    toTile: Tile | null,
-    side: Side,
+    fromTile: GameHelpers.Tile | null,
+    toTile: GameHelpers.Tile | null,
+    side: GameHelpers.Side,
     callBack: any
   ): void => {
     if (toTile === null) {
@@ -126,7 +139,7 @@ const GameProvider = ({ children }: GameProviderProps) => {
     }
   }
 
-  const movePiece = (fromTile: Tile, toTile: Tile) => {
+  const movePiece = (fromTile: GameHelpers.Tile, toTile: GameHelpers.Tile) => {
     const newBoard = GameHelpers.updateBoard(board, fromTile, toTile)
     setBoard(newBoard)
   }
@@ -137,6 +150,7 @@ const GameProvider = ({ children }: GameProviderProps) => {
         board,
         userSelectedTile,
         computerSelectedTile,
+        winner,
         resetBoard: resetBoard,
         selectUserTile: selectUserTile,
       }}

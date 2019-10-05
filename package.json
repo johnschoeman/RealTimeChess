@@ -1,15 +1,12 @@
 {
-  "name": "RealTimeChess",
-  "version": "0.0.1",
+  "name": "arcade-chess",
+  "version": "0.0",
   "private": true,
   "scripts": {
     "start": "react-native start",
     "run-ios": "./bin/run-ios",
     "run-android": "./bin/run-android",
     "test": "./bin/test"
-  },
-  "jest": {
-    "preset": "react-native"
   },
   "dependencies": {
     "chess.js": "^0.10.2",
@@ -25,6 +22,8 @@
     "@babel/core": "^7.6.0",
     "@babel/runtime": "^7.6.0",
     "@react-native-community/eslint-config": "^0.0.5",
+    "@testing-library/jest-native": "^3.0.2",
+    "@testing-library/react-native": "^4.0.12",
     "@types/chess.js": "^0.10.0",
     "@types/jest": "^24.0.18",
     "@types/react": "^16.8.17",

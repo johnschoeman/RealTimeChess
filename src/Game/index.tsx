@@ -3,19 +3,37 @@ import { Image, TouchableOpacity, View, Text, StyleSheet } from "react-native"
 
 import Board from "./Board"
 import GameContext from "../GameContext"
+import { GameHelpers } from "../utils"
 
 import { Color } from "../styles"
 
 const GameScreen = () => {
-  const { resetBoard } = useContext(GameContext)
+  const { resetBoard, winner } = useContext(GameContext)
+
+  const setGameMessage = (winner: GameHelpers.Side | null): string => {
+    if (winner === "black") {
+      return "You Lose!"
+    } else if (winner === "white") {
+      return "You Win!"
+    } else {
+      return "Game On!"
+    }
+  }
+
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID={"game-screen"}>
       <View style={styles.header}>
         <Image
           style={styles.headerImage}
           resizeMode="contain"
           source={require("../../assets/images/BoardHeader.png")}
         />
+      </View>
+
+      <View style={styles.message}>
+        <Text style={styles.messageText} testID={"win-message"}>
+          {setGameMessage(winner)}
+        </Text>
       </View>
 
       <View style={styles.board}>
@@ -43,6 +61,13 @@ const styles = StyleSheet.create({
     flex: 1,
     width: undefined,
     height: undefined,
+  },
+  message: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  messageText: {
+    color: "white",
   },
   heading: {
     color: Color.white,

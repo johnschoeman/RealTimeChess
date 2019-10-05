@@ -2,48 +2,45 @@ import React, { useContext } from "react"
 import { Image, TouchableOpacity, View, Text, StyleSheet } from "react-native"
 
 import Board from "./Board"
+import GameOver from "./GameOver"
 import GameContext from "../GameContext"
-import { GameHelpers } from "../utils"
 
-import { Color } from "../styles"
+import { Color, Typography, Buttons, Spacing } from "../styles"
 
 const GameScreen = () => {
   const { resetBoard, winner } = useContext(GameContext)
 
-  const setGameMessage = (winner: GameHelpers.Side | null): string => {
-    if (winner === "black") {
-      return "You Lose!"
-    } else if (winner === "white") {
-      return "You Win!"
-    } else {
-      return "Game On!"
-    }
-  }
-
   return (
     <View style={styles.container} testID={"game-screen"}>
       <View style={styles.header}>
-        <Image
-          style={styles.headerImage}
-          resizeMode="contain"
-          source={require("../assets/BoardHeader.png")}
-        />
+        <View style={styles.imageContainer}>
+          <Image
+            style={styles.headerImage}
+            resizeMode="contain"
+            source={require("../assets/BoardHeader.png")}
+          />
+        </View>
       </View>
 
-      <View style={styles.message}>
-        <Text style={styles.messageText} testID={"win-message"}>
-          {setGameMessage(winner)}
-        </Text>
-      </View>
-
-      <View style={styles.board}>
-        <Board />
+      <View style={styles.activeGameContainer}>
+        {winner == null ? <Board /> : <GameOver winner={winner} />}
       </View>
 
       <View style={styles.footer}>
-        <TouchableOpacity onPress={() => resetBoard()}>
-          <Text style={styles.heading}>Reset Board</Text>
-        </TouchableOpacity>
+        {winner == null ? (
+          <TouchableOpacity onPress={() => resetBoard()}>
+            <Text style={styles.heading}>Reset Board</Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              onPress={() => resetBoard()}
+              style={styles.button}
+            >
+              <Text style={Typography.mainButton}>PLAY AGAIN</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   )
@@ -56,32 +53,38 @@ const styles = StyleSheet.create({
   },
   header: {
     flex: 1,
+    justifyContent: "flex-start",
+    width: "100%",
+  },
+  imageContainer: {
+    height: "100%",
   },
   headerImage: {
     flex: 1,
     width: undefined,
-    height: undefined,
-  },
-  message: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  messageText: {
-    color: "white",
   },
   heading: {
     color: Color.white,
   },
-  board: {
-    flex: 4,
+  activeGameContainer: {
+    flex: 6,
     justifyContent: "center",
     alignItems: "center",
   },
   footer: {
-    flex: 2,
+    flex: 1,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: Spacing.medium,
+    paddingBottom: Spacing.xLarge,
+  },
+  buttonContainer: {
+    width: "100%",
+    ...Buttons.primaryContainer,
+  },
+  button: {
+    ...Buttons.primary,
   },
 })
 

@@ -6,10 +6,15 @@ import {
   Text,
   View,
 } from "react-native"
+import { NavigationScreenProp } from "react-navigation"
 
-import { Color, Spacing, Typography } from "../styles"
+import { Buttons, Spacing, Typography } from "../styles"
 
-const LandingScreen = ({ navigation }: { navigation: any }) => (
+interface LandingScreenProps {
+  navigation: NavigationScreenProp<{}>
+}
+
+const LandingScreen = ({ navigation }: LandingScreenProps) => (
   <ImageBackground
     source={require("../assets/Welcome.png")}
     style={styles.container}
@@ -38,27 +43,10 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   buttonContainer: {
-    backgroundColor: Color.white,
-    height: Spacing.huge,
-    borderRadius: Spacing.huge / 2,
-    padding: Spacing.base,
+    ...Buttons.primaryContainer,
   },
   button: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: Color.black,
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 2.5,
-    borderRadius: Spacing.huge / 2,
-    elevation: 8,
-    borderWidth: 1,
-    backgroundColor: Color.white,
-    borderColor: Color.darkGray,
+    ...Buttons.primary,
   },
 })
 

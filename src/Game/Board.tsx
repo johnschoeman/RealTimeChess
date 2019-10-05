@@ -4,7 +4,7 @@ import { View, StyleSheet } from "react-native"
 import BoardRow from "./BoardRow"
 import GameContext from "../GameContext"
 
-import { Spacing } from "../styles"
+import { Layout } from "../styles"
 
 const Board = () => {
   const { board } = useContext(GameContext)
@@ -23,10 +23,8 @@ const Board = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    padding: Spacing.medium,
+    width: Layout.boardWidth,
+    height: Layout.boardHeight,
   },
   row: {
     flex: 1,

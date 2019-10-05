@@ -36,7 +36,8 @@ describe("GameScreen", () => {
         }
         const { queryByTestId } = renderGameScreen(gameState)
 
-        expect(queryByTestId("win-message")).toHaveTextContent("You Lose!")
+        expect(queryByTestId("game-over-lose")).not.toBe(null)
+        expect(queryByTestId("game-over-win")).toBe(null)
       })
     })
 
@@ -52,7 +53,8 @@ describe("GameScreen", () => {
         }
         const { queryByTestId } = renderGameScreen(gameState)
 
-        expect(queryByTestId("win-message")).toHaveTextContent("You Win!")
+        expect(queryByTestId("game-over-lose")).toBe(null)
+        expect(queryByTestId("game-over-win")).not.toBe(null)
       })
     })
   })

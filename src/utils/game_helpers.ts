@@ -1,4 +1,4 @@
-import { Chess, ChessInstance, ShortMove, Move, Square } from "chess.js"
+import { Chess, ChessInstance, ShortMove, Square } from "chess.js"
 
 import {
   PieceType,
@@ -59,11 +59,6 @@ const RankToRow: { [key: string]: number } = {
 
 const initialBoardFenCode =
   "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-
-const createChessInstance = (board: Board, side: Side): ChessInstance => {
-  const fen = generateFen(board, side)
-  return new Chess(fen)
-}
 
 export const createBoard = (fenCode: string = initialBoardFenCode): Board => {
   const boardString = fenCode.split(" ")[0]
@@ -197,23 +192,6 @@ export function playerPieces(
 
 export function getPiece(board: Board, tile: Tile): PieceType {
   return board[tile.rowIdx][tile.colIdx]
-}
-
-export function validMoves(board: Board, side: Side): Array<Move> {
-  const chessInstance: ChessInstance = createChessInstance(board, side)
-  const fen = generateFen(board, side)
-  const validation = chessInstance.validate_fen(fen)
-  if (validation.valid) {
-    try {
-      return chessInstance.moves({ verbose: true })
-    } catch (e) {
-      console.log("chess instance errored looking for moves for: ", fen)
-      return []
-    }
-  } else {
-    console.log("invalid fen: ", validation)
-    return []
-  }
 }
 
 export function updateBoard(

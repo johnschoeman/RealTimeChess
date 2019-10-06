@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect } from "react"
-import { Move } from "chess.js"
 
-import { GameHelpers, ArrayHelpers } from "./utils"
+import { AiHelpers, GameHelpers } from "./utils"
 import { Side } from "./utils/game_helpers"
 
 export interface GameState {
@@ -42,9 +41,10 @@ const GameProvider = ({ children }: GameProviderProps) => {
     computerSelectedTile,
     setComputerSelectedTile,
   ] = useState<GameHelpers.Tile | null>(null)
-  const [computerCurrentMove, setComputerCurrentMove] = useState<Move | null>(
-    null
-  )
+  const [
+    computerCurrentMove,
+    setComputerCurrentMove,
+  ] = useState<AiHelpers.Move | null>(null)
   const [winner, setWinner] = useState<GameHelpers.Side | null>(null)
   const [gameStep, setGameStep] = useState<number>(0)
 
@@ -69,8 +69,7 @@ const GameProvider = ({ children }: GameProviderProps) => {
 
   const getNextComputerTile = (): GameHelpers.Tile | null => {
     if (computerCurrentMove == null) {
-      const validMoves = GameHelpers.validMoves(board, "black")
-      const move = ArrayHelpers.sample<Move>(validMoves)
+      const move = AiHelpers.selectMove(board, "black")
       if (move == null) {
         return null
       }

@@ -17,7 +17,7 @@ export type FenCode =
 
 interface Piece {
   kind: string
-  side: Side | null
+  side?: Side
   isPiece: boolean
   fenCode: FenCode
 }
@@ -34,7 +34,7 @@ type PieceType = Empty | Pawn | Knight | Bishop | Rook | Queen | King
 
 const empty = (function empty(this: Empty) {
   this.kind = "empty"
-  this.side = null
+  this.side = undefined
   this.isPiece = false
   this.fenCode = "0"
 } as any) as { new (): Empty }

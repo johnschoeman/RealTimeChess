@@ -124,15 +124,17 @@ function createPieceByFenCode(fenCode: string): PieceType {
 }
 
 export const winner = (board: Board): Side | null => {
-  const kingColors: Array<Side | null> = board.flatMap((rank: BoardRow) => {
-    return rank
-      .filter((piece: PieceType) => {
-        return piece.kind === "king"
-      })
-      .map((piece: PieceType) => {
-        return piece.side
-      })
-  })
+  const kingColors: Array<Side | undefined> = board.flatMap(
+    (rank: BoardRow) => {
+      return rank
+        .filter((piece: PieceType) => {
+          return piece.kind === "king"
+        })
+        .map((piece: PieceType) => {
+          return piece.side
+        })
+    }
+  )
 
   if (kingColors.includes("black") && kingColors.includes("white")) {
     return null
@@ -194,18 +196,33 @@ export function getPiece(board: Board, tile: Tile): PieceType {
   return board[tile.rowIdx][tile.colIdx]
 }
 
-export function updateBoard(
+export const updateBoard = (
   oldBoard: Board,
   fromTile: Tile,
   toTile: Tile
-): Board {
+): Board => {
   const { rowIdx: fromRow, colIdx: fromCol } = fromTile
   const { rowIdx: toRow, colIdx: toCol } = toTile
   const oldPiece = oldBoard[fromRow][fromCol]
-  if (oldPiece.isPiece) {
+  const { side, kind } = oldPiece
+
+  const isAPawnPromotion = (
+    kind: string,
+    toRow: number,
+    side: Side
+  ): boolean => {
+    return (
+      kind === "pawn" &&
+      ((toRow === 0 && side === "white") || (toRow === 7 && side === "black"))
+    )
+  }
+
+  if (side != null) {
     const newBoard = ArrayHelpers.deepDup(oldBoard)
-    newBoard[toRow][toCol] = oldPiece
     newBoard[fromRow][fromCol] = new empty()
+    newBoard[toRow][toCol] = isAPawnPromotion(kind, toRow, side)
+      ? new queen(side)
+      : oldPiece
     return newBoard
   } else {
     return oldBoard
@@ -223,7 +240,7 @@ export function validMove(
   const from: Square = tileRCtoAN(fromTile).square
   const to: Square = tileRCtoAN(toTile).square
 
-  const shortMove: ShortMove = { from, to }
+  const shortMove: ShortMove = { from, to, promotion: "q" }
   const move = chessClient.move(shortMove)
 
   return move != null ? true : false

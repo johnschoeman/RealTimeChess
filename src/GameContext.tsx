@@ -134,6 +134,8 @@ const GameProvider = ({ children }: GameProviderProps) => {
       if (GameHelpers.validMove(board, fromTile, toTile, side)) {
         movePiece(fromTile, toTile)
         callBack(null)
+      } else {
+        console.log("not a valid move: ", fromTile, toTile, side)
       }
     }
   }

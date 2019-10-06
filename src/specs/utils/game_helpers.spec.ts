@@ -10,6 +10,7 @@ import {
   tileANtoRC,
   generateFen,
   boardToAscii,
+  updateBoard,
 } from "../../utils/game_helpers"
 import { BoardFixtures } from "../__fixtures__"
 
@@ -94,6 +95,23 @@ describe("validMove", () => {
 
       expect(pa7a8).toBeTruthy()
       expect(Ng1g3).toBeTruthy()
+    })
+  })
+
+  describe("when the move is a pawn promotion", () => {
+    test("it returns true", () => {
+      const startBoard: Board = createBoard(
+        "rnbqkbnr/pPpppppp/8/8/8/8/1PPPPPPP/RNBQKBNR b KQkq - 0 1"
+      )
+
+      const result: boolean = validMove(
+        startBoard,
+        { rowIdx: 1, colIdx: 1 },
+        { rowIdx: 0, colIdx: 0 },
+        "white"
+      )
+
+      expect(result).toBeTruthy()
     })
   })
 
@@ -192,3 +210,48 @@ describe("winner", () => {
     })
   })
 })
+
+describe("updateBoard", () => {
+  describe("When provided an intial board and a move", () => {
+    test("it creates an a new board with the move applied", () => {
+      const initialBoard: Board = createBoard()
+
+      const result: Board = updateBoard(
+        initialBoard,
+        { rowIdx: 6, colIdx: 0 },
+        { rowIdx: 5, colIdx: 0 }
+      )
+
+      const expectedFen =
+        "rnbqkbnr/pppppppp/8/8/8/P7/1PPPPPPP/RNBQKBNR b KQkq - 0 1"
+      const expected: Board = createBoard(expectedFen)
+
+      expectBoardsToMatch(result, expected)
+    })
+  })
+
+  describe("when a pawn moves to the back row", () => {
+    test("the pawn is promoted to a queen", () => {
+      const startBoard: Board = createBoard(
+        "rnbqkbnr/pPpppppp/8/8/8/8/1PPPPPPP/RNBQKBNR b KQkq - 0 1"
+      )
+
+      const result: Board = updateBoard(
+        startBoard,
+        { rowIdx: 1, colIdx: 1 },
+        { rowIdx: 0, colIdx: 0 }
+      )
+
+      const expectedFen =
+        "Qnbqkbnr/p1pppppp/8/8/8/8/1PPPPPPP/RNBQKBNR b KQkq - 0 1"
+      const expected: Board = createBoard(expectedFen)
+      expectBoardsToMatch(result, expected)
+    })
+  })
+})
+
+const expectBoardsToMatch = (testResult: Board, expected: Board) => {
+  const expectedAscii = boardToAscii(expected)
+  const resultAscii = boardToAscii(testResult)
+  expect(resultAscii).toStrictEqual(expectedAscii)
+}

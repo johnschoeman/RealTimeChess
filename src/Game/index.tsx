@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     color: Color.white,
   },
   activeGameContainer: {
-    flex: 6,
+    flex: 5,
     justifyContent: "center",
     alignItems: "center",
   },

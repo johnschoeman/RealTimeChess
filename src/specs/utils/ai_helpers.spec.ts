@@ -23,7 +23,7 @@ describe("selectMove", () => {
 
   describe("when there are valid moves, but no valid attakcing moves", () => {
     test("it returns on of the valid moves", () => {
-      const fenWithValidMoves = "k7/8/8/8/8/8/8/KN6 b - - 0 1"
+      const fenWithValidMoves = "k7/8/8/8/8/8/8/KN6 b kq - 0 1"
       const board: Board = createBoard(fenWithValidMoves)
 
       const result = selectMove(board, "white")

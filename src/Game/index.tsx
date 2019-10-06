@@ -26,7 +26,7 @@ const GameScreen = () => {
         <Image
           style={styles.headerImage}
           resizeMode="contain"
-          source={require("../../assets/images/BoardHeader.png")}
+          source={require("../assets/BoardHeader.png")}
         />
       </View>
 

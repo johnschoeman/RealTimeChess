@@ -11,7 +11,7 @@ import { Color, Spacing, Typography } from "../styles"
 
 const LandingScreen = ({ navigation }: { navigation: any }) => (
   <ImageBackground
-    source={require("../../assets/images/Welcome.png")}
+    source={require("../assets/Welcome.png")}
     style={styles.container}
   >
     <View style={styles.footer}>

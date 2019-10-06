@@ -1,6 +1,6 @@
 import { Side } from "./game_helpers"
 
-type FenCode =
+export type FenCode =
   | "r"
   | "n"
   | "b"
@@ -85,7 +85,6 @@ export { empty, pawn, knight, bishop, rook, queen, king }
 export {
   Piece as PieceInterface,
   PieceType,
-  FenCode,
   Empty,
   Pawn,
   Knight,

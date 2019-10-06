@@ -1,8 +1,20 @@
 import React from "react"
-import { View, StyleSheet, ViewStyle } from "react-native"
+import { View, StyleSheet, Image, ImageSourcePropType } from "react-native"
 
 import { Pieces } from "../utils"
-import { Pieces as PieceStyles } from "../styles"
+
+const blackPawn = require("../assets/BlackPawn.png")
+const whitePawn = require("../assets/WhitePawn.png")
+const blackKnight = require("../assets/BlackKnight.png")
+const whiteKnight = require("../assets/WhiteKnight.png")
+const blackBishop = require("../assets/BlackBishop.png")
+const whiteBishop = require("../assets/WhiteBishop.png")
+const blackRook = require("../assets/BlackRook.png")
+const whiteRook = require("../assets/WhiteRook.png")
+const blackQueen = require("../assets/BlackQueen.png")
+const whiteQueen = require("../assets/WhiteQueen.png")
+const blackKing = require("../assets/BlackKing.png")
+const whiteKing = require("../assets/WhiteKing.png")
 
 interface PieceProps {
   piece: Pieces.PieceInterface
@@ -11,27 +23,27 @@ interface PieceProps {
 
 const Piece = ({ piece, testID }: PieceProps) => (
   <View style={styles.container} testID={testID}>
-    <View style={[styles.piece, ...pieceStyle(piece)]} />
+    {piece.fenCode === "0" ? null : <Image source={pieceImageSource(piece)} />}
   </View>
 )
 
-type PieceFlags = { [P in Pieces.FenCode]: ViewStyle[] }
+type PieceFlags = { [P in Pieces.FenCode]: ImageSourcePropType }
 
-const pieceStyle = (piece: Pieces.PieceType): ViewStyle[] => {
+const pieceImageSource = (piece: Pieces.PieceType): ImageSourcePropType => {
   const styleMap: PieceFlags = {
-    "0": [PieceStyles.empty],
-    r: [PieceStyles.rook, PieceStyles.black],
-    n: [PieceStyles.knight, PieceStyles.black],
-    b: [PieceStyles.bishop, PieceStyles.black],
-    q: [PieceStyles.queen, PieceStyles.black],
-    k: [PieceStyles.king, PieceStyles.black],
-    p: [PieceStyles.pawn, PieceStyles.black],
-    R: [PieceStyles.rook, PieceStyles.white],
-    N: [PieceStyles.knight, PieceStyles.white],
-    B: [PieceStyles.bishop, PieceStyles.white],
-    Q: [PieceStyles.queen, PieceStyles.white],
-    K: [PieceStyles.king, PieceStyles.white],
-    P: [PieceStyles.pawn, PieceStyles.white],
+    "0": blackPawn,
+    r: blackRook,
+    n: blackKnight,
+    b: blackBishop,
+    q: blackQueen,
+    k: blackKing,
+    p: blackPawn,
+    R: whiteRook,
+    N: whiteKnight,
+    B: whiteBishop,
+    Q: whiteQueen,
+    K: whiteKing,
+    P: whitePawn,
   }
   return styleMap[piece.fenCode]
 }

@@ -204,7 +204,12 @@ export function validMoves(board: Board, side: Side): Array<Move> {
   const fen = generateFen(board, side)
   const validation = chessInstance.validate_fen(fen)
   if (validation.valid) {
-    return chessInstance.moves({ verbose: true })
+    try {
+      return chessInstance.moves({ verbose: true })
+    } catch (e) {
+      console.log("chess instance errored looking for moves for: ", fen)
+      return []
+    }
   } else {
     console.log("invalid fen: ", validation)
     return []

@@ -1,10 +1,25 @@
 import { Side } from "./game_helpers"
 
+type FenCode =
+  | "r"
+  | "n"
+  | "b"
+  | "k"
+  | "q"
+  | "p"
+  | "R"
+  | "N"
+  | "B"
+  | "K"
+  | "Q"
+  | "P"
+  | "0"
+
 interface Piece {
   kind: string
   side: Side | null
   isPiece: boolean
-  fenCode: string
+  fenCode: FenCode
 }
 
 interface Empty extends Piece {}
@@ -70,6 +85,7 @@ export { empty, pawn, knight, bishop, rook, queen, king }
 export {
   Piece as PieceInterface,
   PieceType,
+  FenCode,
   Empty,
   Pawn,
   Knight,

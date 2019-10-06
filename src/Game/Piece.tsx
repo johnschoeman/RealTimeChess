@@ -4,54 +4,36 @@ import { View, StyleSheet, ViewStyle } from "react-native"
 import { Pieces } from "../utils"
 import { Pieces as PieceStyles } from "../styles"
 
-const Piece = ({ piece }: { piece: Pieces.PieceInterface }) => (
-  <View style={styles.container}>
-    <View style={[styles.piece, pieceStyle(piece), pieceColor(piece)]} />
+interface PieceProps {
+  piece: Pieces.PieceInterface
+  testID?: string
+}
+
+const Piece = ({ piece, testID }: PieceProps) => (
+  <View style={styles.container} testID={testID}>
+    <View style={[styles.piece, ...pieceStyle(piece)]} />
   </View>
 )
 
-const pieceStyle = (piece: Pieces.PieceType): ViewStyle => {
-  switch (piece.kind) {
-    case "empty": {
-      return PieceStyles.empty
-    }
-    case "pawn": {
-      return PieceStyles.pawn
-    }
-    case "knight": {
-      return PieceStyles.knight
-    }
-    case "bishop": {
-      return PieceStyles.bishop
-    }
-    case "rook": {
-      return PieceStyles.rook
-    }
-    case "queen": {
-      return PieceStyles.queen
-    }
-    case "king": {
-      return PieceStyles.king
-    }
-    default: {
-      console.error(`Piece: ${piece} has unknown kind: ${piece.kind}`)
-      return {}
-    }
-  }
-}
+type PieceFlags = { [P in Pieces.FenCode]: ViewStyle[] }
 
-const pieceColor = (piece: Pieces.PieceType): ViewStyle => {
-  switch (piece.side) {
-    case "black": {
-      return PieceStyles.black
-    }
-    case "white": {
-      return PieceStyles.white
-    }
-    default: {
-      return {}
-    }
+const pieceStyle = (piece: Pieces.PieceType): ViewStyle[] => {
+  const styleMap: PieceFlags = {
+    "0": [PieceStyles.empty],
+    r: [PieceStyles.rook, PieceStyles.black],
+    n: [PieceStyles.knight, PieceStyles.black],
+    b: [PieceStyles.bishop, PieceStyles.black],
+    q: [PieceStyles.queen, PieceStyles.black],
+    k: [PieceStyles.king, PieceStyles.black],
+    p: [PieceStyles.pawn, PieceStyles.black],
+    R: [PieceStyles.rook, PieceStyles.white],
+    N: [PieceStyles.knight, PieceStyles.white],
+    B: [PieceStyles.bishop, PieceStyles.white],
+    Q: [PieceStyles.queen, PieceStyles.white],
+    K: [PieceStyles.king, PieceStyles.white],
+    P: [PieceStyles.pawn, PieceStyles.white],
   }
+  return styleMap[piece.fenCode]
 }
 
 const styles = StyleSheet.create({

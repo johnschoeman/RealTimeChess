@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from "react"
 
-import { AiHelpers, GameHelpers } from "./utils"
-import { Side } from "./utils/game_helpers"
+import { AiHelpers, GameHelpers } from "../utils"
+import { Side } from "../utils/game_helpers"
 
 export interface GameState {
   board: GameHelpers.Board

@@ -1,15 +1,12 @@
-import React, { useContext } from "react"
-import { Image, TouchableOpacity, View, Text, StyleSheet } from "react-native"
+import React from "react"
+import { Image, View, StyleSheet } from "react-native"
 
-import Board from "./Board"
-import GameOver from "./GameOver"
-import GameContext from "../GameContext"
+import { GameProvider } from "./GameContext"
+import Game from "./Game"
 
-import { Color, Typography, Buttons, Spacing } from "../styles"
+import { Color } from "../styles"
 
 const GameScreen = () => {
-  const { resetBoard, winner } = useContext(GameContext)
-
   return (
     <View style={styles.container} testID={"game-screen"}>
       <View style={styles.header}>
@@ -22,25 +19,10 @@ const GameScreen = () => {
         </View>
       </View>
 
-      <View style={styles.activeGameContainer}>
-        {winner == null ? <Board /> : <GameOver winner={winner} />}
-      </View>
-
-      <View style={styles.footer}>
-        {winner == null ? (
-          <TouchableOpacity onPress={() => resetBoard()}>
-            <Text style={styles.heading}>Reset Board</Text>
-          </TouchableOpacity>
-        ) : (
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              onPress={() => resetBoard()}
-              style={styles.button}
-            >
-              <Text style={Typography.mainButton}>PLAY AGAIN</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+      <View style={{ flex: 5 }}>
+        <GameProvider>
+          <Game />
+        </GameProvider>
       </View>
     </View>
   )
@@ -49,6 +31,7 @@ const GameScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "flex-start",
     backgroundColor: Color.background,
   },
   header: {
@@ -62,29 +45,6 @@ const styles = StyleSheet.create({
   headerImage: {
     flex: 1,
     width: undefined,
-  },
-  heading: {
-    color: Color.white,
-  },
-  activeGameContainer: {
-    flex: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  footer: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: Spacing.medium,
-    paddingBottom: Spacing.xLarge,
-  },
-  buttonContainer: {
-    width: "100%",
-    ...Buttons.primaryContainer,
-  },
-  button: {
-    ...Buttons.primary,
   },
 })
 

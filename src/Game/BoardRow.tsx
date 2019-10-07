@@ -4,7 +4,7 @@ import { TouchableOpacity, View, StyleSheet } from "react-native"
 import Piece from "./Piece"
 import { PieceType } from "../utils/pieces"
 import { Tile } from "../utils/game_helpers"
-import GameContext from "../GameContext"
+import GameContext from "./GameContext"
 
 import { Color } from "../styles"
 

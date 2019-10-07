@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 import { View, StyleSheet } from "react-native"
 
 import BoardRow from "./BoardRow"
-import GameContext from "../GameContext"
+import GameContext from "./GameContext"
 
 import { Layout } from "../styles"
 

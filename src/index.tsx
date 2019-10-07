@@ -7,7 +7,6 @@ import {
   View,
 } from "react-native"
 
-import { GameProvider } from "./GameContext"
 import AppNavigatorContainer from "./AppNavigatorContainer"
 
 import { Color } from "./styles"
@@ -27,9 +26,7 @@ const RealTimeChess = () => {
     <View style={{ flex: 1 }}>
       <GeneralStatusBar />
       <SafeAreaView style={{ flex: 1 }}>
-        <GameProvider>
-          <AppNavigatorContainer />
-        </GameProvider>
+        <AppNavigatorContainer />
       </SafeAreaView>
     </View>
   )

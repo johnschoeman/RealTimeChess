@@ -117,25 +117,22 @@ const GameProvider = ({ children }: GameProviderProps) => {
     callBack: any
   ): void => {
     if (toTile === null) {
-      callBack(null)
       return
-    } else if (fromTile === null) {
-      const { rowIdx: toRow, colIdx: toCol } = toTile
-      const toPiece = board[toRow][toCol]
-      if (toPiece.isPiece) {
-        callBack({ rowIdx: toRow, colIdx: toCol })
-      }
-    } else if (
-      fromTile.rowIdx === toTile.rowIdx &&
-      fromTile.colIdx === toTile.colIdx
-    ) {
-      callBack(null)
-    } else {
-      if (GameHelpers.validMove(board, fromTile, toTile, side)) {
+    }
+
+    const toPiece = GameHelpers.getPiece(board, toTile)
+    if (fromTile === null && toPiece.isPiece) {
+      callBack(toTile)
+    } else if (fromTile !== null) {
+      const isMoveValid = GameHelpers.validMove(board, fromTile, toTile, side)
+
+      if (isMoveValid) {
         movePiece(fromTile, toTile)
         callBack(null)
       } else {
-        console.log("not a valid move: ", fromTile, toTile, side)
+        if (GameHelpers.getPiece(board, toTile).side === side) {
+          callBack(toTile)
+        }
       }
     }
   }

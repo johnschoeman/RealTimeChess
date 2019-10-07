@@ -41,10 +41,10 @@
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
-		00E356EE1AD99517003FC87E /* RealTimeChessTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RealTimeChessTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* ArcadeChessTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArcadeChessTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* RealTimeChessTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RealTimeChessTests.m; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* RealTimeChess.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RealTimeChess.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* ArcadeChess.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ArcadeChess.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = RealTimeChess/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = RealTimeChess/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -52,8 +52,8 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = RealTimeChess/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = RealTimeChess/main.m; sourceTree = "<group>"; };
 		174D9FCA075A6DC3537D7716 /* Pods-RealTimeChess-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RealTimeChess-tvOS.release.xcconfig"; path = "Target Support Files/Pods-RealTimeChess-tvOS/Pods-RealTimeChess-tvOS.release.xcconfig"; sourceTree = "<group>"; };
-		2D02E47B1E0B4A5D006451C7 /* RealTimeChess-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RealTimeChess-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D02E4901E0B4A5D006451C7 /* RealTimeChess-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RealTimeChess-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D02E47B1E0B4A5D006451C7 /* ArcadeChess-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ArcadeChess-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D02E4901E0B4A5D006451C7 /* ArcadeChess-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ArcadeChess-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		35EF38164AA8A632B9EBA0DA /* libPods-RealTimeChess-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RealTimeChess-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		388B71327092214E60620220 /* libPods-RealTimeChessTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RealTimeChessTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DEB063F041C38A3A5B73893 /* Pods-RealTimeChess.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RealTimeChess.debug.xcconfig"; path = "Target Support Files/Pods-RealTimeChess/Pods-RealTimeChess.debug.xcconfig"; sourceTree = "<group>"; };
@@ -189,10 +189,10 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* RealTimeChess.app */,
-				00E356EE1AD99517003FC87E /* RealTimeChessTests.xctest */,
-				2D02E47B1E0B4A5D006451C7 /* RealTimeChess-tvOS.app */,
-				2D02E4901E0B4A5D006451C7 /* RealTimeChess-tvOSTests.xctest */,
+				13B07F961A680F5B00A75B9A /* ArcadeChess.app */,
+				00E356EE1AD99517003FC87E /* ArcadeChessTests.xctest */,
+				2D02E47B1E0B4A5D006451C7 /* ArcadeChess-tvOS.app */,
+				2D02E4901E0B4A5D006451C7 /* ArcadeChess-tvOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -200,9 +200,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* RealTimeChessTests */ = {
+		00E356ED1AD99517003FC87E /* ArcadeChessTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "RealTimeChessTests" */;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "ArcadeChessTests" */;
 			buildPhases = (
 				5E76BAC75BE5601AC4E50CAF /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
@@ -214,14 +214,14 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = RealTimeChessTests;
+			name = ArcadeChessTests;
 			productName = RealTimeChessTests;
-			productReference = 00E356EE1AD99517003FC87E /* RealTimeChessTests.xctest */;
+			productReference = 00E356EE1AD99517003FC87E /* ArcadeChessTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* RealTimeChess */ = {
+		13B07F861A680F5B00A75B9A /* ArcadeChess */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "RealTimeChess" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ArcadeChess" */;
 			buildPhases = (
 				6C791891BB2F222B93B6C4C3 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
@@ -234,14 +234,14 @@
 			);
 			dependencies = (
 			);
-			name = RealTimeChess;
+			name = ArcadeChess;
 			productName = RealTimeChess;
-			productReference = 13B07F961A680F5B00A75B9A /* RealTimeChess.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* ArcadeChess.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E47A1E0B4A5D006451C7 /* RealTimeChess-tvOS */ = {
+		2D02E47A1E0B4A5D006451C7 /* ArcadeChess-tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "RealTimeChess-tvOS" */;
+			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "ArcadeChess-tvOS" */;
 			buildPhases = (
 				72E2ACC150E3433367843F81 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F122414F3F0027D42C /* Start Packager */,
@@ -254,14 +254,14 @@
 			);
 			dependencies = (
 			);
-			name = "RealTimeChess-tvOS";
+			name = "ArcadeChess-tvOS";
 			productName = "RealTimeChess-tvOS";
-			productReference = 2D02E47B1E0B4A5D006451C7 /* RealTimeChess-tvOS.app */;
+			productReference = 2D02E47B1E0B4A5D006451C7 /* ArcadeChess-tvOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E48F1E0B4A5D006451C7 /* RealTimeChess-tvOSTests */ = {
+		2D02E48F1E0B4A5D006451C7 /* ArcadeChess-tvOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "RealTimeChess-tvOSTests" */;
+			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "ArcadeChess-tvOSTests" */;
 			buildPhases = (
 				8C03E2E9F3D41D6969CCB2DD /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
@@ -273,9 +273,9 @@
 			dependencies = (
 				2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */,
 			);
-			name = "RealTimeChess-tvOSTests";
+			name = "ArcadeChess-tvOSTests";
 			productName = "RealTimeChess-tvOSTests";
-			productReference = 2D02E4901E0B4A5D006451C7 /* RealTimeChess-tvOSTests.xctest */;
+			productReference = 2D02E4901E0B4A5D006451C7 /* ArcadeChess-tvOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -306,7 +306,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "RealTimeChess" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "ArcadeChess" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -320,10 +320,10 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* RealTimeChess */,
-				00E356ED1AD99517003FC87E /* RealTimeChessTests */,
-				2D02E47A1E0B4A5D006451C7 /* RealTimeChess-tvOS */,
-				2D02E48F1E0B4A5D006451C7 /* RealTimeChess-tvOSTests */,
+				13B07F861A680F5B00A75B9A /* ArcadeChess */,
+				00E356ED1AD99517003FC87E /* ArcadeChessTests */,
+				2D02E47A1E0B4A5D006451C7 /* ArcadeChess-tvOS */,
+				2D02E48F1E0B4A5D006451C7 /* ArcadeChess-tvOSTests */,
 			);
 		};
 /* End PBXProject section */
@@ -559,12 +559,12 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* RealTimeChess */;
+			target = 13B07F861A680F5B00A75B9A /* ArcadeChess */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 		2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2D02E47A1E0B4A5D006451C7 /* RealTimeChess-tvOS */;
+			target = 2D02E47A1E0B4A5D006451C7 /* ArcadeChess-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -602,7 +602,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RealTimeChess.app/RealTimeChess";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArcadeChess.app/ArcadeChess";
 			};
 			name = Debug;
 		};
@@ -623,7 +623,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RealTimeChess.app/RealTimeChess";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArcadeChess.app/ArcadeChess";
 			};
 			name = Release;
 		};
@@ -645,7 +645,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.johnschoeman.realtimechess;
-				PRODUCT_NAME = RealTimeChess;
+				PRODUCT_NAME = ArcadeChess;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -667,7 +667,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.johnschoeman.realtimechess;
-				PRODUCT_NAME = RealTimeChess;
+				PRODUCT_NAME = ArcadeChess;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -750,7 +750,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.RealTimeChess-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RealTimeChess-tvOS.app/RealTimeChess-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArcadeChess-tvOS.app/ArcadeChess-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 			};
 			name = Debug;
@@ -777,7 +777,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.RealTimeChess-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RealTimeChess-tvOS.app/RealTimeChess-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArcadeChess-tvOS.app/ArcadeChess-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 			};
 			name = Release;
@@ -884,7 +884,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "RealTimeChessTests" */ = {
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "ArcadeChessTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
@@ -893,7 +893,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "RealTimeChess" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ArcadeChess" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -902,7 +902,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "RealTimeChess-tvOS" */ = {
+		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "ArcadeChess-tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4971E0B4A5E006451C7 /* Debug */,
@@ -911,7 +911,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "RealTimeChess-tvOSTests" */ = {
+		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "ArcadeChess-tvOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D02E4991E0B4A5E006451C7 /* Debug */,
@@ -920,7 +920,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "RealTimeChess" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "ArcadeChess" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

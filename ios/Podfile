@@ -1,8 +1,8 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-target 'RealTimeChess' do
-  # Pods for RealTimeChess
+target 'ArcadeChess' do
+  # Pods for ArcadeChess
   pod 'React', :path => '../node_modules/react-native/'
   pod 'React-Core', :path => '../node_modules/react-native/React'
   pod 'React-DevSupport', :path => '../node_modules/react-native/React'
@@ -27,7 +27,7 @@ target 'RealTimeChess' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  target 'RealTimeChessTests' do
+  target 'ArcadeChessTests' do
     inherit! :search_paths
     # Pods for testing
   end
@@ -35,10 +35,10 @@ target 'RealTimeChess' do
   use_native_modules!
 end
 
-target 'RealTimeChess-tvOS' do
-  # Pods for RealTimeChess-tvOS
+target 'ArcadeChess-tvOS' do
+  # Pods for ArcadeChess-tvOS
 
-  target 'RealTimeChess-tvOSTests' do
+  target 'ArcadeChess-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end

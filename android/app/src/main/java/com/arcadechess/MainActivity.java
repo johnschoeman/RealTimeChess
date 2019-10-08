@@ -1,4 +1,4 @@
-package com.realtimechess;
+package com.arcadechess;
 
 import com.facebook.react.ReactActivity;
 
@@ -10,6 +10,6 @@ public class MainActivity extends ReactActivity {
      */
     @Override
     protected String getMainComponentName() {
-        return "RealTimeChess";
+        return "ArcadeChess";
     }
 }

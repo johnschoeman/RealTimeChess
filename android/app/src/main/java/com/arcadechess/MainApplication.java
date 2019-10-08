@@ -1,4 +1,4 @@
-package com.realtimechess;
+package com.arcadechess;
 
 import android.app.Application;
 import android.util.Log;

@@ -79,6 +79,7 @@ const GameProvider = ({ children }: GameProviderProps) => {
       return GameHelpers.squareToRCTile(computerCurrentMove.from)
     } else {
       setComputerCurrentMove(null)
+      setComputerSelectedTile(null)
       return GameHelpers.squareToRCTile(computerCurrentMove.to)
     }
   }

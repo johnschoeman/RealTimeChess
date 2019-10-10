@@ -1,6 +1,12 @@
 import { Chess, ChessInstance, ShortMove } from "chess.js"
 
-import { Board, Side, generateFen } from "./game_helpers"
+import {
+  Board,
+  Side,
+  generateFen,
+  squareToRCTile,
+  getPiece,
+} from "./game_helpers"
 import { sample } from "./array_helpers"
 
 export type Color = "b" | "w"
@@ -21,10 +27,18 @@ export const selectMove = (board: Board, side: Side): Move | null => {
     return flags.includes("c") || flags.includes("e")
   })
 
-  if (attackingMoves.length === 0) {
-    return sample<Move>(moves)
-  } else {
+  const kingAttakingMoves: Move[] = attackingMoves.filter((move: Move) => {
+    const toTile = squareToRCTile(move.to)
+    const toPiece = getPiece(board, toTile)
+    return toPiece.kind === "king"
+  })
+
+  if (kingAttakingMoves.length !== 0) {
+    return sample<Move>(kingAttakingMoves)
+  } else if (attackingMoves.length !== 0) {
     return sample<Move>(attackingMoves)
+  } else {
+    return sample<Move>(moves)
   }
 }
 

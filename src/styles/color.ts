@@ -4,6 +4,8 @@ export const lightGray = "#bdbdbd"
 export const white = "#ffffff"
 export const green = "#6fd133"
 export const blue = "#31d0da"
+export const yellow = "#ffdd2d"
+export const red = "#c93101"
 
 export const background = black
 export const tileBlack = darkGray

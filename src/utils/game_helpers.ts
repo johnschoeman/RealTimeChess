@@ -1,5 +1,6 @@
-import { Chess, ChessInstance, ShortMove, Square } from "chess.js"
+import { ChessInstance, ShortMove, Square } from "chess.js"
 
+import Chess from "./chess/chess"
 import {
   PieceType,
   empty,
@@ -236,7 +237,7 @@ export function validMove(
   side: Side
 ): boolean {
   const fen = generateFen(board, side)
-  const chessClient: ChessInstance = new Chess(fen)
+  const chessClient: ChessInstance = Chess(fen)
   const from: Square = tileRCtoAN(fromTile).square
   const to: Square = tileRCtoAN(toTile).square
 

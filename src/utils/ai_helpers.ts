@@ -1,5 +1,4 @@
-import { Chess, ChessInstance, ShortMove } from "chess.js"
-
+import Chess, { ChessInstance, ShortMove } from "./chess/chess"
 import {
   Board,
   Side,
@@ -44,7 +43,7 @@ export const selectMove = (board: Board, side: Side): Move | null => {
 
 export function validMoves(board: Board, side: Side): Move[] {
   const fen = generateFen(board, side)
-  const chessInstance: ChessInstance = new Chess(fen)
+  const chessInstance: ChessInstance = Chess(fen)
   const validation = chessInstance.validate_fen(fen)
   if (validation.valid) {
     try {

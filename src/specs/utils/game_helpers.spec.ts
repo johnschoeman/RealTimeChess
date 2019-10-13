@@ -136,6 +136,44 @@ describe("validMove", () => {
       expect(Bc1c3).toBeFalsy()
     })
   })
+
+  describe("when the king is moving into check", () => {
+    test("it returns true", () => {
+      const board: Board = createBoard("RK6/8/8/8/8/8/8/1krr4 b KQkq - 0 1")
+
+      const ka2a1 = validMove(
+        board,
+        { colIdx: 1, rowIdx: 7 },
+        { colIdx: 0, rowIdx: 7 },
+        "black"
+      )
+
+      const ka2b1 = validMove(
+        board,
+        { colIdx: 1, rowIdx: 7 },
+        { colIdx: 0, rowIdx: 6 },
+        "black"
+      )
+
+      expect(ka2a1).toBe(true)
+      expect(ka2b1).toBe(true)
+    })
+  })
+
+  describe("when the king is in check and the move is not moving the king out of check", () => {
+    test("it returns true", () => {
+      const board: Board = createBoard("RK6/8/8/8/8/8/8/k1rr4 b KQkq - 0 1")
+
+      const ka1b1 = validMove(
+        board,
+        { colIdx: 0, rowIdx: 7 },
+        { colIdx: 0, rowIdx: 6 },
+        "black"
+      )
+
+      expect(ka1b1).toBe(true)
+    })
+  })
 })
 
 describe("generateFen", () => {

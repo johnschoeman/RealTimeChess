@@ -1,13 +1,8 @@
-import { Square } from "chess.js"
+import { Square, Move, PieceType, Side } from "../../utils/chess/chess"
 
 import { Board, createBoard } from "../../utils/game_helpers"
-import {
-  Move,
-  Color,
-  Piece,
-  validMoves,
-  selectMove,
-} from "../../utils/ai_helpers"
+import { validMoves, selectMove } from "../../utils/ai_helpers"
+import { Promotion } from "../../utils/chess/types"
 
 describe("selectMove", () => {
   describe("when there is are valid attacking moves", () => {
@@ -84,21 +79,23 @@ describe("validMoves", () => {
 })
 
 const move = (
-  color: Color,
+  side: Side,
   from: Square,
   to: Square,
   flags: string,
-  piece: Piece,
+  piece: PieceType,
   san: string,
-  captured?: Piece
+  captured?: PieceType,
+  promotion?: Promotion
 ): Move => {
   return {
-    color,
+    color: side,
     from,
     to,
     flags,
     piece,
     san,
     captured,
+    promotion,
   }
 }

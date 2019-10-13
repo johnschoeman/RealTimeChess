@@ -1,4 +1,4 @@
-import { ChessInstance, ShortMove, Square, Move } from "chess.js"
+import { ChessInstance, ShortMove, Square, Move } from "../utils/chess/chess"
 
 import Chess from "./chess/chess"
 import {
@@ -12,8 +12,6 @@ import {
   king,
 } from "./pieces"
 import * as ArrayHelpers from "./array_helpers"
-import { isValidElement } from "react"
-import { RotationGestureHandler } from "react-native-gesture-handler"
 
 export type Side = "black" | "white"
 export const black: Side = "black"

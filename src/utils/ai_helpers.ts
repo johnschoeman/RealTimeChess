@@ -1,4 +1,4 @@
-import Chess, { ChessInstance, ShortMove } from "./chess/chess"
+import Chess, { ChessInstance, Move } from "./chess/chess"
 import {
   Board,
   Side,
@@ -7,16 +7,6 @@ import {
   getPiece,
 } from "./game_helpers"
 import { sample } from "./array_helpers"
-
-export type Color = "b" | "w"
-export type Piece = "p" | "n" | "b" | "r" | "q" | "k"
-export interface Move extends ShortMove {
-  color: "b" | "w"
-  flags: string
-  piece: Piece
-  san: string
-  captured?: Piece
-}
 
 export const selectMove = (board: Board, side: Side): Move | null => {
   const moves: Move[] = validMoves(board, side)
@@ -47,7 +37,7 @@ export function validMoves(board: Board, side: Side): Move[] {
   const validation = chessInstance.validate_fen(fen)
   if (validation.valid) {
     try {
-      return chessInstance.moves({ verbose: true })
+      return chessInstance.moves()
     } catch (e) {
       console.log("chess instance errored looking for moves for: ", fen)
       return []

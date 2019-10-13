@@ -8,6 +8,7 @@ import React, {
 
 import { AiHelpers, GameHelpers } from "../utils"
 import { Side } from "../utils/game_helpers"
+import { Move } from "../utils/chess/chess"
 
 export interface GameState {
   board: GameHelpers.Board
@@ -49,10 +50,9 @@ const GameProvider = ({ children }: GameProviderProps) => {
     computerSelectedTile,
     setComputerSelectedTile,
   ] = useState<GameHelpers.Tile | null>(null)
-  const [
-    computerCurrentMove,
-    setComputerCurrentMove,
-  ] = useState<AiHelpers.Move | null>(null)
+  const [computerCurrentMove, setComputerCurrentMove] = useState<Move | null>(
+    null
+  )
   const [winner, setWinner] = useState<GameHelpers.Side | null>(null)
   const [gameStep, setGameStep] = useState<number>(0)
   const [gameIsActive, setGameIsActive] = useState<boolean>(false)

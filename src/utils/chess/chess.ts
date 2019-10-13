@@ -41,39 +41,83 @@ import {
   Piece,
   FenCode,
   Side,
+  PieceType,
+  Promotion,
 } from "./types"
 
+/**
+ * Move format used inside engine
+ * color: "b" | "w"
+ * from: number
+ * to: number
+ * flags: number
+ * piece: "p" | "n" | "b" | "r" | "q" | "k"
+ * captured?: "p" | "n" | "b" | "r" | "q" | "k"
+ * promotion?: "n" | "b" | "r" | "q"
+ */
+interface InternalMove {
+  color: Side
+  from: number
+  to: number
+  flags: number
+  piece: PieceType
+  captured?: PieceType
+  promotion?: Promotion
+}
+
+type InternalPiece = {
+  type: PieceType
+  color: Side
+}
+
+interface HistoryItem {
+  move: InternalMove
+  kings: Kings
+  turn: Side
+  castling: Castling
+  ep_square: number
+  half_moves: number
+  move_number: number
+}
+
+interface Kings {
+  w: number
+  b: number
+}
+
+interface Castling {
+  w: number | null
+  b: number | null
+}
+
+type InternalBoard = (InternalPiece | null)[]
+
 var Chess = (fen: string): ChessInstance => {
-  const BLACK = "b"
-  const WHITE = "w"
+  const BLACK: Side = "b"
+  const WHITE: Side = "w"
 
   const EMPTY: number = -1
 
-  const PAWN = "p"
-  const KNIGHT = "n"
-  const BISHOP = "b"
-  const ROOK = "r"
-  const QUEEN = "q"
-  const KING = "k"
+  const PAWN: PieceType = "p"
+  const KING: PieceType = "k"
 
   const SYMBOLS = "pnbrqkPNBRQK"
 
   const DEFAULT_POSITION =
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-  const POSSIBLE_RESULTS = ["1-0", "0-1", "1/2-1/2", "*"]
-
-  const PAWN_OFFSETS = {
+  const PAWN_OFFSETS: { [K in Side]: number[] } = {
     b: [16, 32, 17, 15],
     w: [-16, -32, -17, -15],
   }
 
-  const PIECE_OFFSETS = {
+  const PIECE_OFFSETS: { [K in PieceType]: number[] } = {
     n: [-18, -33, -31, -14, 18, 33, 31, 14],
     b: [-17, -15, 17, 15],
     r: [-16, 1, 16, -1],
     q: [-17, -16, -15, 1, 17, 16, 15, -1],
     k: [-17, -16, -15, 1, 17, 16, 15, -1],
+    p: [],
   }
 
   // prettier-ignore
@@ -114,9 +158,25 @@ var Chess = (fen: string): ChessInstance => {
     -15,  0,  0,  0,  0,  0,  0,-16,  0,  0,  0,  0,  0,  0,-17
   ];
 
-  const SHIFTS = { p: 0, n: 1, b: 2, r: 3, q: 4, k: 5 }
+  const SHIFTS: { [K in PieceType]: number } = {
+    p: 0,
+    n: 1,
+    b: 2,
+    r: 3,
+    q: 4,
+    k: 5,
+  }
 
-  const FLAGS = {
+  type Flag =
+    | "NORMAL"
+    | "CAPTURE"
+    | "BIG_PAWN"
+    | "EP_CAPTURE"
+    | "PROMOTION"
+    | "KSIDE_CASTLE"
+    | "QSIDE_CASTLE"
+
+  const FLAGS: { [K in Flag]: string } = {
     NORMAL: "n",
     CAPTURE: "c",
     BIG_PAWN: "b",
@@ -126,7 +186,7 @@ var Chess = (fen: string): ChessInstance => {
     QSIDE_CASTLE: "q",
   }
 
-  const BITS = {
+  const BITS: { [K in Flag]: number } = {
     NORMAL: 1,
     CAPTURE: 2,
     BIG_PAWN: 4,
@@ -138,10 +198,6 @@ var Chess = (fen: string): ChessInstance => {
 
   const RANK_1 = 7
   const RANK_2 = 6
-  const RANK_3 = 5
-  const RANK_4 = 4
-  const RANK_5 = 3
-  const RANK_6 = 2
   const RANK_7 = 1
   const RANK_8 = 0
 
@@ -157,31 +213,14 @@ var Chess = (fen: string): ChessInstance => {
     a1: 112, b1: 113, c1: 114, d1: 115, e1: 116, f1: 117, g1: 118, h1: 119
   };
 
-  var ROOKS = {
-    w: [
-      { square: SQUARES.a1, flag: BITS.QSIDE_CASTLE },
-      { square: SQUARES.h1, flag: BITS.KSIDE_CASTLE },
-    ],
-    b: [
-      { square: SQUARES.a8, flag: BITS.QSIDE_CASTLE },
-      { square: SQUARES.h8, flag: BITS.KSIDE_CASTLE },
-    ],
-  }
-
-  var board = new Array(128)
-  var kings = { w: EMPTY, b: EMPTY }
-  var turn = WHITE
-  var castling = { w: 0, b: 0 }
+  var board: (InternalPiece | null)[] = new Array(128)
+  var kings: Kings = { w: EMPTY, b: EMPTY }
+  var turn: Side = WHITE
+  var castling: Castling = { w: 0, b: 0 }
   var ep_square = EMPTY
   var half_moves = 0
   var move_number = 1
-  var history: Move[] = []
-
-  interface Header {
-    SetUp?: string
-    FEN?: string
-  }
-  var header: Header = {}
+  var history: HistoryItem[] = []
 
   /* if the user passes in a fen string, load it, else default to
    * starting position
@@ -201,12 +240,6 @@ var Chess = (fen: string): ChessInstance => {
     half_moves = 0
     move_number = 1
     history = []
-    header = {}
-    update_setup(generate_fen())
-  }
-
-  function reset() {
-    load(DEFAULT_POSITION)
   }
 
   function parseFen(fen: string): FenCode {
@@ -237,7 +270,7 @@ var Chess = (fen: string): ChessInstance => {
       halfMoveClock,
       moveCount,
     ] = parseFen(fen)
-    var square = 0
+    let square: number = 0
 
     if (!validate_fen(fen).valid) {
       return false
@@ -251,27 +284,30 @@ var Chess = (fen: string): ChessInstance => {
       if (piece === "/") {
         square += 8
       } else if (is_digit(piece)) {
-        square += parseInt(piece, 10)
+        square += Number(piece)
       } else {
-        var color = piece < "a" ? WHITE : BLACK
-        put({ type: piece.toLowerCase(), color: color }, algebraic(square))
+        var color: Side = piece < "a" ? WHITE : BLACK
+        const type: PieceType = piece.toLowerCase() as PieceType
+        put({ type, color: color }, algebraic(square))
         square++
       }
     }
 
     turn = currentPlayer
 
-    if (castleAvailablity.indexOf("K") > -1) {
-      castling.w |= BITS.KSIDE_CASTLE
-    }
-    if (castleAvailablity.indexOf("Q") > -1) {
-      castling.w |= BITS.QSIDE_CASTLE
-    }
-    if (castleAvailablity.indexOf("k") > -1) {
-      castling.b |= BITS.KSIDE_CASTLE
-    }
-    if (castleAvailablity.indexOf("q") > -1) {
-      castling.b |= BITS.QSIDE_CASTLE
+    if (castling.w != null && castling.b != null) {
+      if (castleAvailablity.indexOf("K") > -1) {
+        castling.w |= BITS.KSIDE_CASTLE
+      }
+      if (castleAvailablity.indexOf("Q") > -1) {
+        castling.w |= BITS.QSIDE_CASTLE
+      }
+      if (castleAvailablity.indexOf("k") > -1) {
+        castling.b |= BITS.KSIDE_CASTLE
+      }
+      if (castleAvailablity.indexOf("q") > -1) {
+        castling.b |= BITS.QSIDE_CASTLE
+      }
     }
 
     const ep_token: Square | "-" = EnPassanteAvailability
@@ -282,8 +318,6 @@ var Chess = (fen: string): ChessInstance => {
     }
     half_moves = halfMoveClock
     move_number = moveCount
-
-    update_setup(generate_fen())
 
     return true
   }
@@ -398,15 +432,16 @@ var Chess = (fen: string): ChessInstance => {
     var fen = ""
 
     for (var i = SQUARES.a8; i <= SQUARES.h1; i++) {
-      if (board[i] == null) {
+      const boardItem = board[i]
+      if (boardItem == null) {
         empty++
-      } else {
+      } else if (board[i] != null) {
         if (empty > 0) {
           fen += empty
           empty = 0
         }
-        var color = board[i].color
-        var piece = board[i].type
+        var color = boardItem.color
+        var piece = boardItem.type
 
         fen += color === WHITE ? piece.toUpperCase() : piece.toLowerCase()
       }
@@ -426,17 +461,23 @@ var Chess = (fen: string): ChessInstance => {
     }
 
     var cflags = ""
-    if (castling[WHITE] & BITS.KSIDE_CASTLE) {
-      cflags += "K"
+    const castlingWhite = castling.w
+    const castlingBlack = castling.b
+    if (castlingWhite != null) {
+      if (castlingWhite & BITS.KSIDE_CASTLE) {
+        cflags += "K"
+      }
+      if (castlingWhite & BITS.QSIDE_CASTLE) {
+        cflags += "Q"
+      }
     }
-    if (castling[WHITE] & BITS.QSIDE_CASTLE) {
-      cflags += "Q"
-    }
-    if (castling[BLACK] & BITS.KSIDE_CASTLE) {
-      cflags += "k"
-    }
-    if (castling[BLACK] & BITS.QSIDE_CASTLE) {
-      cflags += "q"
+    if (castlingBlack != null) {
+      if (castlingBlack & BITS.KSIDE_CASTLE) {
+        cflags += "k"
+      }
+      if (castlingBlack & BITS.QSIDE_CASTLE) {
+        cflags += "q"
+      }
     }
 
     /* do we have an empty castling flag? */
@@ -444,38 +485,6 @@ var Chess = (fen: string): ChessInstance => {
     var epflags = ep_square === EMPTY ? "-" : algebraic(ep_square)
 
     return [fen, turn, cflags, epflags, half_moves, move_number].join(" ")
-  }
-
-  function set_header(args: any) {
-    for (var i = 0; i < args.length; i += 2) {
-      if (typeof args[i] === "string" && typeof args[i + 1] === "string") {
-        header[args[i]] = args[i + 1]
-      }
-    }
-    return header
-  }
-
-  /* called when the initial board setup is changed with put() or remove().
-   * modifies the SetUp and FEN properties of the header object.  if the FEN is
-   * equal to the default position, the SetUp and FEN are deleted
-   * the setup is only updated if history.length is zero, ie moves haven't been
-   * made.
-   */
-  function update_setup(fen: string) {
-    if (history.length > 0) return
-
-    if (fen !== DEFAULT_POSITION) {
-      header["SetUp"] = "1"
-      header["FEN"] = fen
-    } else {
-      delete header["SetUp"]
-      delete header["FEN"]
-    }
-  }
-
-  function get(square: Square): Piece | null {
-    var piece = board[SQUARES[square]]
-    return piece ? { type: piece.type, color: piece.color } : null
   }
 
   function put(piece: Piece, square: Square) {
@@ -509,86 +518,78 @@ var Chess = (fen: string): ChessInstance => {
       kings[piece.color] = sq
     }
 
-    update_setup(generate_fen())
-
     return true
   }
 
-  function remove(square: Square) {
-    var piece = get(square)
-    board[SQUARES[square]] = null
-    if (piece && piece.type === KING) {
-      kings[piece.color] = EMPTY
+  function build_move(
+    board: InternalBoard,
+    from: number,
+    to: number,
+    flags: number,
+    promotion?: Promotion
+  ) {
+    const boardFrom = board[from]
+    const boardTo = board[to]
+
+    if (boardFrom != null) {
+      const move: InternalMove = {
+        color: turn,
+        from: from,
+        to: to,
+        flags: flags,
+        piece: boardFrom.type,
+      }
+
+      if (promotion) {
+        move.flags = move.flags | BITS.PROMOTION
+        move.promotion = promotion
+      }
+
+      if (boardTo != null) {
+        move.captured = boardTo.type
+      } else if (flags & BITS.EP_CAPTURE) {
+        move.captured = PAWN
+      }
+      return move
+    } else {
+      throw new Error("Trying to move null")
     }
-
-    update_setup(generate_fen())
-
-    return piece
   }
 
-  function build_move(board, from, to, flags, promotion) {
-    var move = {
-      color: turn,
-      from: from,
-      to: to,
-      flags: flags,
-      piece: board[from].type,
-    }
-
-    if (promotion) {
-      move.flags |= BITS.PROMOTION
-      move.promotion = promotion
-    }
-
-    if (board[to]) {
-      move.captured = board[to].type
-    } else if (flags & BITS.EP_CAPTURE) {
-      move.captured = PAWN
-    }
-    return move
-  }
-
-  function generate_moves(options) {
-    function add_move(board, moves, from, to, flags) {
-      /* if pawn promotion */
-      if (
-        board[from].type === PAWN &&
-        (rank(to) === RANK_8 || rank(to) === RANK_1)
-      ) {
-        var pieces = [QUEEN, ROOK, BISHOP, KNIGHT]
-        for (var i = 0, len = pieces.length; i < len; i++) {
-          moves.push(build_move(board, from, to, flags, pieces[i]))
+  function generate_moves() {
+    function add_move(
+      board: InternalBoard,
+      moves: InternalMove[],
+      from: number,
+      to: number,
+      flags: number
+    ) {
+      const boardFrom = board[from]
+      if (boardFrom != null) {
+        /* if pawn promotion */
+        if (
+          boardFrom.type === PAWN &&
+          (rank(to) === RANK_8 || rank(to) === RANK_1)
+        ) {
+          moves.push(build_move(board, from, to, flags, "n"))
+          moves.push(build_move(board, from, to, flags, "b"))
+          moves.push(build_move(board, from, to, flags, "r"))
+          moves.push(build_move(board, from, to, flags, "q"))
+        } else {
+          moves.push(build_move(board, from, to, flags))
         }
       } else {
-        moves.push(build_move(board, from, to, flags))
+        throw new Error("trying to move null")
       }
     }
 
-    var moves = []
+    const moves: InternalMove[] = []
     var us = turn
-    var them = swap_color(us)
+    var them: Side = swap_color(us)
     var second_rank = { b: RANK_7, w: RANK_2 }
 
     var first_sq = SQUARES.a8
     var last_sq = SQUARES.h1
-    var single_square = false
-
-    /* do we want legal moves? */
-    var legal =
-      typeof options !== "undefined" && "legal" in options
-        ? options.legal
-        : true
-
-    /* are we generating moves for a single square? */
-    if (typeof options !== "undefined" && "square" in options) {
-      if (options.square in SQUARES) {
-        first_sq = last_sq = SQUARES[options.square]
-        single_square = true
-      } else {
-        /* invalid square */
-        return []
-      }
-    }
 
     for (var i = first_sq; i <= last_sq; i++) {
       /* did we run off the end of the board */
@@ -597,7 +598,7 @@ var Chess = (fen: string): ChessInstance => {
         continue
       }
 
-      var piece = board[i]
+      const piece = board[i]
       if (piece == null || piece.color !== us) {
         continue
       }
@@ -618,9 +619,11 @@ var Chess = (fen: string): ChessInstance => {
         /* pawn captures */
         for (j = 2; j < 4; j++) {
           var square = i + PAWN_OFFSETS[us][j]
-          if (square & 0x88) continue
-
-          if (board[square] != null && board[square].color === them) {
+          if (square & 0x88) {
+            continue
+          }
+          const boardSquare = board[square]
+          if (boardSquare != null && boardSquare.color === them) {
             add_move(board, moves, i, square, BITS.CAPTURE)
           } else if (square === ep_square) {
             add_move(board, moves, i, ep_square, BITS.EP_CAPTURE)
@@ -633,12 +636,14 @@ var Chess = (fen: string): ChessInstance => {
 
           while (true) {
             square += offset
-            if (square & 0x88) break
-
-            if (board[square] == null) {
+            if (square & 0x88) {
+              break
+            }
+            const boardSquare = board[square]
+            if (boardSquare == null) {
               add_move(board, moves, i, square, BITS.NORMAL)
             } else {
-              if (board[square].color === us) break
+              if (boardSquare.color === us) break
               add_move(board, moves, i, square, BITS.CAPTURE)
               break
             }
@@ -653,9 +658,10 @@ var Chess = (fen: string): ChessInstance => {
     /* check for castling if: a) we're generating all moves, or b) we're doing
      * single square move generation on the king's square
      */
-    if (!single_square || last_sq === kings[us]) {
-      /* king-side castling */
-      if (castling[us] & BITS.KSIDE_CASTLE) {
+    /* king-side castling */
+    const castlingUs = castling[us]
+    if (castlingUs != null) {
+      if (castlingUs & BITS.KSIDE_CASTLE) {
         var castling_from = kings[us]
         var castling_to = castling_from + 2
 
@@ -668,22 +674,23 @@ var Chess = (fen: string): ChessInstance => {
         ) {
           add_move(board, moves, kings[us], castling_to, BITS.KSIDE_CASTLE)
         }
-      }
+        // }
 
-      /* queen-side castling */
-      if (castling[us] & BITS.QSIDE_CASTLE) {
-        var castling_from = kings[us]
-        var castling_to = castling_from - 2
+        /* queen-side castling */
+        if (castlingUs & BITS.QSIDE_CASTLE) {
+          var castling_from = kings[us]
+          var castling_to = castling_from - 2
 
-        if (
-          board[castling_from - 1] == null &&
-          board[castling_from - 2] == null &&
-          board[castling_from - 3] == null &&
-          !attacked(them, kings[us]) &&
-          !attacked(them, castling_from - 1) &&
-          !attacked(them, castling_to)
-        ) {
-          add_move(board, moves, kings[us], castling_to, BITS.QSIDE_CASTLE)
+          if (
+            board[castling_from - 1] == null &&
+            board[castling_from - 2] == null &&
+            board[castling_from - 3] == null &&
+            !attacked(them, kings[us]) &&
+            !attacked(them, castling_from - 1) &&
+            !attacked(them, castling_to)
+          ) {
+            add_move(board, moves, kings[us], castling_to, BITS.QSIDE_CASTLE)
+          }
         }
       }
     }
@@ -704,7 +711,7 @@ var Chess = (fen: string): ChessInstance => {
    * 4. ... Nge7 is overly disambiguated because the knight on c6 is pinned
    * 4. ... Ne7 is technically the valid SAN
    */
-  function move_to_san(move: Move, sloppy = undefined) {
+  function move_to_san(move: InternalMove) {
     var output = ""
 
     if (move.flags & BITS.KSIDE_CASTLE) {
@@ -712,7 +719,7 @@ var Chess = (fen: string): ChessInstance => {
     } else if (move.flags & BITS.QSIDE_CASTLE) {
       output = "O-O-O"
     } else {
-      var disambiguator = get_disambiguator(move, sloppy)
+      var disambiguator = get_disambiguator(move)
 
       if (move.piece !== PAWN) {
         output += move.piece.toUpperCase() + disambiguator
@@ -728,7 +735,9 @@ var Chess = (fen: string): ChessInstance => {
       output += algebraic(move.to)
 
       if (move.flags & BITS.PROMOTION) {
-        output += "=" + move.promotion.toUpperCase()
+        if (move.promotion) {
+          output += "=" + move.promotion.toUpperCase()
+        }
       }
     }
 
@@ -745,12 +754,7 @@ var Chess = (fen: string): ChessInstance => {
     return output
   }
 
-  // parses all of the decorators out of a SAN string
-  function stripped_san(move) {
-    return move.replace(/=/, "").replace(/[+#]?[?!]*$/, "")
-  }
-
-  function attacked(color, square) {
+  function attacked(color: Side, square: number) {
     for (var i = SQUARES.a8; i <= SQUARES.h1; i++) {
       /* did we run off the end of the board */
       if (i & 0x88) {
@@ -759,9 +763,10 @@ var Chess = (fen: string): ChessInstance => {
       }
 
       /* if empty square or wrong color */
-      if (board[i] == null || board[i].color !== color) continue
+      const boardItem = board[i]
+      if (boardItem == null || boardItem.color !== color) continue
 
-      var piece = board[i]
+      var piece: InternalPiece = boardItem
       var difference = i - square
       var index = difference + 119
 
@@ -797,7 +802,7 @@ var Chess = (fen: string): ChessInstance => {
     return false
   }
 
-  function king_attacked(color) {
+  function king_attacked(color: Side) {
     return attacked(swap_color(color), kings[color])
   }
 
@@ -809,97 +814,7 @@ var Chess = (fen: string): ChessInstance => {
     return in_check() && generate_moves().length === 0
   }
 
-  function in_stalemate() {
-    return !in_check() && generate_moves().length === 0
-  }
-
-  function insufficient_material() {
-    var pieces = {}
-    var bishops = []
-    var num_pieces = 0
-    var sq_color = 0
-
-    for (var i = SQUARES.a8; i <= SQUARES.h1; i++) {
-      sq_color = (sq_color + 1) % 2
-      if (i & 0x88) {
-        i += 7
-        continue
-      }
-
-      var piece = board[i]
-      if (piece) {
-        pieces[piece.type] = piece.type in pieces ? pieces[piece.type] + 1 : 1
-        if (piece.type === BISHOP) {
-          bishops.push(sq_color)
-        }
-        num_pieces++
-      }
-    }
-
-    /* k vs. k */
-    if (num_pieces === 2) {
-      return true
-    } else if (
-      /* k vs. kn .... or .... k vs. kb */
-      num_pieces === 3 &&
-      (pieces[BISHOP] === 1 || pieces[KNIGHT] === 1)
-    ) {
-      return true
-    } else if (num_pieces === pieces[BISHOP] + 2) {
-      /* kb vs. kb where any number of bishops are all on the same color */
-      var sum = 0
-      var len = bishops.length
-      for (var i = 0; i < len; i++) {
-        sum += bishops[i]
-      }
-      if (sum === 0 || sum === len) {
-        return true
-      }
-    }
-
-    return false
-  }
-
-  function in_threefold_repetition() {
-    /* TODO: while this function is fine for casual use, a better
-     * implementation would use a Zobrist key (instead of FEN). the
-     * Zobrist key would be maintained in the make_move/undo_move functions,
-     * avoiding the costly that we do below.
-     */
-    var moves = []
-    var positions = {}
-    var repetition = false
-
-    while (true) {
-      var move = undo_move()
-      if (!move) break
-      moves.push(move)
-    }
-
-    while (true) {
-      /* remove the last two fields in the FEN string, they're not needed
-       * when checking for draw by rep */
-      var fen = generate_fen()
-        .split(" ")
-        .slice(0, 4)
-        .join(" ")
-
-      /* has the position occurred three or move times */
-      positions[fen] = fen in positions ? positions[fen] + 1 : 1
-      if (positions[fen] >= 3) {
-        repetition = true
-      }
-
-      if (!moves.length) {
-        break
-      }
-      make_move(moves.pop())
-    }
-
-    return repetition
-  }
-
-  function push(move) {
+  function push(move: InternalMove) {
     history.push({
       move: move,
       kings: { b: kings.b, w: kings.w },
@@ -911,9 +826,8 @@ var Chess = (fen: string): ChessInstance => {
     })
   }
 
-  function make_move(move) {
-    var us = turn
-    var them = swap_color(us)
+  function make_move(move: InternalMove) {
+    var us: Side = turn
     push(move)
 
     board[move.to] = board[move.from]
@@ -930,53 +844,34 @@ var Chess = (fen: string): ChessInstance => {
 
     /* if pawn promotion, replace with new piece */
     if (move.flags & BITS.PROMOTION) {
-      board[move.to] = { type: move.promotion, color: us }
-    }
-
-    /* if we moved the king */
-    if (board[move.to].type === KING) {
-      kings[board[move.to].color] = move.to
-
-      /* if we castled, move the rook next to the king */
-      if (move.flags & BITS.KSIDE_CASTLE) {
-        var castling_to = move.to - 1
-        var castling_from = move.to + 1
-        board[castling_to] = board[castling_from]
-        board[castling_from] = null
-      } else if (move.flags & BITS.QSIDE_CASTLE) {
-        var castling_to = move.to + 1
-        var castling_from = move.to - 2
-        board[castling_to] = board[castling_from]
-        board[castling_from] = null
+      const piece: InternalPiece = {
+        type: move.promotion as PieceType,
+        color: us,
       }
-
-      /* turn off castling */
-      castling[us] = ""
+      board[move.to] = piece
     }
 
-    /* turn off castling if we move a rook */
-    if (castling[us]) {
-      for (var i = 0, len = ROOKS[us].length; i < len; i++) {
-        if (
-          move.from === ROOKS[us][i].square &&
-          castling[us] & ROOKS[us][i].flag
-        ) {
-          castling[us] ^= ROOKS[us][i].flag
-          break
-        }
-      }
-    }
+    const boardTo = board[move.to]
+    if (boardTo != null) {
+      /* if we moved the king */
+      if (boardTo.type === KING) {
+        kings[boardTo.color] = move.to
 
-    /* turn off castling if we capture a rook */
-    if (castling[them]) {
-      for (var i = 0, len = ROOKS[them].length; i < len; i++) {
-        if (
-          move.to === ROOKS[them][i].square &&
-          castling[them] & ROOKS[them][i].flag
-        ) {
-          castling[them] ^= ROOKS[them][i].flag
-          break
+        /* if we castled, move the rook next to the king */
+        if (move.flags & BITS.KSIDE_CASTLE) {
+          var castling_to = move.to - 1
+          var castling_from = move.to + 1
+          board[castling_to] = board[castling_from]
+          board[castling_from] = null
+        } else if (move.flags & BITS.QSIDE_CASTLE) {
+          var castling_to = move.to + 1
+          var castling_from = move.to - 2
+          board[castling_to] = board[castling_from]
+          board[castling_from] = null
         }
+
+        /* turn off castling */
+        castling[us] = null
       }
     }
 
@@ -1020,15 +915,23 @@ var Chess = (fen: string): ChessInstance => {
     half_moves = old.half_moves
     move_number = old.move_number
 
-    var us = turn
-    var them = swap_color(turn)
+    var us: Side = turn
+    var them: Side = swap_color(turn)
 
-    board[move.from] = board[move.to]
-    board[move.from].type = move.piece // to undo any promotions
+    const boardFrom = board[move.to]
+    if (boardFrom != null) {
+      boardFrom.type = move.piece // to undo any promotions
+      board[move.from] = boardFrom
+    } else {
+      board[move.from] = null
+    }
+
     board[move.to] = null
 
     if (move.flags & BITS.CAPTURE) {
-      board[move.to] = { type: move.captured, color: them }
+      if (move.captured) {
+        board[move.to] = { type: move.captured, color: them }
+      }
     } else if (move.flags & BITS.EP_CAPTURE) {
       var index
       if (us === BLACK) {
@@ -1036,11 +939,12 @@ var Chess = (fen: string): ChessInstance => {
       } else {
         index = move.to + 16
       }
-      board[index] = { type: PAWN, color: them }
+      board[index] = { type: "p", color: them }
     }
 
     if (move.flags & (BITS.KSIDE_CASTLE | BITS.QSIDE_CASTLE)) {
-      var castling_to, castling_from
+      let castling_to
+      let castling_from
       if (move.flags & BITS.KSIDE_CASTLE) {
         castling_to = move.to + 1
         castling_from = move.to - 1
@@ -1049,16 +953,18 @@ var Chess = (fen: string): ChessInstance => {
         castling_from = move.to + 1
       }
 
-      board[castling_to] = board[castling_from]
-      board[castling_from] = null
+      if (castling_to != null && castling_from != null) {
+        board[castling_to] = board[castling_from]
+        board[castling_from] = null
+      }
     }
 
     return move
   }
 
   /* this function is used to uniquely identify ambiguous moves */
-  function get_disambiguator(move, sloppy) {
-    var moves = generate_moves({ legal: !sloppy })
+  function get_disambiguator(move: InternalMove) {
+    var moves = generate_moves()
 
     var from = move.from
     var to = move.to
@@ -1109,272 +1015,73 @@ var Chess = (fen: string): ChessInstance => {
     return ""
   }
 
-  function ascii() {
-    var s = "   +------------------------+\n"
-    for (var i = SQUARES.a8; i <= SQUARES.h1; i++) {
-      /* display the rank */
-      if (file(i) === 0) {
-        s += " " + "87654321"[rank(i)] + " |"
-      }
-
-      /* empty piece */
-      if (board[i] == null) {
-        s += " . "
-      } else {
-        var piece = board[i].type
-        var color = board[i].color
-        var symbol = color === WHITE ? piece.toUpperCase() : piece.toLowerCase()
-        s += " " + symbol + " "
-      }
-
-      if ((i + 1) & 0x88) {
-        s += "|\n"
-        i += 8
-      }
-    }
-    s += "   +------------------------+\n"
-    s += "     a  b  c  d  e  f  g  h\n"
-
-    return s
-  }
-
-  // convert a move from Standard Algebraic Notation (SAN) to 0x88 coordinates
-  function move_from_san(move, sloppy) {
-    // strip off any move decorations: e.g Nf3+?!
-    var clean_move = stripped_san(move)
-
-    // if we're using the sloppy parser run a regex to grab piece, to, and from
-    // this should parse invalid SAN like: Pe2-e4, Rc1c4, Qf3xf7
-    if (sloppy) {
-      var matches = clean_move.match(
-        /([pnbrqkPNBRQK])?([a-h][1-8])x?-?([a-h][1-8])([qrbnQRBN])?/
-      )
-      if (matches) {
-        var piece = matches[1]
-        var from = matches[2]
-        var to = matches[3]
-        var promotion = matches[4]
-      }
-    }
-
-    var moves = generate_moves()
-    for (var i = 0, len = moves.length; i < len; i++) {
-      // try the strict parser first, then the sloppy parser if requested
-      // by the user
-      if (
-        clean_move === stripped_san(move_to_san(moves[i])) ||
-        (sloppy && clean_move === stripped_san(move_to_san(moves[i], true)))
-      ) {
-        return moves[i]
-      } else {
-        if (
-          matches &&
-          (!piece || piece.toLowerCase() == moves[i].piece) &&
-          SQUARES[from] == moves[i].from &&
-          SQUARES[to] == moves[i].to &&
-          (!promotion || promotion.toLowerCase() == moves[i].promotion)
-        ) {
-          return moves[i]
-        }
-      }
-    }
-
-    return null
-  }
-
   /*****************************************************************************
    * UTILITY FUNCTIONS
    ****************************************************************************/
-  function rank(i) {
+  function rank(i: number) {
     return i >> 4
   }
 
-  function file(i) {
+  function file(i: number) {
     return i & 15
   }
 
-  function algebraic(i) {
+  function algebraic(i: number): Square {
     var f = file(i),
       r = rank(i)
-    return "abcdefgh".substring(f, f + 1) + "87654321".substring(r, r + 1)
+    return ("abcdefgh".substring(f, f + 1) +
+      "87654321".substring(r, r + 1)) as Square
   }
 
-  function swap_color(c) {
+  function swap_color(c: Side) {
     return c === WHITE ? BLACK : WHITE
   }
 
-  function is_digit(c) {
+  function is_digit(c: string) {
     return "0123456789".indexOf(c) !== -1
   }
 
   /* pretty = external move object */
-  function make_pretty(ugly_move) {
-    var move = clone(ugly_move)
-    move.san = move_to_san(move, false)
-    move.to = algebraic(move.to)
-    move.from = algebraic(move.from)
-
-    var flags = ""
-
-    for (var flag in BITS) {
-      if (BITS[flag] & move.flags) {
-        flags += FLAGS[flag]
-      }
-    }
-    move.flags = flags
-
-    return move
-  }
-
-  function clone(obj) {
-    var dupe = obj instanceof Array ? [] : {}
-
-    for (var property in obj) {
-      if (typeof property === "object") {
-        dupe[property] = clone(obj[property])
-      } else {
-        dupe[property] = obj[property]
-      }
-    }
-
-    return dupe
-  }
-
-  function trim(str) {
-    return str.replace(/^\s+|\s+$/g, "")
-  }
-
-  /*****************************************************************************
-   * DEBUGGING UTILITIES
-   ****************************************************************************/
-  function perft(depth) {
-    var moves = generate_moves({ legal: false })
-    var nodes = 0
-    var color = turn
-
-    for (var i = 0, len = moves.length; i < len; i++) {
-      make_move(moves[i])
-      if (!king_attacked(color)) {
-        if (depth - 1 > 0) {
-          var child_nodes = perft(depth - 1)
-          nodes += child_nodes
-        } else {
-          nodes++
+  function make_pretty(ugly_move: InternalMove): Move {
+    const generateFlags = (ugly_move: InternalMove) => {
+      let flags = ""
+      const keys: Flag[] = Object.keys(BITS) as Flag[]
+      keys.forEach(flag => {
+        if (BITS[flag] & ugly_move.flags) {
+          flags += FLAGS[flag]
         }
-      }
-      undo_move()
+      })
+      return flags
     }
 
-    return nodes
+    return {
+      color: ugly_move.color,
+      san: move_to_san(ugly_move),
+      to: algebraic(ugly_move.to),
+      from: algebraic(ugly_move.from),
+      flags: generateFlags(ugly_move),
+      piece: ugly_move.piece,
+      captured: ugly_move.captured,
+      promotion: ugly_move.promotion,
+    }
   }
 
   return {
-    /***************************************************************************
-     * PUBLIC CONSTANTS (is there a better way to do this?)
-     **************************************************************************/
-    WHITE: WHITE,
-    BLACK: BLACK,
-    PAWN: PAWN,
-    KNIGHT: KNIGHT,
-    BISHOP: BISHOP,
-    ROOK: ROOK,
-    QUEEN: QUEEN,
-    KING: KING,
-    SQUARES: (function() {
-      /* from the ECMA-262 spec (section 12.6.4):
-       * "The mechanics of enumerating the properties ... is
-       * implementation dependent"
-       * so: for (var sq in SQUARES) { keys.push(sq); } might not be
-       * ordered correctly
-       */
-      var keys = []
-      for (var i = SQUARES.a8; i <= SQUARES.h1; i++) {
-        if (i & 0x88) {
-          i += 7
-          continue
-        }
-        keys.push(algebraic(i))
-      }
-      return keys
-    })(),
-    FLAGS: FLAGS,
-
-    /***************************************************************************
-     * PUBLIC API
-     **************************************************************************/
-    load: function(fen) {
-      return load(fen)
-    },
-
-    reset: function() {
-      return reset()
-    },
-
-    moves: function(options) {
+    moves: function() {
       /* The internal representation of a chess move is in 0x88 format, and
        * not meant to be human-readable.  The code below converts the 0x88
        * square coordinates to algebraic coordinates.  It also prunes an
        * unnecessary move keys resulting from a verbose call.
        */
 
-      var ugly_moves = generate_moves(options)
+      var ugly_moves = generate_moves()
       var moves = []
 
       for (var i = 0, len = ugly_moves.length; i < len; i++) {
-        /* does the user want a full move object (most likely not), or just
-         * SAN
-         */
-        if (
-          typeof options !== "undefined" &&
-          "verbose" in options &&
-          options.verbose
-        ) {
-          moves.push(make_pretty(ugly_moves[i]))
-        } else {
-          moves.push(move_to_san(ugly_moves[i], false))
-        }
+        moves.push(make_pretty(ugly_moves[i]))
       }
 
       return moves
-    },
-
-    in_check: function() {
-      return in_check()
-    },
-
-    in_checkmate: function() {
-      return in_checkmate()
-    },
-
-    in_stalemate: function() {
-      return in_stalemate()
-    },
-
-    in_draw: function() {
-      return (
-        half_moves >= 100 ||
-        in_stalemate() ||
-        insufficient_material() ||
-        in_threefold_repetition()
-      )
-    },
-
-    insufficient_material: function() {
-      return insufficient_material()
-    },
-
-    in_threefold_repetition: function() {
-      return in_threefold_repetition()
-    },
-
-    game_over: function() {
-      return (
-        half_moves >= 100 ||
-        in_checkmate() ||
-        in_stalemate() ||
-        insufficient_material() ||
-        in_threefold_repetition()
-      )
     },
 
     validate_fen: function(fen) {
@@ -1385,295 +1092,18 @@ var Chess = (fen: string): ChessInstance => {
       return generate_fen()
     },
 
-    pgn: function(options) {
-      /* using the specification from http://www.chessclub.com/help/PGN-spec
-       * example for html usage: .pgn({ max_width: 72, newline_char: "<br />" })
-       */
-      var newline =
-        typeof options === "object" && typeof options.newline_char === "string"
-          ? options.newline_char
-          : "\n"
-      var max_width =
-        typeof options === "object" && typeof options.max_width === "number"
-          ? options.max_width
-          : 0
-      var result = []
-      var header_exists = false
-
-      /* add the PGN header headerrmation */
-      for (var i in header) {
-        /* TODO: order of enumerated properties in header object is not
-         * guaranteed, see ECMA-262 spec (section 12.6.4)
-         */
-        result.push("[" + i + ' "' + header[i] + '"]' + newline)
-        header_exists = true
-      }
-
-      if (header_exists && history.length) {
-        result.push(newline)
-      }
-
-      /* pop all of history onto reversed_history */
-      var reversed_history = []
-      while (history.length > 0) {
-        reversed_history.push(undo_move())
-      }
-
-      var moves = []
-      var move_string = ""
-
-      /* build the list of moves.  a move_string looks like: "3. e3 e6" */
-      while (reversed_history.length > 0) {
-        var move = reversed_history.pop()
-
-        /* if the position started with black to move, start PGN with 1. ... */
-        if (!history.length && move.color === "b") {
-          move_string = move_number + ". ..."
-        } else if (move.color === "w") {
-          /* store the previous generated move_string if we have one */
-          if (move_string.length) {
-            moves.push(move_string)
-          }
-          move_string = move_number + "."
-        }
-
-        move_string = move_string + " " + move_to_san(move, false)
-        make_move(move)
-      }
-
-      /* are there any other leftover moves? */
-      if (move_string.length) {
-        moves.push(move_string)
-      }
-
-      /* is there a result? */
-      if (typeof header.Result !== "undefined") {
-        moves.push(header.Result)
-      }
-
-      /* history should be back to what is was before we started generating PGN,
-       * so join together moves
-       */
-      if (max_width === 0) {
-        return result.join("") + moves.join(" ")
-      }
-
-      /* wrap the PGN output at max_width */
-      var current_width = 0
-      for (var i = 0; i < moves.length; i++) {
-        /* if the current move will push past max_width */
-        if (current_width + moves[i].length > max_width && i !== 0) {
-          /* don't end the line with whitespace */
-          if (result[result.length - 1] === " ") {
-            result.pop()
-          }
-
-          result.push(newline)
-          current_width = 0
-        } else if (i !== 0) {
-          result.push(" ")
-          current_width++
-        }
-        result.push(moves[i])
-        current_width += moves[i].length
-      }
-
-      return result.join("")
-    },
-
-    load_pgn: function(pgn, options) {
-      // allow the user to specify the sloppy move parser to work around over
-      // disambiguation bugs in Fritz and Chessbase
-      var sloppy =
-        typeof options !== "undefined" && "sloppy" in options
-          ? options.sloppy
-          : false
-
-      function mask(str) {
-        return str.replace(/\\/g, "\\")
-      }
-
-      function has_keys(object) {
-        for (var key in object) {
-          return true
-        }
-        return false
-      }
-
-      function parse_pgn_header(header, options) {
-        var newline_char =
-          typeof options === "object" &&
-          typeof options.newline_char === "string"
-            ? options.newline_char
-            : "\r?\n"
-        var header_obj = {}
-        var headers = header.split(new RegExp(mask(newline_char)))
-        var key = ""
-        var value = ""
-
-        for (var i = 0; i < headers.length; i++) {
-          key = headers[i].replace(/^\[([A-Z][A-Za-z]*)\s.*\]$/, "$1")
-          value = headers[i].replace(/^\[[A-Za-z]+\s"(.*)"\]$/, "$1")
-          if (trim(key).length > 0) {
-            header_obj[key] = value
-          }
-        }
-
-        return header_obj
-      }
-
-      var newline_char =
-        typeof options === "object" && typeof options.newline_char === "string"
-          ? options.newline_char
-          : "\r?\n"
-      var regex = new RegExp(
-        "^(\\[(.|" +
-          mask(newline_char) +
-          ")*\\])" +
-          "(" +
-          mask(newline_char) +
-          ")*" +
-          "1.(" +
-          mask(newline_char) +
-          "|.)*$",
-        "g"
-      )
-
-      /* get header part of the PGN file */
-      var header_string = pgn.replace(regex, "$1")
-
-      /* no info part given, begins with moves */
-      if (header_string[0] !== "[") {
-        header_string = ""
-      }
-
-      reset()
-
-      /* parse PGN header */
-      var headers = parse_pgn_header(header_string, options)
-      for (var key in headers) {
-        set_header([key, headers[key]])
-      }
-
-      /* load the starting position indicated by [Setup '1'] and
-       * [FEN position] */
-      if (headers["SetUp"] === "1") {
-        if (!("FEN" in headers && load(headers["FEN"]))) {
-          return false
-        }
-      }
-
-      /* delete header to get the moves */
-      var ms = pgn
-        .replace(header_string, "")
-        .replace(new RegExp(mask(newline_char), "g"), " ")
-
-      /* delete comments */
-      ms = ms.replace(/(\{[^}]+\})+?/g, "")
-
-      /* delete recursive annotation variations */
-      var rav_regex = /(\([^\(\)]+\))+?/g
-      while (rav_regex.test(ms)) {
-        ms = ms.replace(rav_regex, "")
-      }
-
-      /* delete move numbers */
-      ms = ms.replace(/\d+\.(\.\.)?/g, "")
-
-      /* delete ... indicating black to move */
-      ms = ms.replace(/\.\.\./g, "")
-
-      /* delete numeric annotation glyphs */
-      ms = ms.replace(/\$\d+/g, "")
-
-      /* trim and get array of moves */
-      var moves = trim(ms).split(new RegExp(/\s+/))
-
-      /* delete empty entries */
-      moves = moves
-        .join(",")
-        .replace(/,,+/g, ",")
-        .split(",")
-      var move = ""
-
-      for (var half_move = 0; half_move < moves.length - 1; half_move++) {
-        move = move_from_san(moves[half_move], sloppy)
-
-        /* move not possible! (don't clear the board to examine to show the
-         * latest valid position)
-         */
-        if (move == null) {
-          return false
-        } else {
-          make_move(move)
-        }
-      }
-
-      /* examine last move */
-      move = moves[moves.length - 1]
-      if (POSSIBLE_RESULTS.indexOf(move) > -1) {
-        if (has_keys(header) && typeof header.Result === "undefined") {
-          set_header(["Result", move])
-        }
-      } else {
-        move = move_from_san(move, sloppy)
-        if (move == null) {
-          return false
-        } else {
-          make_move(move)
-        }
-      }
-      return true
-    },
-
-    header: function() {
-      return set_header(arguments)
-    },
-
-    ascii: function() {
-      return ascii()
-    },
-
-    turn: function() {
-      return turn
-    },
-
-    move: function(move, options) {
-      /* The move function can be called with in the following parameters:
-       *
-       * .move('Nxb7')      <- where 'move' is a case-sensitive SAN string
-       *
-       * .move({ from: 'h7', <- where the 'move' is a move object (additional
-       *         to :'h8',      fields are ignored)
-       *         promotion: 'q',
-       *      })
-       */
-
-      // allow the user to specify the sloppy move parser to work around over
-      // disambiguation bugs in Fritz and Chessbase
-      var sloppy =
-        typeof options !== "undefined" && "sloppy" in options
-          ? options.sloppy
-          : false
-
+    move: function(move: ShortMove): Move | null {
       var move_obj = null
-
-      if (typeof move === "string") {
-        move_obj = move_from_san(move, sloppy)
-      } else if (typeof move === "object") {
-        var moves = generate_moves()
-
-        /* convert the pretty move object to an ugly move object */
-        for (var i = 0, len = moves.length; i < len; i++) {
-          if (
-            move.from === algebraic(moves[i].from) &&
-            move.to === algebraic(moves[i].to) &&
-            (!("promotion" in moves[i]) ||
-              move.promotion === moves[i].promotion)
-          ) {
-            move_obj = moves[i]
-            break
-          }
+      var moves = generate_moves()
+      /* convert the pretty move object to an ugly move object */
+      for (var i = 0, len = moves.length; i < len; i++) {
+        if (
+          move.from === algebraic(moves[i].from) &&
+          move.to === algebraic(moves[i].to) &&
+          (!("promotion" in moves[i]) || move.promotion === moves[i].promotion)
+        ) {
+          move_obj = moves[i]
+          break
         }
       }
 
@@ -1685,73 +1115,14 @@ var Chess = (fen: string): ChessInstance => {
       /* need to make a copy of move because we can't generate SAN after the
        * move is made
        */
-      var pretty_move = make_pretty(move_obj)
+      const pretty_move: Move = make_pretty(move_obj)
 
       make_move(move_obj)
 
       return pretty_move
     },
-
-    undo: function() {
-      var move = undo_move()
-      return move ? make_pretty(move) : null
-    },
-
-    clear: function() {
-      return clear()
-    },
-
-    put: function(piece, square) {
-      return put(piece, square)
-    },
-
-    get: function(square) {
-      return get(square)
-    },
-
-    remove: function(square) {
-      return remove(square)
-    },
-
-    perft: function(depth) {
-      return perft(depth)
-    },
-
-    square_color: function(square) {
-      if (square in SQUARES) {
-        var sq_0x88 = SQUARES[square]
-        return (rank(sq_0x88) + file(sq_0x88)) % 2 === 0 ? "light" : "dark"
-      }
-
-      return null
-    },
-
-    history: function(options) {
-      var reversed_history = []
-      var move_history = []
-      var verbose =
-        typeof options !== "undefined" &&
-        "verbose" in options &&
-        options.verbose
-
-      while (history.length > 0) {
-        reversed_history.push(undo_move())
-      }
-
-      while (reversed_history.length > 0) {
-        var move = reversed_history.pop()
-        if (verbose) {
-          move_history.push(make_pretty(move))
-        } else {
-          move_history.push(move_to_san(move))
-        }
-        make_move(move)
-      }
-
-      return move_history
-    },
   }
 }
 
-export { ChessInstance, Move, ShortMove, Piece }
+export { ChessInstance, Move, ShortMove, Piece, PieceType, Side, Square }
 export default Chess

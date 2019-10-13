@@ -36,6 +36,7 @@ describe("Game", () => {
           winner: "black",
           resetBoard: jest.fn(),
           selectUserTile: jest.fn(),
+          setGameIsActive: jest.fn(),
         }
         const { queryByTestId } = renderGameScreen(gameState)
 
@@ -55,6 +56,7 @@ describe("Game", () => {
           winner: "white",
           resetBoard: jest.fn(),
           selectUserTile: jest.fn(),
+          setGameIsActive: jest.fn(),
         }
         const { queryByTestId } = renderGameScreen(gameState)
 

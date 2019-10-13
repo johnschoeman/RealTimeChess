@@ -39,7 +39,7 @@
     "jest": "^24.9.0",
     "metro-react-native-babel-preset": "^0.56.0",
     "prettier": "^1.18.2",
-    "react-test-renderer": "16.8.6",
+    "react-test-renderer": "16.9.0",
     "ts-jest": "^24.0.2",
     "tslint": "^5.16.0",
     "typescript": "^3.4.5",

@@ -1,4 +1,4 @@
-## Privacy Policy
+# Privacy Policy
 
 John Schoeman built the ArcadeChess app as a Free app. This SERVICE is provided by John Schoeman at no cost and is intended for use as is.
 

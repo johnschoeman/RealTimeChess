@@ -17,11 +17,7 @@ const Game = () => {
       </View>
 
       <View style={styles.footer}>
-        {winner == null ? (
-          <TouchableOpacity onPress={() => resetBoard()}>
-            <Text style={styles.resetButton}>Reset Board</Text>
-          </TouchableOpacity>
-        ) : (
+        {winner !== null ? (
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               onPress={() => resetBoard()}
@@ -30,7 +26,7 @@ const Game = () => {
               <Text style={Typography.mainButton}>PLAY AGAIN</Text>
             </TouchableOpacity>
           </View>
-        )}
+        ) : null}
       </View>
     </View>
   )

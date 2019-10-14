@@ -4,7 +4,7 @@ import { Image, View, StyleSheet } from "react-native"
 import { GameProvider } from "./GameContext"
 import Game from "./Game"
 
-import { Color } from "../styles"
+import { Color, Spacing } from "../styles"
 
 const GameScreen = () => {
   return (
@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     width: "100%",
+    paddingTop: Spacing.medium,
   },
   imageContainer: {
     height: "100%",

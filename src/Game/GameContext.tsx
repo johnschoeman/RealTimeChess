@@ -1,4 +1,10 @@
-import React, { createContext, useState, useEffect } from "react"
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+} from "react"
 
 import { AiHelpers, GameHelpers } from "../utils"
 import { Side } from "../utils/game_helpers"
@@ -10,6 +16,7 @@ export interface GameState {
   winner: GameHelpers.Side | null
   resetBoard: any
   selectUserTile: any
+  setGameIsActive: Dispatch<SetStateAction<boolean>>
 }
 
 export const initialGameState: GameState = {
@@ -19,6 +26,7 @@ export const initialGameState: GameState = {
   winner: null,
   resetBoard: () => {},
   selectUserTile: () => {},
+  setGameIsActive: () => {},
 }
 
 const GameContext = createContext<GameState>(initialGameState)
@@ -47,21 +55,24 @@ const GameProvider = ({ children }: GameProviderProps) => {
   ] = useState<AiHelpers.Move | null>(null)
   const [winner, setWinner] = useState<GameHelpers.Side | null>(null)
   const [gameStep, setGameStep] = useState<number>(0)
+  const [gameIsActive, setGameIsActive] = useState<boolean>(false)
 
   const tick = (): void => {
-    setGameStep(gameStep + 1)
-    const currentWinner: Side | null = GameHelpers.winner(board)
-    if (currentWinner == null) {
-      const computerNextTile = getNextComputerTile()
-      selectComputerTile(computerNextTile)
-    } else {
-      setWinner(currentWinner)
+    if (gameIsActive) {
+      setGameStep(gameStep + 1)
+      const currentWinner: Side | null = GameHelpers.winner(board)
+      if (currentWinner == null) {
+        const computerNextTile = getNextComputerTile()
+        selectComputerTile(computerNextTile)
+      } else {
+        setGameIsActive(false)
+        setWinner(currentWinner)
+      }
     }
   }
 
   useEffect(() => {
     const intervalID = setInterval(tick, computerClockSpeed)
-
     return () => {
       clearInterval(intervalID)
     }
@@ -152,6 +163,7 @@ const GameProvider = ({ children }: GameProviderProps) => {
         winner,
         resetBoard: resetBoard,
         selectUserTile: selectUserTile,
+        setGameIsActive,
       }}
     >
       {children}

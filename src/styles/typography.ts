@@ -2,6 +2,9 @@ import * as Color from "./color"
 
 export const baseFontSize = 12
 export const largeFontSize = 24
+export const countFontSize = 180
+
+export const heavyFontWeight = "600"
 
 export const helvetica = "Helvetica-Bold"
 const baseFont = helvetica

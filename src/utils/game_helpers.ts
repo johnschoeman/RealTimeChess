@@ -1,4 +1,4 @@
-import { ChessInstance, ShortMove, Square } from "chess.js"
+import { ChessInstance, ShortMove, Square, Move } from "chess.js"
 
 import Chess from "./chess/chess"
 import {
@@ -12,6 +12,8 @@ import {
   king,
 } from "./pieces"
 import * as ArrayHelpers from "./array_helpers"
+import { isValidElement } from "react"
+import { RotationGestureHandler } from "react-native-gesture-handler"
 
 export type Side = "black" | "white"
 export const black: Side = "black"
@@ -218,12 +220,52 @@ export const updateBoard = (
     )
   }
 
+  const isACastle = (
+    kind: string,
+    fromRow: number,
+    fromCol: number,
+    toCol: number,
+    side: Side
+  ): boolean => {
+    if (
+      kind === "king" &&
+      fromCol === 4 &&
+      (toCol === 2 || toCol === 6) &&
+      ((side === "black" && fromRow === 0) ||
+        (side === "white" && fromRow === 7))
+    ) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  const castleKing = (
+    newBoard: Board,
+    toCol: number,
+    toRow: number,
+    side: Side
+  ): void => {
+    newBoard[toRow][toCol] = oldPiece
+    if (toCol === 2) {
+      newBoard[toRow][3] = new rook(side)
+      newBoard[toRow][0] = new empty()
+    } else if (toCol === 6) {
+      newBoard[toRow][5] = new rook(side)
+      newBoard[toRow][7] = new empty()
+    }
+  }
+
   if (side != null) {
     const newBoard = ArrayHelpers.deepDup(oldBoard)
     newBoard[fromRow][fromCol] = new empty()
-    newBoard[toRow][toCol] = isAPawnPromotion(kind, toRow, side)
-      ? new queen(side)
-      : oldPiece
+    if (isAPawnPromotion(kind, toRow, side)) {
+      newBoard[toRow][toCol] = new queen(side)
+    } else if (isACastle(kind, fromRow, fromCol, toCol, side)) {
+      castleKing(newBoard, toCol, toRow, side)
+    } else {
+      newBoard[toRow][toCol] = oldPiece
+    }
     return newBoard
   } else {
     return oldBoard
@@ -242,9 +284,9 @@ export function validMove(
   const to: Square = tileRCtoAN(toTile).square
 
   const shortMove: ShortMove = { from, to, promotion: "q" }
-  const move = chessClient.move(shortMove)
+  const move: Move | null = chessClient.move(shortMove)
 
-  return move != null ? true : false
+  return move == null ? false : true
 }
 
 export const generateFen = (board: Board, side: Side = "white"): string => {

@@ -162,16 +162,92 @@ describe("validMove", () => {
 
   describe("when the king is in check and the move is not moving the king out of check", () => {
     test("it returns true", () => {
-      const board: Board = createBoard("RK6/8/8/8/8/8/8/k1rr4 b KQkq - 0 1")
+      const board: Board = createBoard("rk6/8/8/8/8/8/8/K1RR4 b KQkq - 0 1")
 
-      const ka1b1 = validMove(
+      const Ka1b1 = validMove(
         board,
         { colIdx: 0, rowIdx: 7 },
         { colIdx: 0, rowIdx: 6 },
-        "black"
+        "white"
       )
 
-      expect(ka1b1).toBe(true)
+      expect(Ka1b1).toBe(true)
+    })
+  })
+
+  describe("when the player is castling", () => {
+    describe("and castling is allowed", () => {
+      test("it returns true", () => {
+        const board: Board = createBoard(
+          "r3k2r/p6p/8/8/8/8/P6P/R3K2R w KQkq - 0 1"
+        )
+
+        const kOOO = validMove(
+          board,
+          { colIdx: 4, rowIdx: 0 },
+          { colIdx: 2, rowIdx: 0 },
+          "black"
+        )
+        const kOO = validMove(
+          board,
+          { colIdx: 4, rowIdx: 0 },
+          { colIdx: 6, rowIdx: 0 },
+          "black"
+        )
+        const KOOO = validMove(
+          board,
+          { colIdx: 4, rowIdx: 7 },
+          { colIdx: 2, rowIdx: 7 },
+          "white"
+        )
+        const KOO = validMove(
+          board,
+          { colIdx: 4, rowIdx: 7 },
+          { colIdx: 6, rowIdx: 7 },
+          "white"
+        )
+
+        expect(kOOO).toBe(true)
+        expect(kOO).toBe(true)
+        expect(KOOO).toBe(true)
+        expect(KOO).toBe(true)
+      })
+    })
+
+    describe("and the player is trying to castle through an attacked or occupied square", () => {
+      test("it returns false", () => {
+        const board: Board = createBoard("4k3/p6p/8/8/8/8/P6P/3RKR2 w - - 0 1")
+
+        const kOOO = validMove(
+          board,
+          { colIdx: 4, rowIdx: 0 },
+          { colIdx: 2, rowIdx: 0 },
+          "black"
+        )
+        const kOO = validMove(
+          board,
+          { colIdx: 4, rowIdx: 0 },
+          { colIdx: 6, rowIdx: 0 },
+          "black"
+        )
+        const KOOO = validMove(
+          board,
+          { colIdx: 4, rowIdx: 7 },
+          { colIdx: 2, rowIdx: 7 },
+          "white"
+        )
+        const KOO = validMove(
+          board,
+          { colIdx: 4, rowIdx: 7 },
+          { colIdx: 6, rowIdx: 7 },
+          "white"
+        )
+
+        expect(kOOO).toBe(false)
+        expect(kOO).toBe(false)
+        expect(KOOO).toBe(false)
+        expect(KOO).toBe(false)
+      })
     })
   })
 })
@@ -284,6 +360,46 @@ describe("updateBoard", () => {
         "Qnbqkbnr/p1pppppp/8/8/8/8/1PPPPPPP/RNBQKBNR b KQkq - 0 1"
       const expected: Board = createBoard(expectedFen)
       expectBoardsToMatch(result, expected)
+    })
+  })
+
+  describe("when the king is castling", () => {
+    describe("queenside castle", () => {
+      test("the king moves two squares towards the intended rook and the rook moves to the other side", () => {
+        const startBoard: Board = createBoard(
+          "r3kbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1"
+        )
+
+        const result: Board = updateBoard(
+          startBoard,
+          { rowIdx: 0, colIdx: 4 },
+          { rowIdx: 0, colIdx: 2 }
+        )
+
+        const expectedFen =
+          "2kr1bnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1"
+        const expected: Board = createBoard(expectedFen)
+        expectBoardsToMatch(result, expected)
+      })
+    })
+
+    describe("kingside castle", () => {
+      test("the king moves two squares towards the intended rook and the rook moves to the other side", () => {
+        const startBoard: Board = createBoard(
+          "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQK2R b KQkq - 0 1"
+        )
+
+        const result: Board = updateBoard(
+          startBoard,
+          { rowIdx: 7, colIdx: 4 },
+          { rowIdx: 7, colIdx: 6 }
+        )
+
+        const expectedFen =
+          "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQ1RK1 KQkq - 0 1"
+        const expected: Board = createBoard(expectedFen)
+        expectBoardsToMatch(result, expected)
+      })
     })
   })
 })

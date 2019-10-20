@@ -12,6 +12,21 @@ export type Side = "b" | "w"
  */
 export type FenCode = [string, Side, string, Square | "-", number, number]
 
+export type FenId =
+  | "r"
+  | "n"
+  | "b"
+  | "k"
+  | "q"
+  | "p"
+  | "R"
+  | "N"
+  | "B"
+  | "K"
+  | "Q"
+  | "P"
+  | "0"
+
 /**
  * One of the possible sqaures on a chess board in san format,
  * e.g. "a8" to "h1".

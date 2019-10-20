@@ -197,11 +197,30 @@ export function getPiece(board: Board, tile: Tile): PieceType {
   return board[tile.rowIdx][tile.colIdx]
 }
 
-export const updateBoard = (
+export function updateBoardWithMove(oldBoard: Board, move: Move): Board {
+  const moveToRCTiles = (move: Move) => {
+    const { from, to } = move
+    const fromTile: Tile = squareToRCTile(from)
+    const toTile: Tile = squareToRCTile(to)
+    return { fromTile, toTile }
+  }
+  const { fromTile, toTile } = moveToRCTiles(move)
+
+  try {
+    return updateBoard(oldBoard, fromTile, toTile)
+  } catch (error) {
+    console.error(error)
+    console.error("move: ", move)
+    console.error("board: ", oldBoard)
+    return oldBoard
+  }
+}
+
+export function updateBoard(
   oldBoard: Board,
   fromTile: Tile,
   toTile: Tile
-): Board => {
+): Board {
   const { rowIdx: fromRow, colIdx: fromCol } = fromTile
   const { rowIdx: toRow, colIdx: toCol } = toTile
   const oldPiece = oldBoard[fromRow][fromCol]
@@ -291,7 +310,7 @@ export const generateFen = (board: Board, side: Side = "white"): string => {
   const fenChars: string[] = board.map(rank => {
     return rank
       .map(file => {
-        return file.fenCode
+        return file.fenId
       })
       .join("")
   })
@@ -332,7 +351,7 @@ export const boardToAscii = (board: Board): string => {
     .map(rank => {
       return rank
         .map(piece => {
-          return piece.fenCode
+          return piece.fenId
         })
         .join(" ")
     })

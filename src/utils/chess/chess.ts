@@ -45,6 +45,27 @@ import {
   Promotion,
 } from "./types"
 
+const move = function move(
+  this: Move,
+  color: Side,
+  from: Square,
+  to: Square,
+  flags: string,
+  piece: PieceType,
+  san: string,
+  captured?: PieceType,
+  promotion?: Promotion
+) {
+  this.color = color
+  this.from = from
+  this.to = to
+  this.flags = flags
+  this.piece = piece
+  this.san = san
+  this.captured = captured
+  this.promotion = promotion
+}
+
 /**
  * Move format used inside engine
  * color: "b" | "w"
@@ -527,7 +548,7 @@ var Chess = (fen: string): ChessInstance => {
     to: number,
     flags: number,
     promotion?: Promotion
-  ) {
+  ): InternalMove {
     const boardFrom = board[from]
     const boardTo = board[to]
 
@@ -1124,5 +1145,5 @@ var Chess = (fen: string): ChessInstance => {
   }
 }
 
-export { ChessInstance, Move, ShortMove, Piece, PieceType, Side, Square }
+export { ChessInstance, move, Move, ShortMove, Piece, PieceType, Side, Square }
 export default Chess

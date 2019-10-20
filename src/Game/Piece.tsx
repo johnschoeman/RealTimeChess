@@ -1,6 +1,7 @@
 import React from "react"
 import { View, StyleSheet, Image, ImageSourcePropType } from "react-native"
 
+import { FenId } from "../utils/chess/types"
 import { Pieces } from "../utils"
 
 const blackPawn = require("../assets/BlackPawn.png")
@@ -23,11 +24,11 @@ interface PieceProps {
 
 const Piece = ({ piece, testID }: PieceProps) => (
   <View style={styles.container} testID={testID}>
-    {piece.fenCode === "0" ? null : <Image source={pieceImageSource(piece)} />}
+    {piece.fenId === "0" ? null : <Image source={pieceImageSource(piece)} />}
   </View>
 )
 
-type PieceFlags = { [P in Pieces.FenCode]: ImageSourcePropType }
+type PieceFlags = { [P in FenId]: ImageSourcePropType }
 
 const pieceImageSource = (piece: Pieces.PieceType): ImageSourcePropType => {
   const styleMap: PieceFlags = {
@@ -45,7 +46,7 @@ const pieceImageSource = (piece: Pieces.PieceType): ImageSourcePropType => {
     K: whiteKing,
     P: whitePawn,
   }
-  return styleMap[piece.fenCode]
+  return styleMap[piece.fenId]
 }
 
 const styles = StyleSheet.create({

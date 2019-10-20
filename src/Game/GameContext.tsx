@@ -6,7 +6,8 @@ import React, {
   SetStateAction,
 } from "react"
 
-import { AiHelpers, GameHelpers } from "../utils"
+import { GameHelpers } from "../utils"
+import { MinimaxAI } from "../utils/ai"
 import { Side } from "../utils/game_helpers"
 import { Move } from "../utils/chess/chess"
 
@@ -15,8 +16,8 @@ export interface GameState {
   userSelectedTile: GameHelpers.Tile | null
   computerSelectedTile: GameHelpers.Tile | null
   winner: GameHelpers.Side | null
-  resetBoard: any
-  selectUserTile: any
+  resetBoard: () => void
+  selectUserTile: (toTile: GameHelpers.Tile) => void
   setGameIsActive: Dispatch<SetStateAction<boolean>>
 }
 
@@ -80,7 +81,7 @@ const GameProvider = ({ children }: GameProviderProps) => {
 
   const getNextComputerTile = (): GameHelpers.Tile | null => {
     if (computerCurrentMove == null) {
-      const move = AiHelpers.selectMove(board, "black")
+      const move = MinimaxAI.selectMove(board, "black")
       if (move == null) {
         return null
       }

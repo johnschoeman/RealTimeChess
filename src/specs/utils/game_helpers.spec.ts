@@ -11,8 +11,11 @@ import {
   generateFen,
   boardToAscii,
   updateBoard,
+  updateBoardWithMove,
 } from "../../utils/game_helpers"
 import { BoardFixtures } from "../__fixtures__"
+
+import { Move } from "../../utils/chess/types"
 
 describe("createBoard", () => {
   describe("when not given a fen code", () => {
@@ -322,6 +325,28 @@ describe("winner", () => {
 
       expect(result).toBe("white")
     })
+  })
+})
+
+describe("updateBoardWithMove", () => {
+  test("it converts the given move to tiles and calls updateBoard", () => {
+    const board = createBoard()
+    const move: Move = {
+      from: "a2",
+      to: "a3",
+      piece: "p",
+      color: "b",
+      flags: "",
+      san: "foo",
+    }
+
+    const result = updateBoardWithMove(board, move)
+
+    const expectedFen =
+      "rnbqkbnr/pppppppp/8/8/8/P7/1PPPPPPP/RNBQKBNR b KQkq - 0 1"
+    const expected: Board = createBoard(expectedFen)
+
+    expectBoardsToMatch(result, expected)
   })
 })
 

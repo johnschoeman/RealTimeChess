@@ -1,8 +1,8 @@
-import { Square, Move, PieceType, Side } from "../../utils/chess/chess"
+import { Square, Move, PieceType, Side } from "../../../utils/chess/chess"
+import { Board, createBoard } from "../../../utils/game_helpers"
+import { Promotion } from "../../../utils/chess/types"
 
-import { Board, createBoard } from "../../utils/game_helpers"
-import { validMoves, selectMove } from "../../utils/ai_helpers"
-import { Promotion } from "../../utils/chess/types"
+import { validMoves, selectMove } from "../../../utils/ai/random_ai"
 
 describe("selectMove", () => {
   describe("when there is are valid attacking moves", () => {

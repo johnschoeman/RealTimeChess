@@ -29,3 +29,7 @@ export function sample<T>(array: Array<T>): T | null {
 function getRandomInt(max: number): number {
   return Math.floor(Math.random() * Math.floor(max))
 }
+
+export function reverse<T>(array: Array<T>): Array<T> {
+  return array.slice().reverse()
+}

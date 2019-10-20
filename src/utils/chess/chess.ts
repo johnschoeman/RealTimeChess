@@ -973,6 +973,9 @@ const Chess = (fen: string = DEFAULT_POSITION): ChessInstance => {
 
     return { color, san, to, from, flags, piece, captured, promotion }
   }
+
+  const isSquare = (el: string): boolean => {
+    return el.length === 2
   }
 
   return {
@@ -987,12 +990,14 @@ const Chess = (fen: string = DEFAULT_POSITION): ChessInstance => {
       var moves = []
 
       for (var i = 0, len = ugly_moves.length; i < len; i++) {
-        moves.push(make_pretty(ugly_moves[i]))
+        const move = make_pretty(ugly_moves[i])
+        if (isSquare(move.to)) {
+          moves.push(make_pretty(ugly_moves[i]))
+        }
       }
 
       return moves
     },
-
 
     fen: function() {
       return generate_fen()

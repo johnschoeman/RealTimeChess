@@ -34,16 +34,10 @@ export const selectMove = (board: Board, side: Side): Move | null => {
 export function validMoves(board: Board, side: Side): Move[] {
   const fen = generateFen(board, side)
   const chessInstance: ChessInstance = Chess(fen)
-  const validation = chessInstance.validate_fen(fen)
-  if (validation.valid) {
-    try {
-      return chessInstance.moves()
-    } catch (e) {
-      console.log("chess instance errored looking for moves for: ", fen)
-      return []
-    }
-  } else {
-    console.log("invalid fen: ", validation)
+  try {
+    return chessInstance.moves()
+  } catch (e) {
+    console.log("chess instance errored looking for moves for: ", fen)
     return []
   }
 }

@@ -101,6 +101,15 @@ interface HistoryItem {
   move_number: number
 }
 
+type Flag =
+  | "NORMAL"
+  | "CAPTURE"
+  | "BIG_PAWN"
+  | "EP_CAPTURE"
+  | "PROMOTION"
+  | "KSIDE_CASTLE"
+  | "QSIDE_CASTLE"
+
 interface Kings {
   w: number
   b: number
@@ -113,127 +122,140 @@ interface Castling {
 
 type InternalBoard = (InternalPiece | null)[]
 
-var Chess = (fen: string): ChessInstance => {
-  const BLACK: Side = "b"
-  const WHITE: Side = "w"
+const chessMoves = (board: string, side: Side) => {
+  const fen = `${board} ${side} KQkq - 0 1`
+  const chessInstance = Chess(fen)
+  return chessInstance.moves()
+}
 
-  const EMPTY: number = -1
+const BLACK: Side = "b"
+const WHITE: Side = "w"
+const EMPTY: number = -1
+const PAWN: PieceType = "p"
+const KING: PieceType = "k"
+const SYMBOLS = "pnbrqkPNBRQK"
 
-  const PAWN: PieceType = "p"
-  const KING: PieceType = "k"
+const DEFAULT_POSITION =
+  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-  const SYMBOLS = "pnbrqkPNBRQK"
+const PAWN_OFFSETS: { [K in Side]: number[] } = {
+  b: [16, 32, 17, 15],
+  w: [-16, -32, -17, -15],
+}
 
-  const DEFAULT_POSITION =
-    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+const PIECE_OFFSETS: { [K in PieceType]: number[] } = {
+  n: [-18, -33, -31, -14, 18, 33, 31, 14],
+  b: [-17, -15, 17, 15],
+  r: [-16, 1, 16, -1],
+  q: [-17, -16, -15, 1, 17, 16, 15, -1],
+  k: [-17, -16, -15, 1, 17, 16, 15, -1],
+  p: [],
+}
 
-  const PAWN_OFFSETS: { [K in Side]: number[] } = {
-    b: [16, 32, 17, 15],
-    w: [-16, -32, -17, -15],
-  }
+// prettier-ignore
+const ATTACKS = [
+  20, 0, 0, 0, 0, 0, 0, 24,  0, 0, 0, 0, 0, 0,20, 0,
+    0,20, 0, 0, 0, 0, 0, 24,  0, 0, 0, 0, 0,20, 0, 0,
+    0, 0,20, 0, 0, 0, 0, 24,  0, 0, 0, 0,20, 0, 0, 0,
+    0, 0, 0,20, 0, 0, 0, 24,  0, 0, 0,20, 0, 0, 0, 0,
+    0, 0, 0, 0,20, 0, 0, 24,  0, 0,20, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,20, 2, 24,  2,20, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 2,53, 56, 53, 2, 0, 0, 0, 0, 0, 0,
+  24,24,24,24,24,24,56,  0, 56,24,24,24,24,24,24, 0,
+    0, 0, 0, 0, 0, 2,53, 56, 53, 2, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,20, 2, 24,  2,20, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0,20, 0, 0, 24,  0, 0,20, 0, 0, 0, 0, 0,
+    0, 0, 0,20, 0, 0, 0, 24,  0, 0, 0,20, 0, 0, 0, 0,
+    0, 0,20, 0, 0, 0, 0, 24,  0, 0, 0, 0,20, 0, 0, 0,
+    0,20, 0, 0, 0, 0, 0, 24,  0, 0, 0, 0, 0,20, 0, 0,
+  20, 0, 0, 0, 0, 0, 0, 24,  0, 0, 0, 0, 0, 0,20
+]
 
-  const PIECE_OFFSETS: { [K in PieceType]: number[] } = {
-    n: [-18, -33, -31, -14, 18, 33, 31, 14],
-    b: [-17, -15, 17, 15],
-    r: [-16, 1, 16, -1],
-    q: [-17, -16, -15, 1, 17, 16, 15, -1],
-    k: [-17, -16, -15, 1, 17, 16, 15, -1],
-    p: [],
-  }
+// prettier-ignore
+const RAYS = [
+    17,  0,  0,  0,  0,  0,  0, 16,  0,  0,  0,  0,  0,  0, 15, 0,
+    0, 17,  0,  0,  0,  0,  0, 16,  0,  0,  0,  0,  0, 15,  0, 0,
+    0,  0, 17,  0,  0,  0,  0, 16,  0,  0,  0,  0, 15,  0,  0, 0,
+    0,  0,  0, 17,  0,  0,  0, 16,  0,  0,  0, 15,  0,  0,  0, 0,
+    0,  0,  0,  0, 17,  0,  0, 16,  0,  0, 15,  0,  0,  0,  0, 0,
+    0,  0,  0,  0,  0, 17,  0, 16,  0, 15,  0,  0,  0,  0,  0, 0,
+    0,  0,  0,  0,  0,  0, 17, 16, 15,  0,  0,  0,  0,  0,  0, 0,
+    1,  1,  1,  1,  1,  1,  1,  0, -1, -1,  -1,-1, -1, -1, -1, 0,
+    0,  0,  0,  0,  0,  0,-15,-16,-17,  0,  0,  0,  0,  0,  0, 0,
+    0,  0,  0,  0,  0,-15,  0,-16,  0,-17,  0,  0,  0,  0,  0, 0,
+    0,  0,  0,  0,-15,  0,  0,-16,  0,  0,-17,  0,  0,  0,  0, 0,
+    0,  0,  0,-15,  0,  0,  0,-16,  0,  0,  0,-17,  0,  0,  0, 0,
+    0,  0,-15,  0,  0,  0,  0,-16,  0,  0,  0,  0,-17,  0,  0, 0,
+    0,-15,  0,  0,  0,  0,  0,-16,  0,  0,  0,  0,  0,-17,  0, 0,
+  -15,  0,  0,  0,  0,  0,  0,-16,  0,  0,  0,  0,  0,  0,-17
+]
 
-  // prettier-ignore
-  var ATTACKS = [
-    20, 0, 0, 0, 0, 0, 0, 24,  0, 0, 0, 0, 0, 0,20, 0,
-     0,20, 0, 0, 0, 0, 0, 24,  0, 0, 0, 0, 0,20, 0, 0,
-     0, 0,20, 0, 0, 0, 0, 24,  0, 0, 0, 0,20, 0, 0, 0,
-     0, 0, 0,20, 0, 0, 0, 24,  0, 0, 0,20, 0, 0, 0, 0,
-     0, 0, 0, 0,20, 0, 0, 24,  0, 0,20, 0, 0, 0, 0, 0,
-     0, 0, 0, 0, 0,20, 2, 24,  2,20, 0, 0, 0, 0, 0, 0,
-     0, 0, 0, 0, 0, 2,53, 56, 53, 2, 0, 0, 0, 0, 0, 0,
-    24,24,24,24,24,24,56,  0, 56,24,24,24,24,24,24, 0,
-     0, 0, 0, 0, 0, 2,53, 56, 53, 2, 0, 0, 0, 0, 0, 0,
-     0, 0, 0, 0, 0,20, 2, 24,  2,20, 0, 0, 0, 0, 0, 0,
-     0, 0, 0, 0,20, 0, 0, 24,  0, 0,20, 0, 0, 0, 0, 0,
-     0, 0, 0,20, 0, 0, 0, 24,  0, 0, 0,20, 0, 0, 0, 0,
-     0, 0,20, 0, 0, 0, 0, 24,  0, 0, 0, 0,20, 0, 0, 0,
-     0,20, 0, 0, 0, 0, 0, 24,  0, 0, 0, 0, 0,20, 0, 0,
-    20, 0, 0, 0, 0, 0, 0, 24,  0, 0, 0, 0, 0, 0,20
-  ];
+const SHIFTS: { [K in PieceType]: number } = {
+  p: 0,
+  n: 1,
+  b: 2,
+  r: 3,
+  q: 4,
+  k: 5,
+}
 
-  // prettier-ignore
-  var RAYS = [
-     17,  0,  0,  0,  0,  0,  0, 16,  0,  0,  0,  0,  0,  0, 15, 0,
-      0, 17,  0,  0,  0,  0,  0, 16,  0,  0,  0,  0,  0, 15,  0, 0,
-      0,  0, 17,  0,  0,  0,  0, 16,  0,  0,  0,  0, 15,  0,  0, 0,
-      0,  0,  0, 17,  0,  0,  0, 16,  0,  0,  0, 15,  0,  0,  0, 0,
-      0,  0,  0,  0, 17,  0,  0, 16,  0,  0, 15,  0,  0,  0,  0, 0,
-      0,  0,  0,  0,  0, 17,  0, 16,  0, 15,  0,  0,  0,  0,  0, 0,
-      0,  0,  0,  0,  0,  0, 17, 16, 15,  0,  0,  0,  0,  0,  0, 0,
-      1,  1,  1,  1,  1,  1,  1,  0, -1, -1,  -1,-1, -1, -1, -1, 0,
-      0,  0,  0,  0,  0,  0,-15,-16,-17,  0,  0,  0,  0,  0,  0, 0,
-      0,  0,  0,  0,  0,-15,  0,-16,  0,-17,  0,  0,  0,  0,  0, 0,
-      0,  0,  0,  0,-15,  0,  0,-16,  0,  0,-17,  0,  0,  0,  0, 0,
-      0,  0,  0,-15,  0,  0,  0,-16,  0,  0,  0,-17,  0,  0,  0, 0,
-      0,  0,-15,  0,  0,  0,  0,-16,  0,  0,  0,  0,-17,  0,  0, 0,
-      0,-15,  0,  0,  0,  0,  0,-16,  0,  0,  0,  0,  0,-17,  0, 0,
-    -15,  0,  0,  0,  0,  0,  0,-16,  0,  0,  0,  0,  0,  0,-17
-  ];
+const FLAGS: { [K in Flag]: string } = {
+  NORMAL: "n",
+  CAPTURE: "c",
+  BIG_PAWN: "b",
+  EP_CAPTURE: "e",
+  PROMOTION: "p",
+  KSIDE_CASTLE: "k",
+  QSIDE_CASTLE: "q",
+}
 
-  const SHIFTS: { [K in PieceType]: number } = {
-    p: 0,
-    n: 1,
-    b: 2,
-    r: 3,
-    q: 4,
-    k: 5,
-  }
+const BITS: { [K in Flag]: number } = {
+  NORMAL: 1,
+  CAPTURE: 2,
+  BIG_PAWN: 4,
+  EP_CAPTURE: 8,
+  PROMOTION: 16,
+  KSIDE_CASTLE: 32,
+  QSIDE_CASTLE: 64,
+}
 
-  type Flag =
-    | "NORMAL"
-    | "CAPTURE"
-    | "BIG_PAWN"
-    | "EP_CAPTURE"
-    | "PROMOTION"
-    | "KSIDE_CASTLE"
-    | "QSIDE_CASTLE"
+const RANK_1 = 7
+const RANK_2 = 6
+const RANK_7 = 1
+const RANK_8 = 0
 
-  const FLAGS: { [K in Flag]: string } = {
-    NORMAL: "n",
-    CAPTURE: "c",
-    BIG_PAWN: "b",
-    EP_CAPTURE: "e",
-    PROMOTION: "p",
-    KSIDE_CASTLE: "k",
-    QSIDE_CASTLE: "q",
-  }
+// prettier-ignore
+const SQUARES: { [K in Square]: number } = {
+  a8:   0, b8:   1, c8:   2, d8:   3, e8:   4, f8:   5, g8:   6, h8:   7,
+  a7:  16, b7:  17, c7:  18, d7:  19, e7:  20, f7:  21, g7:  22, h7:  23,
+  a6:  32, b6:  33, c6:  34, d6:  35, e6:  36, f6:  37, g6:  38, h6:  39,
+  a5:  48, b5:  49, c5:  50, d5:  51, e5:  52, f5:  53, g5:  54, h5:  55,
+  a4:  64, b4:  65, c4:  66, d4:  67, e4:  68, f4:  69, g4:  70, h4:  71,
+  a3:  80, b3:  81, c3:  82, d3:  83, e3:  84, f3:  85, g3:  86, h3:  87,
+  a2:  96, b2:  97, c2:  98, d2:  99, e2: 100, f2: 101, g2: 102, h2: 103,
+  a1: 112, b1: 113, c1: 114, d1: 115, e1: 116, f1: 117, g1: 118, h1: 119
+}
 
-  const BITS: { [K in Flag]: number } = {
-    NORMAL: 1,
-    CAPTURE: 2,
-    BIG_PAWN: 4,
-    EP_CAPTURE: 8,
-    PROMOTION: 16,
-    KSIDE_CASTLE: 32,
-    QSIDE_CASTLE: 64,
-  }
+function parseFen(fen: string): FenCode {
+  const parts: string[] = fen.split(/\s+/)
+  const board: string = parts[0]
+  const currentPlayer: Side = parts[1] as Side
+  const castleAvailablity: string = parts[2]
+  const EnPassanteAvailability: Square | "-" = parts[3] as Square | "-"
+  const halfMoveClock: number = Number(parts[4])
+  const moveCount: number = Number(parts[5])
 
-  const RANK_1 = 7
-  const RANK_2 = 6
-  const RANK_7 = 1
-  const RANK_8 = 0
+  return [
+    board,
+    currentPlayer,
+    castleAvailablity,
+    EnPassanteAvailability,
+    halfMoveClock,
+    moveCount,
+  ]
+}
 
-  // prettier-ignore
-  const SQUARES: { [K in Square]: number } = {
-    a8:   0, b8:   1, c8:   2, d8:   3, e8:   4, f8:   5, g8:   6, h8:   7,
-    a7:  16, b7:  17, c7:  18, d7:  19, e7:  20, f7:  21, g7:  22, h7:  23,
-    a6:  32, b6:  33, c6:  34, d6:  35, e6:  36, f6:  37, g6:  38, h6:  39,
-    a5:  48, b5:  49, c5:  50, d5:  51, e5:  52, f5:  53, g5:  54, h5:  55,
-    a4:  64, b4:  65, c4:  66, d4:  67, e4:  68, f4:  69, g4:  70, h4:  71,
-    a3:  80, b3:  81, c3:  82, d3:  83, e3:  84, f3:  85, g3:  86, h3:  87,
-    a2:  96, b2:  97, c2:  98, d2:  99, e2: 100, f2: 101, g2: 102, h2: 103,
-    a1: 112, b1: 113, c1: 114, d1: 115, e1: 116, f1: 117, g1: 118, h1: 119
-  };
-
+const Chess = (fen: string = DEFAULT_POSITION): ChessInstance => {
   var board: (InternalPiece | null)[] = new Array(128)
   var kings: Kings = { w: EMPTY, b: EMPTY }
   var turn: Side = WHITE
@@ -243,14 +265,7 @@ var Chess = (fen: string): ChessInstance => {
   var move_number = 1
   var history: HistoryItem[] = []
 
-  /* if the user passes in a fen string, load it, else default to
-   * starting position
-   */
-  if (typeof fen === "undefined") {
-    load(DEFAULT_POSITION)
-  } else {
-    load(fen)
-  }
+  load(fen)
 
   function clear() {
     board = new Array(128)
@@ -263,25 +278,6 @@ var Chess = (fen: string): ChessInstance => {
     history = []
   }
 
-  function parseFen(fen: string): FenCode {
-    const parts: string[] = fen.split(/\s+/)
-    const board: string = parts[0]
-    const currentPlayer: Side = parts[1] as Side
-    const castleAvailablity: string = parts[2]
-    const EnPassanteAvailability: Square | "-" = parts[3] as Square | "-"
-    const halfMoveClock: number = Number(parts[4])
-    const moveCount: number = Number(parts[5])
-
-    return [
-      board,
-      currentPlayer,
-      castleAvailablity,
-      EnPassanteAvailability,
-      halfMoveClock,
-      moveCount,
-    ]
-  }
-
   function load(fen: string) {
     const [
       board,
@@ -292,10 +288,6 @@ var Chess = (fen: string): ChessInstance => {
       moveCount,
     ] = parseFen(fen)
     let square: number = 0
-
-    if (!validate_fen(fen).valid) {
-      return false
-    }
 
     clear()
 
@@ -341,111 +333,6 @@ var Chess = (fen: string): ChessInstance => {
     move_number = moveCount
 
     return true
-  }
-
-  /* TODO: this function is pretty much crap - it validates structure but
-   * completely ignores content (e.g. doesn't verify that each side has a king)
-   * ... we should rewrite this, and ditch the silly error_number field while
-   * we're at it
-   */
-  function validate_fen(fen: string) {
-    var errors = {
-      0: "No errors.",
-      1: "FEN string must contain six space-delimited fields.",
-      2: "6th field (move number) must be a positive integer.",
-      3: "5th field (half move counter) must be a non-negative integer.",
-      4: "4th field (en-passant square) is invalid.",
-      5: "3rd field (castling availability) is invalid.",
-      6: "2nd field (side to move) is invalid.",
-      7: "1st field (piece positions) does not contain 8 '/'-delimited rows.",
-      8: "1st field (piece positions) is invalid [consecutive numbers].",
-      9: "1st field (piece positions) is invalid [invalid piece].",
-      10: "1st field (piece positions) is invalid [row too large].",
-      11: "Illegal en-passant square",
-    }
-
-    /* 1st criterion: 6 space-seperated fields? */
-    const tokens = parseFen(fen)
-
-    const [
-      board,
-      currentPlayer,
-      castleAvailablity,
-      EnPassanteAvailability,
-      halfMoveClock,
-      moveCount,
-    ] = tokens
-
-    if (tokens.length !== 6) {
-      return { valid: false, error_number: 1, error: errors[1] }
-    }
-
-    /* 2nd criterion: move number field is a integer value > 0? */
-    if (isNaN(moveCount) || moveCount <= 0) {
-      return { valid: false, error_number: 2, error: errors[2] }
-    }
-
-    /* 3rd criterion: half move counter is an integer >= 0? */
-    if (isNaN(halfMoveClock) || halfMoveClock < 0) {
-      return { valid: false, error_number: 3, error: errors[3] }
-    }
-
-    /* 4th criterion: 4th field is a valid e.p.-string? */
-    if (!/^(-|[abcdefgh][36])$/.test(EnPassanteAvailability)) {
-      return { valid: false, error_number: 4, error: errors[4] }
-    }
-
-    /* 5th criterion: 3th field is a valid castle-string? */
-    if (!/^(KQ?k?q?|Qk?q?|kq?|q|-)$/.test(castleAvailablity)) {
-      return { valid: false, error_number: 5, error: errors[5] }
-    }
-
-    /* 6th criterion: 2nd field is "w" (white) or "b" (black)? */
-    if (!/^(w|b)$/.test(currentPlayer)) {
-      return { valid: false, error_number: 6, error: errors[6] }
-    }
-
-    /* 7th criterion: 1st field contains 8 rows? */
-    var rows = board.split("/")
-    if (rows.length !== 8) {
-      return { valid: false, error_number: 7, error: errors[7] }
-    }
-
-    /* 8th criterion: every row is valid? */
-    for (var i = 0; i < rows.length; i++) {
-      /* check for right sum of fields AND not two numbers in succession */
-      var sum_fields = 0
-      var previous_was_number = false
-
-      for (var k = 0; k < rows[i].length; k++) {
-        if (!isNaN(Number(rows[i][k]))) {
-          if (previous_was_number) {
-            return { valid: false, error_number: 8, error: errors[8] }
-          }
-          sum_fields += parseInt(rows[i][k], 10)
-          previous_was_number = true
-        } else {
-          if (!/^[prnbqkPRNBQK]$/.test(rows[i][k])) {
-            return { valid: false, error_number: 9, error: errors[9] }
-          }
-          sum_fields += 1
-          previous_was_number = false
-        }
-      }
-      if (sum_fields !== 8) {
-        return { valid: false, error_number: 10, error: errors[10] }
-      }
-    }
-
-    if (
-      (tokens[3][1] == "3" && tokens[1] == "w") ||
-      (tokens[3][1] == "6" && tokens[1] == "b")
-    ) {
-      return { valid: false, error_number: 11, error: errors[11] }
-    }
-
-    /* everything's okay! */
-    return { valid: true, error_number: 0, error: errors[0] }
   }
 
   function generate_fen() {
@@ -664,7 +551,9 @@ var Chess = (fen: string): ChessInstance => {
             if (boardSquare == null) {
               add_move(board, moves, i, square, BITS.NORMAL)
             } else {
-              if (boardSquare.color === us) break
+              if (boardSquare.color === us) {
+                break
+              }
               add_move(board, moves, i, square, BITS.CAPTURE)
               break
             }
@@ -1048,10 +937,11 @@ var Chess = (fen: string): ChessInstance => {
   }
 
   function algebraic(i: number): Square {
-    var f = file(i),
-      r = rank(i)
-    return ("abcdefgh".substring(f, f + 1) +
-      "87654321".substring(r, r + 1)) as Square
+    const f = file(i)
+    const r = rank(i)
+    const fileName = "abcdefgh".substring(f, f + 1)
+    const rankName = "87654321".substring(r, r + 1)
+    return `${fileName}${rankName}` as Square
   }
 
   function swap_color(c: Side) {
@@ -1075,16 +965,14 @@ var Chess = (fen: string): ChessInstance => {
       return flags
     }
 
-    return {
-      color: ugly_move.color,
-      san: move_to_san(ugly_move),
-      to: algebraic(ugly_move.to),
-      from: algebraic(ugly_move.from),
-      flags: generateFlags(ugly_move),
-      piece: ugly_move.piece,
-      captured: ugly_move.captured,
-      promotion: ugly_move.promotion,
-    }
+    const { color, piece, captured, promotion } = ugly_move
+    const san = move_to_san(ugly_move)
+    const from = algebraic(ugly_move.from)
+    const to = algebraic(ugly_move.to)
+    const flags = generateFlags(ugly_move)
+
+    return { color, san, to, from, flags, piece, captured, promotion }
+  }
   }
 
   return {
@@ -1105,9 +993,6 @@ var Chess = (fen: string): ChessInstance => {
       return moves
     },
 
-    validate_fen: function(fen) {
-      return validate_fen(fen)
-    },
 
     fen: function() {
       return generate_fen()
@@ -1145,5 +1030,15 @@ var Chess = (fen: string): ChessInstance => {
   }
 }
 
-export { ChessInstance, move, Move, ShortMove, Piece, PieceType, Side, Square }
+export {
+  chessMoves,
+  ChessInstance,
+  move,
+  Move,
+  ShortMove,
+  Piece,
+  PieceType,
+  Side,
+  Square,
+}
 export default Chess

@@ -165,30 +165,6 @@ export interface ChessInstance {
   moves(): Move[]
 
   /**
-   * Returns a validation object specifying validity or the errors found
-   * within the FEN string.
-   * @param fen the fen formatted string to validate
-   */
-  validate_fen(
-    fen: string
-  ): {
-    /** Indicates if the fen is valid or not. */
-    valid: boolean
-
-    /**
-     * If not valid, then this will a type of error used internally in
-     * chess.js. Otherwise 0.
-     */
-    error_number: number
-
-    /**
-     * The string "No errors." if valid. Otherwise a string explaining why
-     * it is not valid.
-     */
-    error: string
-  }
-
-  /**
    * Returns the FEN string for the current position.
    * @returns the FEN string for the current position.
    */

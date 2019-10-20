@@ -212,6 +212,8 @@ export function updateBoardWithMove(oldBoard: Board, move: Move): Board {
     console.error(error)
     console.error("move: ", move)
     console.error("board: ", oldBoard)
+    console.log(boardToAscii(oldBoard))
+    console.log(generateFen(oldBoard))
     return oldBoard
   }
 }

@@ -1,17 +1,27 @@
-import React, { useContext } from "react"
+import React from "react"
 import { TouchableOpacity, View, StyleSheet } from "react-native"
 
 import Piece from "./Piece"
 import { PieceType } from "../utils/pieces"
-import { Tile } from "../utils/game_helpers"
-import GameContext from "./GameContext"
+import { BoardRow as BoardRowType, Tile } from "../utils/game_helpers"
 
 import { Color } from "../styles"
 
-const BoardRow = ({ row, rowIdx }: { row: any; rowIdx: number }) => {
-  const { userSelectedTile, computerSelectedTile, selectUserTile } = useContext(
-    GameContext
-  )
+interface BoardRowProps {
+  row: BoardRowType
+  rowIdx: number
+  userSelectedTile: Tile | null
+  computerSelectedTile: Tile | null
+  selectUserTile: (tile: Tile) => void
+}
+
+const BoardRow = ({
+  row,
+  rowIdx,
+  userSelectedTile,
+  computerSelectedTile,
+  selectUserTile,
+}: BoardRowProps) => {
   return (
     <View style={styles.container}>
       {row.map((piece: PieceType, colIdx: number) => {

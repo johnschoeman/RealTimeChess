@@ -1,4 +1,12 @@
-import { ChessInstance, ShortMove, Square, Move } from "../utils/chess/chess"
+import {
+  ChessInstance,
+  ShortMove,
+  Square,
+  Move,
+  Side,
+  black,
+  white,
+} from "../utils/chess/chess"
 
 import Chess from "./chess/chess"
 import {
@@ -13,11 +21,7 @@ import {
 } from "./pieces"
 import * as ArrayHelpers from "./array_helpers"
 
-export type Side = "black" | "white"
-export const black: Side = "black"
-export const white: Side = "white"
-
-type BoardRow = PieceType[]
+export type BoardRow = PieceType[]
 export type Board = BoardRow[]
 
 export interface Tile {
@@ -137,12 +141,12 @@ export const winner = (board: Board): Side | null => {
     }
   )
 
-  if (kingColors.includes("black") && kingColors.includes("white")) {
+  if (kingColors.includes(black) && kingColors.includes(white)) {
     return null
-  } else if (kingColors.includes("black")) {
-    return "black"
+  } else if (kingColors.includes(black)) {
+    return black
   } else {
-    return "white"
+    return white
   }
 }
 
@@ -235,7 +239,7 @@ export function updateBoard(
   ): boolean => {
     return (
       kind === "pawn" &&
-      ((toRow === 0 && side === "white") || (toRow === 7 && side === "black"))
+      ((toRow === 0 && side === white) || (toRow === 7 && side === black))
     )
   }
 
@@ -250,8 +254,7 @@ export function updateBoard(
       kind === "king" &&
       fromCol === 4 &&
       (toCol === 2 || toCol === 6) &&
-      ((side === "black" && fromRow === 0) ||
-        (side === "white" && fromRow === 7))
+      ((side === black && fromRow === 0) || (side === white && fromRow === 7))
     ) {
       return true
     } else {
@@ -308,7 +311,7 @@ export function validMove(
   return move == null ? false : true
 }
 
-export const generateFen = (board: Board, side: Side = "white"): string => {
+export const generateFen = (board: Board, side: Side = white): string => {
   const fenChars: string[] = board.map(rank => {
     return rank
       .map(file => {
@@ -317,7 +320,7 @@ export const generateFen = (board: Board, side: Side = "white"): string => {
       .join("")
   })
 
-  const sideChar = side === "white" ? "w" : "b"
+  const sideChar = side === white ? "w" : "b"
 
   return (
     fenChars

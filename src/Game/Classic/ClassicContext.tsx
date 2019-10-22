@@ -1,45 +1,38 @@
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  Dispatch,
-  SetStateAction,
-} from "react"
+import React, { createContext, useContext, useState, useEffect } from "react"
 
-import { GameHelpers } from "../utils"
-import { MinimaxAI } from "../utils/ai"
-import { Side } from "../utils/game_helpers"
-import { Move } from "../utils/chess/chess"
+import { GameHelpers } from "../../utils"
+import { MinimaxAI } from "../../utils/ai"
+import { Move, Side } from "../../utils/chess/chess"
+import ArcadeContext from "../../ArcadeContext"
 
 export interface GameState {
   board: GameHelpers.Board
   userSelectedTile: GameHelpers.Tile | null
   computerSelectedTile: GameHelpers.Tile | null
-  winner: GameHelpers.Side | null
+  countdownCount: number
   resetBoard: () => void
   selectUserTile: (toTile: GameHelpers.Tile) => void
-  setGameIsActive: Dispatch<SetStateAction<boolean>>
 }
 
 export const initialGameState: GameState = {
   board: GameHelpers.initialBoard,
   userSelectedTile: null,
   computerSelectedTile: null,
-  winner: null,
+  countdownCount: 3,
   resetBoard: () => {},
   selectUserTile: () => {},
-  setGameIsActive: () => {},
 }
 
-const GameContext = createContext<GameState>(initialGameState)
+const ClassicContext = createContext<GameState>(initialGameState)
 
-const computerClockSpeed = 300
+const computerClockSpeed = 200
 
 interface GameProviderProps {
   children: JSX.Element
 }
 
-const GameProvider = ({ children }: GameProviderProps) => {
+const ClassicProvider = ({ children }: GameProviderProps) => {
+  const { setCurrentWinner } = useContext(ArcadeContext)
   const [board, setBoard] = useState<GameHelpers.Board>(
     GameHelpers.initialBoard
   )
@@ -54,23 +47,40 @@ const GameProvider = ({ children }: GameProviderProps) => {
   const [computerCurrentMove, setComputerCurrentMove] = useState<Move | null>(
     null
   )
-  const [winner, setWinner] = useState<GameHelpers.Side | null>(null)
   const [gameStep, setGameStep] = useState<number>(0)
   const [gameIsActive, setGameIsActive] = useState<boolean>(false)
+
+  const [countdownCount, setCountdownCount] = useState<number>(3)
+  const [isActive, setIsActive] = useState<boolean>(true)
 
   const tick = (): void => {
     if (gameIsActive) {
       setGameStep(gameStep + 1)
-      const currentWinner: Side | null = GameHelpers.winner(board)
-      if (currentWinner == null) {
+      const winner: Side | null = GameHelpers.winner(board)
+      if (winner == null) {
         const computerNextTile = getNextComputerTile()
         selectComputerTile(computerNextTile)
       } else {
         setGameIsActive(false)
-        setWinner(currentWinner)
+        setCurrentWinner(winner)
       }
     }
   }
+
+  useEffect(() => {
+    let intervalId: number = 0
+    if (isActive) {
+      intervalId = setInterval(() => {
+        setCountdownCount((countdownCount: number) => countdownCount - 1)
+      }, 1000)
+      if (countdownCount < 0) {
+        setIsActive(false)
+        clearInterval(intervalId)
+        setGameIsActive(true)
+      }
+    }
+    return () => clearInterval(intervalId)
+  }, [isActive, countdownCount])
 
   useEffect(() => {
     const intervalID = setInterval(tick, computerClockSpeed)
@@ -101,7 +111,6 @@ const GameProvider = ({ children }: GameProviderProps) => {
     setComputerCurrentMove(null)
     setComputerSelectedTile(null)
     setUserSelectedTile(null)
-    setWinner(null)
     setGameStep(0)
   }
 
@@ -111,7 +120,7 @@ const GameProvider = ({ children }: GameProviderProps) => {
     }
     if (toTile !== null) {
       const fromTile = computerSelectedTile
-      selectTile(fromTile, toTile, "black", callBack)
+      selectTile(fromTile, toTile, "b", callBack)
     }
   }
 
@@ -120,13 +129,13 @@ const GameProvider = ({ children }: GameProviderProps) => {
     const callBack = (tile: GameHelpers.Tile) => {
       setUserSelectedTile(tile)
     }
-    selectTile(fromTile, toTile, "white", callBack)
+    selectTile(fromTile, toTile, "w", callBack)
   }
 
   const selectTile = (
     fromTile: GameHelpers.Tile | null,
     toTile: GameHelpers.Tile | null,
-    side: GameHelpers.Side,
+    side: Side,
     callBack: any
   ): void => {
     if (toTile === null) {
@@ -156,21 +165,20 @@ const GameProvider = ({ children }: GameProviderProps) => {
   }
 
   return (
-    <GameContext.Provider
+    <ClassicContext.Provider
       value={{
         board,
         userSelectedTile,
         computerSelectedTile,
-        winner,
+        countdownCount,
         resetBoard: resetBoard,
         selectUserTile: selectUserTile,
-        setGameIsActive,
       }}
     >
       {children}
-    </GameContext.Provider>
+    </ClassicContext.Provider>
   )
 }
 
-export { GameProvider }
-export default GameContext
+export { ClassicProvider }
+export default ClassicContext

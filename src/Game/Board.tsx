@@ -1,40 +1,40 @@
-import React, { useContext, useState, useEffect } from "react"
+import React from "react"
 import { View, StyleSheet } from "react-native"
 
+import { Board as BoardType, Tile } from "../utils/game_helpers"
 import BoardRow from "./BoardRow"
-import GameContext from "./GameContext"
 import Countdown from "./Countdown"
 
 import { Layout } from "../styles"
 
-const Board = () => {
-  const { board, setGameIsActive } = useContext(GameContext)
-  const [count, setCount] = useState<number>(3)
-  const [isActive, setIsActive] = useState<boolean>(true)
+interface BoardProps {
+  board: BoardType
+  countdownCount: number
+  userSelectedTile: Tile | null
+  computerSelectedTile: Tile | null
+  selectUserTile: (tile: Tile) => void
+}
 
-  useEffect(() => {
-    let intervalId: number = 0
-    if (isActive) {
-      intervalId = setInterval(() => {
-        setCount((count: number) => count - 1)
-      }, 1000)
-      if (count < 0) {
-        setIsActive(false)
-        clearInterval(intervalId)
-        setGameIsActive(true)
-      }
-    }
-
-    return () => clearInterval(intervalId)
-  }, [isActive, count])
-
+const Board = ({
+  board,
+  countdownCount,
+  userSelectedTile,
+  computerSelectedTile,
+  selectUserTile,
+}: BoardProps) => {
   return (
     <View style={styles.container}>
-      {count >= 0 ? <Countdown count={count} /> : null}
+      {countdownCount >= 0 ? <Countdown count={countdownCount} /> : null}
       {board.map((row, rowIdx) => {
         return (
           <View style={styles.row} key={`row-${rowIdx}`}>
-            <BoardRow row={row} rowIdx={rowIdx} />
+            <BoardRow
+              row={row}
+              rowIdx={rowIdx}
+              userSelectedTile={userSelectedTile}
+              computerSelectedTile={computerSelectedTile}
+              selectUserTile={selectUserTile}
+            />
           </View>
         )
       })}

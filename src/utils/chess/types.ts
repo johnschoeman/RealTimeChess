@@ -5,6 +5,9 @@
 
 export type Side = "b" | "w"
 
+export const black: Side = "b"
+export const white: Side = "w"
+
 /**
  * tuple of a parsed fen code
  * rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1

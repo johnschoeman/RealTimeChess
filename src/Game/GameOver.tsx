@@ -1,7 +1,7 @@
 import React from "react"
 import { Image, StyleSheet, View } from "react-native"
 
-import { Side } from "../utils/game_helpers"
+import { Side } from "../utils/chess/chess"
 import { Color, Spacing } from "../styles"
 
 interface GameOverProps {
@@ -11,7 +11,7 @@ interface GameOverProps {
 const GameOver = ({ winner }: GameOverProps) => (
   <View style={styles.container} testID={"game-over"}>
     <View style={styles.imageContainer}>
-      {winner === "black" ? (
+      {winner === "b" ? (
         <Image
           source={require("../assets/YouLose.png")}
           testID={"game-over-lose"}

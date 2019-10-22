@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import {
   ImageBackground,
   TouchableOpacity,
@@ -8,29 +8,51 @@ import {
 } from "react-native"
 import { NavigationScreenProp } from "react-navigation"
 
+import AracadeContext from "../ArcadeContext"
+
 import { Buttons, Spacing, Typography } from "../styles"
 
 interface LandingScreenProps {
   navigation: NavigationScreenProp<{}>
 }
 
-const LandingScreen = ({ navigation }: LandingScreenProps) => (
-  <ImageBackground
-    source={require("../assets/Welcome.png")}
-    style={styles.container}
-  >
-    <View style={styles.footer}>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Game")}
-          style={styles.button}
-        >
-          <Text style={Typography.mainButton}>PLAY</Text>
-        </TouchableOpacity>
+const LandingScreen = ({ navigation }: LandingScreenProps) => {
+  const { setCurrentGame } = useContext(AracadeContext)
+
+  const handlePressClassGame = () => {
+    setCurrentGame("Classic")
+    navigation.navigate("Game")
+  }
+
+  const handlePressThreeKings = () => {
+    setCurrentGame("ThreeKings")
+    navigation.navigate("Game")
+  }
+
+  return (
+    <ImageBackground
+      source={require("../assets/Welcome.png")}
+      style={styles.container}
+    >
+      <View style={styles.footer}>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            onPress={handlePressClassGame}
+            style={styles.button}
+          >
+            <Text style={Typography.mainButton}>PLAY CLASSIC</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handlePressThreeKings}
+            style={styles.button}
+          >
+            <Text style={Typography.mainButton}>PLAY 3 KINGS</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  </ImageBackground>
-)
+    </ImageBackground>
+  )
+}
 
 const styles = StyleSheet.create({
   container: {

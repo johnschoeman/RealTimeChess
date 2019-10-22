@@ -8,6 +8,7 @@ import {
 } from "react-native"
 
 import AppNavigatorContainer from "./AppNavigatorContainer"
+import { ArcadeProvider } from "./ArcadeContext"
 
 import { Color } from "./styles"
 
@@ -26,7 +27,9 @@ const RealTimeChess = () => {
     <View style={styles.outerContainer}>
       <GeneralStatusBar />
       <SafeAreaView style={styles.container}>
-        <AppNavigatorContainer />
+        <ArcadeProvider>
+          <AppNavigatorContainer />
+        </ArcadeProvider>
       </SafeAreaView>
     </View>
   )

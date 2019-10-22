@@ -1,7 +1,6 @@
 import {
   Board,
   Tile,
-  Side,
   ANTile,
   createBoard,
   validMove,
@@ -15,7 +14,7 @@ import {
 } from "../../utils/game_helpers"
 import { BoardFixtures } from "../__fixtures__"
 
-import { Move } from "../../utils/chess/types"
+import { Move, Side, black, white } from "../../utils/chess/chess"
 
 describe("createBoard", () => {
   describe("when not given a fen code", () => {
@@ -87,13 +86,13 @@ describe("validMove", () => {
         board,
         { colIdx: 0, rowIdx: 1 },
         { colIdx: 0, rowIdx: 2 },
-        "black"
+        black
       )
       const Ng1g3 = validMove(
         board,
         { colIdx: 6, rowIdx: 7 },
         { colIdx: 5, rowIdx: 5 },
-        "white"
+        white
       )
 
       expect(pa7a8).toBeTruthy()
@@ -111,7 +110,7 @@ describe("validMove", () => {
         startBoard,
         { rowIdx: 1, colIdx: 1 },
         { rowIdx: 0, colIdx: 0 },
-        "white"
+        white
       )
 
       expect(result).toBeTruthy()
@@ -126,13 +125,13 @@ describe("validMove", () => {
         board,
         { colIdx: 2, rowIdx: 7 },
         { colIdx: 4, rowIdx: 5 },
-        "white"
+        white
       )
       const Bc1c3 = validMove(
         board,
         { colIdx: 2, rowIdx: 7 },
         { colIdx: 2, rowIdx: 5 },
-        "white"
+        white
       )
 
       expect(Bc1e3).toBeFalsy()
@@ -148,14 +147,14 @@ describe("validMove", () => {
         board,
         { colIdx: 1, rowIdx: 7 },
         { colIdx: 0, rowIdx: 7 },
-        "black"
+        black
       )
 
       const ka2b1 = validMove(
         board,
         { colIdx: 1, rowIdx: 7 },
         { colIdx: 0, rowIdx: 6 },
-        "black"
+        black
       )
 
       expect(ka2a1).toBe(true)
@@ -171,7 +170,7 @@ describe("validMove", () => {
         board,
         { colIdx: 0, rowIdx: 7 },
         { colIdx: 0, rowIdx: 6 },
-        "white"
+        white
       )
 
       expect(Ka1b1).toBe(true)
@@ -189,25 +188,25 @@ describe("validMove", () => {
           board,
           { colIdx: 4, rowIdx: 0 },
           { colIdx: 2, rowIdx: 0 },
-          "black"
+          black
         )
         const kOO = validMove(
           board,
           { colIdx: 4, rowIdx: 0 },
           { colIdx: 6, rowIdx: 0 },
-          "black"
+          black
         )
         const KOOO = validMove(
           board,
           { colIdx: 4, rowIdx: 7 },
           { colIdx: 2, rowIdx: 7 },
-          "white"
+          white
         )
         const KOO = validMove(
           board,
           { colIdx: 4, rowIdx: 7 },
           { colIdx: 6, rowIdx: 7 },
-          "white"
+          white
         )
 
         expect(kOOO).toBe(true)
@@ -225,25 +224,25 @@ describe("validMove", () => {
           board,
           { colIdx: 4, rowIdx: 0 },
           { colIdx: 2, rowIdx: 0 },
-          "black"
+          black
         )
         const kOO = validMove(
           board,
           { colIdx: 4, rowIdx: 0 },
           { colIdx: 6, rowIdx: 0 },
-          "black"
+          black
         )
         const KOOO = validMove(
           board,
           { colIdx: 4, rowIdx: 7 },
           { colIdx: 2, rowIdx: 7 },
-          "white"
+          white
         )
         const KOO = validMove(
           board,
           { colIdx: 4, rowIdx: 7 },
           { colIdx: 6, rowIdx: 7 },
-          "white"
+          white
         )
 
         expect(kOOO).toBe(false)
@@ -280,7 +279,7 @@ describe("generateFen", () => {
     test("it includes 'w' as the player token", () => {
       const board: Board = createBoard()
 
-      const fen: string = generateFen(board, "white")
+      const fen: string = generateFen(board, white)
 
       expect(fen).toBe(
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
@@ -292,7 +291,7 @@ describe("generateFen", () => {
     test("it includes 'b' as the player token", () => {
       const board: Board = createBoard()
 
-      const fen: string = generateFen(board, "black")
+      const fen: string = generateFen(board, black)
 
       expect(fen).toBe(
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1"
@@ -316,14 +315,14 @@ describe("winner", () => {
     test("it returns 'black'", () => {
       const result: Side | null = winner(BoardFixtures.blackWonGame)
 
-      expect(result).toBe("black")
+      expect(result).toBe(black)
     })
   })
   describe("when the black players king has been taken", () => {
     test("it returns 'white'", () => {
       const result: Side | null = winner(BoardFixtures.whiteWonGame)
 
-      expect(result).toBe("white")
+      expect(result).toBe(white)
     })
   })
 })

@@ -1,4 +1,11 @@
-import { Square, Move, PieceType, Side } from "../../../utils/chess/chess"
+import {
+  Square,
+  Move,
+  PieceType,
+  Side,
+  black,
+  white,
+} from "../../../utils/chess/chess"
 import { Board, createBoard } from "../../../utils/game_helpers"
 import { Promotion } from "../../../utils/chess/types"
 
@@ -10,7 +17,7 @@ describe("selectMove", () => {
       const fenWithOneAttackingMove = "8/8/8/8/8/8/k7/K7 b - - 0 1"
       const board: Board = createBoard(fenWithOneAttackingMove)
 
-      const result = selectMove(board, "white")
+      const result = selectMove(board, white)
 
       expect(result).toStrictEqual(move("w", "a1", "a2", "c", "k", "Kxa2", "k"))
     })
@@ -21,7 +28,7 @@ describe("selectMove", () => {
       const fenWithValidMoves = "k7/8/8/8/8/8/8/KN6 b kq - 0 1"
       const board: Board = createBoard(fenWithValidMoves)
 
-      const result = selectMove(board, "white")
+      const result = selectMove(board, white)
 
       const possibleMoves: Move[] = [
         move("w", "a1", "a2", "n", "k", "Ka2"),
@@ -39,7 +46,7 @@ describe("selectMove", () => {
       const fenWithNoValidMoves = "8/8/8/8/8/8/8/k7 b - - 0 1"
       const board: Board = createBoard(fenWithNoValidMoves)
 
-      const result = selectMove(board, "white")
+      const result = selectMove(board, white)
 
       expect(result).toBe(null)
     })
@@ -52,7 +59,7 @@ describe("validMoves", () => {
       const fenCodeWithOnePiece = "4q3/8/8/8/8/8/P7/RK6 b KQkq - 0 1"
       const board: Board = createBoard(fenCodeWithOnePiece)
 
-      const moves: Move[] = validMoves(board, "white")
+      const moves: Move[] = validMoves(board, white)
 
       expect(moves).toEqual([
         move("w", "a2", "a3", "n", "p", "a3"),
@@ -71,7 +78,7 @@ describe("validMoves", () => {
         "rbnq1nbr/pppppppp/8/8/8/8/PPPPPPPP/RBNQ1NBR b - - 0 1"
       const board: Board = createBoard(fenCodeWithNoKings)
 
-      const moves: Move[] = validMoves(board, "black")
+      const moves: Move[] = validMoves(board, black)
 
       expect(moves).toEqual([])
     })

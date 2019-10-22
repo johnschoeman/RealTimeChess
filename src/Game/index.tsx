@@ -1,12 +1,34 @@
-import React from "react"
-import { Image, View, StyleSheet } from "react-native"
+import React, { useContext } from "react"
+import { Text, TouchableOpacity, Image, View, StyleSheet } from "react-native"
 
-import { GameProvider } from "./GameContext"
-import Game from "./Game"
+import ArcadeContext, { Game } from "../ArcadeContext"
+import GameOver from "./GameOver"
+import Classic from "./Classic"
+import ThreeKings from "./ThreeKings"
 
-import { Color, Spacing } from "../styles"
+import { Buttons, Typography, Color, Spacing } from "../styles"
 
 const GameScreen = () => {
+  const { currentGame, currentWinner, setCurrentWinner } = useContext(
+    ArcadeContext
+  )
+
+  const selectGame = (game: Game | null): JSX.Element => {
+    switch (game) {
+      case "Classic": {
+        return <Classic setCurrentWinner={setCurrentWinner} />
+      }
+      case "ThreeKings": {
+        return <ThreeKings />
+      }
+      default: {
+        return <Classic />
+      }
+    }
+  }
+
+  const resetBoard = () => {}
+
   return (
     <View style={styles.container} testID={"game-screen"}>
       <View style={styles.header}>
@@ -19,10 +41,22 @@ const GameScreen = () => {
         </View>
       </View>
 
-      <View style={{ flex: 5 }}>
-        <GameProvider>
-          <Game />
-        </GameProvider>
+      <View style={styles.content}>
+        {currentWinner == null ? (
+          selectGame(currentGame)
+        ) : (
+          <>
+            <GameOver winner={currentWinner} />
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                onPress={() => resetBoard()}
+                style={styles.button}
+              >
+                <Text style={Typography.mainButton}>PLAY AGAIN</Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
       </View>
     </View>
   )
@@ -33,6 +67,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     backgroundColor: Color.background,
+    borderWidth: 1,
+    borderColor: "green",
   },
   header: {
     flex: 1,
@@ -46,6 +82,19 @@ const styles = StyleSheet.create({
   headerImage: {
     flex: 1,
     width: undefined,
+  },
+  content: {
+    flex: 5,
+  },
+  resetButton: {
+    color: Color.white,
+  },
+  buttonContainer: {
+    width: "100%",
+    ...Buttons.primaryContainer,
+  },
+  button: {
+    ...Buttons.primary,
   },
 })
 

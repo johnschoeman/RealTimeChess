@@ -40,9 +40,12 @@ import {
   ShortMove,
   Piece,
   FenCode,
+  FenId,
   Side,
   PieceType,
   Promotion,
+  black,
+  white,
 } from "./types"
 
 const move = function move(
@@ -1045,5 +1048,8 @@ export {
   PieceType,
   Side,
   Square,
+  FenId,
+  black,
+  white,
 }
 export default Chess

@@ -12,6 +12,7 @@ import WhiteQueen from "./WhiteQueen.svg"
 import WhiteRook from "./WhiteRook.svg"
 
 const BoardHeader = require("./BoardHeader.png")
+const Heart = require("./Heart.png")
 const Welcome = require("./Welcome.png")
 const YouLose = require("./YouLose.png")
 const YouWin = require("./YouWin.png")
@@ -32,6 +33,7 @@ export const Icons = {
 }
 export const Images = {
   BoardHeader,
+  Heart,
   Welcome,
   YouLose,
   YouWin,

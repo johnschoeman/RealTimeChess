@@ -2,6 +2,7 @@ import React, { useContext } from "react"
 import { View, Text, StyleSheet } from "react-native"
 
 import Board from "../Board"
+import Hearts from "./Hearts"
 import ThreeKingsContext, { ThreeKingsProvider } from "./ThreeKingsContext"
 
 import { Typography } from "../../styles"
@@ -18,10 +19,7 @@ const ThreeKingsGame = () => {
   } = useContext(ThreeKingsContext)
   return (
     <View>
-      <View>
-        <Text style={Typography.header}>userLives: {userLives}</Text>
-        <Text style={Typography.header}>computerLives: {computerLives}</Text>
-      </View>
+      <Hearts livesCount={computerLives} />
       <Board
         board={board}
         countdownCount={countdownCount}
@@ -29,6 +27,7 @@ const ThreeKingsGame = () => {
         computerSelectedTile={computerSelectedTile}
         selectUserTile={selectUserTile}
       />
+      <Hearts livesCount={userLives} />
     </View>
   )
 }

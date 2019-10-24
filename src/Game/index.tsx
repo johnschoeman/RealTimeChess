@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
     height: "22%",
     justifyContent: "flex-start",
     width: "100%",
-    paddingTop: Spacing.medium,
   },
   gameContainer: {
     flex: 5,

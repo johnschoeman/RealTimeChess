@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react"
 
 import { GameHelpers } from "../../utils"
 import { MinimaxAI } from "../../utils/ai"
-import { Move, Side } from "../../utils/chess/chess"
+import { Move, Side, black, white } from "../../utils/chess/chess"
 import ArcadeContext from "../../ArcadeContext"
 
 export interface GameState {
@@ -33,6 +33,7 @@ interface GameProviderProps {
 
 const ClassicProvider = ({ children }: GameProviderProps) => {
   const { setCurrentWinner } = useContext(ArcadeContext)
+
   const [board, setBoard] = useState<GameHelpers.Board>(
     GameHelpers.initialBoard
   )
@@ -91,7 +92,7 @@ const ClassicProvider = ({ children }: GameProviderProps) => {
 
   const getNextComputerTile = (): GameHelpers.Tile | null => {
     if (computerCurrentMove == null) {
-      const move = MinimaxAI.selectMove(board, "black")
+      const move = MinimaxAI.selectMove(board, black)
       if (move == null) {
         return null
       }
@@ -120,7 +121,7 @@ const ClassicProvider = ({ children }: GameProviderProps) => {
     }
     if (toTile !== null) {
       const fromTile = computerSelectedTile
-      selectTile(fromTile, toTile, "b", callBack)
+      selectTile(fromTile, toTile, black, callBack)
     }
   }
 
@@ -129,7 +130,7 @@ const ClassicProvider = ({ children }: GameProviderProps) => {
     const callBack = (tile: GameHelpers.Tile) => {
       setUserSelectedTile(tile)
     }
-    selectTile(fromTile, toTile, "w", callBack)
+    selectTile(fromTile, toTile, white, callBack)
   }
 
   const selectTile = (

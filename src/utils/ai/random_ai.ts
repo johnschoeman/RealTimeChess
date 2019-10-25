@@ -1,11 +1,5 @@
-import Chess, { ChessInstance, Move } from "../chess/chess"
-import {
-  Board,
-  Side,
-  generateFen,
-  squareToRCTile,
-  getPiece,
-} from "../game_helpers"
+import Chess, { ChessInstance, Move, Side } from "../chess/chess"
+import { Board, generateFen, squareToRCTile, getPiece } from "../game_helpers"
 import { sample } from "../array_helpers"
 
 export const selectMove = (board: Board, side: Side): Move | null => {

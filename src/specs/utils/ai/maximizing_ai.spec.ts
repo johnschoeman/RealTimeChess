@@ -7,7 +7,7 @@ describe("selectMove", () => {
     test("it selects a move", () => {
       const board = createBoard()
 
-      const result = selectMove(board, "black")
+      const result = selectMove(board, "b")
 
       expect(result).not.toBe(null)
     })

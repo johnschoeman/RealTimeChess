@@ -1,22 +1,20 @@
 import React, { useContext } from "react"
-import { Text, TouchableOpacity, Image, View, StyleSheet } from "react-native"
+import { View, StyleSheet } from "react-native"
 
 import ArcadeContext, { Game } from "../ArcadeContext"
-import GameOver from "./GameOver"
+import Header from "../Header"
 import Classic from "./Classic"
 import ThreeKings from "./ThreeKings"
 
-import { Buttons, Typography, Color, Spacing } from "../styles"
+import { Buttons, Color, Spacing } from "../styles"
 
 const GameScreen = () => {
-  const { currentGame, currentWinner, setCurrentWinner } = useContext(
-    ArcadeContext
-  )
+  const { currentGame } = useContext(ArcadeContext)
 
   const selectGame = (game: Game | null): JSX.Element => {
     switch (game) {
       case "Classic": {
-        return <Classic setCurrentWinner={setCurrentWinner} />
+        return <Classic />
       }
       case "ThreeKings": {
         return <ThreeKings />
@@ -27,37 +25,13 @@ const GameScreen = () => {
     }
   }
 
-  const resetBoard = () => {}
-
   return (
     <View style={styles.container} testID={"game-screen"}>
-      <View style={styles.header}>
-        <View style={styles.imageContainer}>
-          <Image
-            style={styles.headerImage}
-            resizeMode="contain"
-            source={require("../assets/BoardHeader.png")}
-          />
-        </View>
+      <View style={styles.headerContainer}>
+        <Header />
       </View>
 
-      <View style={styles.content}>
-        {currentWinner == null ? (
-          selectGame(currentGame)
-        ) : (
-          <>
-            <GameOver winner={currentWinner} />
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                onPress={() => resetBoard()}
-                style={styles.button}
-              >
-                <Text style={Typography.mainButton}>PLAY AGAIN</Text>
-              </TouchableOpacity>
-            </View>
-          </>
-        )}
-      </View>
+      <View style={styles.gameContainer}>{selectGame(currentGame)}</View>
     </View>
   )
 }
@@ -67,23 +41,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     backgroundColor: Color.background,
-    borderWidth: 1,
-    borderColor: "green",
   },
-  header: {
-    flex: 1,
+  headerContainer: {
+    height: "22%",
     justifyContent: "flex-start",
     width: "100%",
     paddingTop: Spacing.medium,
   },
-  imageContainer: {
-    height: "100%",
-  },
-  headerImage: {
-    flex: 1,
-    width: undefined,
-  },
-  content: {
+  gameContainer: {
     flex: 5,
   },
   resetButton: {

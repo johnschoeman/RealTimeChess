@@ -1,54 +1,18 @@
-import React, { useContext } from "react"
-import {
-  ImageBackground,
-  TouchableOpacity,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native"
-import { NavigationScreenProp } from "react-navigation"
+import React from "react"
+import { View, ImageBackground, StyleSheet } from "react-native"
 
-import AracadeContext from "../ArcadeContext"
+import StartGameButtons from "../StartGameButtons"
 
-import { Buttons, Spacing, Typography } from "../styles"
+import { Spacing } from "../styles"
 
-interface LandingScreenProps {
-  navigation: NavigationScreenProp<{}>
-}
-
-const LandingScreen = ({ navigation }: LandingScreenProps) => {
-  const { setCurrentGame } = useContext(AracadeContext)
-
-  const handlePressClassGame = () => {
-    setCurrentGame("Classic")
-    navigation.navigate("Game")
-  }
-
-  const handlePressThreeKings = () => {
-    setCurrentGame("ThreeKings")
-    navigation.navigate("Game")
-  }
-
+const LandingScreen = () => {
   return (
     <ImageBackground
       source={require("../assets/Welcome.png")}
       style={styles.container}
     >
       <View style={styles.footer}>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            onPress={handlePressClassGame}
-            style={styles.button}
-          >
-            <Text style={Typography.mainButton}>PLAY CLASSIC</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handlePressThreeKings}
-            style={styles.button}
-          >
-            <Text style={Typography.mainButton}>PLAY 3 KINGS</Text>
-          </TouchableOpacity>
-        </View>
+        <StartGameButtons />
       </View>
     </ImageBackground>
   )
@@ -57,18 +21,12 @@ const LandingScreen = ({ navigation }: LandingScreenProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: Spacing.medium,
-    paddingBottom: Spacing.xLarge,
-  },
-  footer: {
-    flex: 1,
     justifyContent: "flex-end",
   },
-  buttonContainer: {
-    ...Buttons.primaryContainer,
-  },
-  button: {
-    ...Buttons.primary,
+  footer: {
+    paddingLeft: Spacing.medium,
+    paddingRight: Spacing.medium,
+    height: "22%",
   },
 })
 

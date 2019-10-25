@@ -1,6 +1,6 @@
-import Chess, { ChessInstance, Move } from "../chess/chess"
+import Chess, { ChessInstance, Move, Side, black } from "../chess/chess"
 import { FenId } from "../chess/types"
-import { Board, Side, generateFen, updateBoardWithMove } from "../game_helpers"
+import { Board, generateFen, updateBoardWithMove } from "../game_helpers"
 import * as ArrayHelpers from "../array_helpers"
 
 interface MoveWithValue {
@@ -13,7 +13,7 @@ export const selectMove = (board: Board, side: Side): Move | null => {
 
   const compareByValue = (side: Side) => {
     const operator =
-      side === "black"
+      side === black
         ? (a: number, b: number) => a < b
         : (a: number, b: number) => a > b
 

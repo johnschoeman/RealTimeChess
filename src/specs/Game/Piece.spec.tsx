@@ -9,7 +9,7 @@ afterEach(cleanup)
 
 describe("Piece", () => {
   test("it renders with a provided piece prop", () => {
-    const piece = new rook("black")
+    const piece = new rook("b")
     const { getByTestId } = render(<Piece piece={piece} testID={"rook"} />)
 
     expect(getByTestId("rook")).toBeDefined()

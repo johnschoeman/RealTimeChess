@@ -40,7 +40,7 @@ const renderGameProvider = () => {
   )
 }
 
-const initialBoardAscii = boardToText(GameHelpers.initialBoard)
+const initialBoardAscii = boardToText(GameHelpers.createBoard())
 
 describe("ClassicProvider", () => {
   describe("After a few seconds", () => {

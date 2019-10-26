@@ -3,14 +3,14 @@ import { View, Text } from "react-native"
 import { render, cleanup, wait } from "@testing-library/react-native"
 import "@testing-library/jest-native/extend-expect"
 
-import ThreeKingsContext, { ThreeKingsProvider } from "./ThreeKingsContext"
+import CooldownContext, { CooldownProvider } from "./CooldownContext"
 import { GameHelpers } from "../../utils"
 
 afterEach(cleanup)
 
 const renderGameProvider = () => {
   const TestGameConsumer = () => {
-    const { userSelectedTile, board } = useContext(ThreeKingsContext)
+    const { userSelectedTile, board } = useContext(CooldownContext)
     return (
       <View>
         <Text testID={"user-selected-tile"}>
@@ -22,15 +22,15 @@ const renderGameProvider = () => {
   }
 
   return render(
-    <ThreeKingsProvider>
+    <CooldownProvider>
       <TestGameConsumer />
-    </ThreeKingsProvider>
+    </CooldownProvider>
   )
 }
 
 const initialBoardAscii = boardToText(GameHelpers.createBoard())
 
-describe("ThreeKingsProvider", () => {
+describe("CooldownProvider", () => {
   describe("After a few seconds", () => {
     test("the computer has made some moves", async () => {
       const { getByTestId } = renderGameProvider()

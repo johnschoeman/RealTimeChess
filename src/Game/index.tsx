@@ -5,13 +5,14 @@ import ArcadeContext, { Game } from "../ArcadeContext"
 import Header from "../Header"
 import Classic from "./Classic"
 import ThreeKings from "./ThreeKings"
+import Cooldown from "./Cooldown"
 
 import { Buttons, Colors, Spacing } from "../styles"
 
 const GameScreen = () => {
   const { currentGame } = useContext(ArcadeContext)
 
-  const selectGame = (game: Game | null): JSX.Element => {
+  const selectGame = (game: Game): JSX.Element => {
     switch (game) {
       case "Classic": {
         return <Classic />
@@ -19,8 +20,8 @@ const GameScreen = () => {
       case "ThreeKings": {
         return <ThreeKings />
       }
-      default: {
-        return <Classic />
+      case "Cooldown": {
+        return <Cooldown />
       }
     }
   }

@@ -19,6 +19,7 @@ const pawn = (function pawn(this: Pawn, side: Side) {
   this.side = side
   this.isPiece = true
   this.fenId = side === black ? "p" : "P"
+  this.cooldown = 0
 } as any) as { new (side: Side): Pawn }
 
 const knight = (function knight(this: Knight, side: Side) {
@@ -26,6 +27,7 @@ const knight = (function knight(this: Knight, side: Side) {
   this.side = side
   this.isPiece = true
   this.fenId = side === black ? "n" : "N"
+  this.cooldown = 0
 } as any) as { new (side: Side): Knight }
 
 const bishop = (function bishop(this: Bishop, side: Side) {
@@ -33,6 +35,7 @@ const bishop = (function bishop(this: Bishop, side: Side) {
   this.side = side
   this.isPiece = true
   this.fenId = side === black ? "b" : "B"
+  this.cooldown = 0
 } as any) as { new (side: Side): Bishop }
 
 const rook = (function rook(this: Rook, side: Side) {
@@ -40,6 +43,7 @@ const rook = (function rook(this: Rook, side: Side) {
   this.side = side
   this.isPiece = true
   this.fenId = side === black ? "r" : "R"
+  this.cooldown = 0
 } as any) as { new (side: Side): Rook }
 
 const queen = (function queen(this: Queen, side: Side) {
@@ -47,6 +51,7 @@ const queen = (function queen(this: Queen, side: Side) {
   this.side = side
   this.isPiece = true
   this.fenId = side === black ? "q" : "Q"
+  this.cooldown = 0
 } as any) as { new (side: Side): Queen }
 
 const king = (function king(this: King, side: Side) {
@@ -54,6 +59,7 @@ const king = (function king(this: King, side: Side) {
   this.side = side
   this.isPiece = true
   this.fenId = side === black ? "k" : "K"
+  this.cooldown = 0
 } as any) as { new (side: Side): King }
 
 export { empty, pawn, knight, bishop, rook, queen, king }

@@ -1,19 +1,19 @@
 import React, { createContext, useState } from "react"
 
 import { Side } from "./utils/chess/types"
-export type Game = "Classic" | "ThreeKings"
+export type Game = "Classic" | "ThreeKings" | "Cooldown"
 
 export interface ArcadeState {
-  currentGame: Game | null
+  currentGame: Game
   currentWinner: Side | null
   onLanding: boolean
-  setCurrentGame: (game: Game | null) => void
+  setCurrentGame: (game: Game) => void
   setCurrentWinner: (side: Side | null) => void
   goToGame: () => void
 }
 
 export const initialArcadeState = {
-  currentGame: null,
+  currentGame: "Classic" as Game,
   currentWinner: null,
   onLanding: true,
   setCurrentGame: () => {},
@@ -28,7 +28,7 @@ interface GameProviderProps {
 }
 
 const ArcadeProvider = ({ children }: GameProviderProps) => {
-  const [currentGame, setCurrentGame] = useState<Game | null>("Classic")
+  const [currentGame, setCurrentGame] = useState<Game>("Classic")
   const [currentWinner, setCurrentWinner] = useState<Side | null>(null)
   const [onLanding, setOnLanding] = useState<boolean>(true)
 

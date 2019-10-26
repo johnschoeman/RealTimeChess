@@ -44,11 +44,12 @@ export const useGameState = (
     toTile: Tile,
     side: Side
   ) => void,
-  decideWinner: () => Side | null
+  decideWinner: () => Side | null,
+  decrementCooldowns: () => void = () => {}
 ) => {
   const computerClockSpeed = 200
   const { setCurrentWinner } = useContext(ArcadeContext)
-  const [board, setBoard] = useState<Board>(GameHelpers.initialBoard)
+  const [board, setBoard] = useState<Board>(GameHelpers.createBoard())
   const [userSelectedTile, setUserSelectedTile] = useState<Tile | null>(null)
   const [computerSelectedTile, setComputerSelectedTile] = useState<Tile | null>(
     null
@@ -65,6 +66,7 @@ export const useGameState = (
     if (gameIsActive) {
       setGameStep(gameStep + 1)
       const winner: Side | null = decideWinner()
+      decrementCooldowns()
       if (winner == null) {
         const computerNextTile = getNextComputerTile()
         selectComputerTile(computerNextTile)
@@ -141,7 +143,7 @@ export const useGameState = (
   }
 
   const resetBoard = () => {
-    setBoard(GameHelpers.initialBoard)
+    setBoard(GameHelpers.createBoard())
     setComputerCurrentMove(null)
     setComputerSelectedTile(null)
     setUserSelectedTile(null)

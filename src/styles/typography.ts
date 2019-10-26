@@ -20,7 +20,7 @@ export const landing: TextStyle = {
 
 export const mainButton: TextStyle = {
   color: Colors.black,
-  fontSize: largeFontSize,
+  fontSize: baseFontSize,
   fontFamily: baseFont,
 }
 

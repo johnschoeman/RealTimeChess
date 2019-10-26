@@ -22,6 +22,12 @@ const StartGameButtons = () => {
     goToGame()
   }
 
+  const handlePressCooldown = () => {
+    setCurrentGame("Cooldown")
+    setCurrentWinner(null)
+    goToGame()
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
@@ -32,6 +38,11 @@ const StartGameButtons = () => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={handlePressThreeKings} style={styles.button}>
           <Text style={Typography.mainButton}>PLAY 3 KINGS</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={handlePressCooldown} style={styles.button}>
+          <Text style={Typography.mainButton}>COOLDOWN</Text>
         </TouchableOpacity>
       </View>
     </View>

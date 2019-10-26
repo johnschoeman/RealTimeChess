@@ -25,9 +25,9 @@ export const largeRounded: ViewStyle = {
 
 export const primaryContainer: ViewStyle = {
   backgroundColor: Colors.white,
-  height: Spacing.huge,
-  borderRadius: Spacing.huge / 2,
-  padding: Spacing.base,
+  height: Spacing.xLarge,
+  borderRadius: Spacing.large,
+  padding: Spacing.xSmall,
 }
 
 export const primary: ViewStyle = {
@@ -41,7 +41,7 @@ export const primary: ViewStyle = {
   },
   shadowOpacity: 0.5,
   shadowRadius: 2.5,
-  borderRadius: Spacing.huge / 2,
+  borderRadius: Spacing.large,
   elevation: 8,
   borderWidth: 1,
   backgroundColor: Colors.white,

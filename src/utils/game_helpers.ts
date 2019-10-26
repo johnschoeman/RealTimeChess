@@ -75,8 +75,6 @@ function fenCharToPieceSubArray(char: string): BoardRow {
   }
 }
 
-export const initialBoard = createBoard(initialBoardFenCode)
-
 function createPieceByFenCode(fenCode: string): Piece | Empty {
   switch (fenCode) {
     case "r": {

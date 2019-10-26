@@ -6,7 +6,7 @@ import { Board, Tile } from "../../utils/game_helpers"
 import { GameState, useGameState } from "../game_hooks"
 
 export const initialGameState: GameState = {
-  board: GameHelpers.initialBoard,
+  board: GameHelpers.createBoard(),
   userSelectedTile: null,
   computerSelectedTile: null,
   countdownCount: 3,

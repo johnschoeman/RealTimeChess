@@ -22,6 +22,18 @@ const BoardRow = ({
   computerSelectedTile,
   selectUserTile,
 }: BoardRowProps) => {
+  const cooldownStyle = (piece: PieceType | Empty) => {
+    const { isPiece, cooldown } = piece
+    const cooldownColor = (cooldown: number): string => {
+      const base = cooldown / 10
+      return `rgba(64, 95, 237, ${base})`
+    }
+
+    return isPiece && cooldown && cooldown > 0
+      ? { flex: 1, width: "100%", backgroundColor: cooldownColor(cooldown) }
+      : null
+  }
+
   return (
     <View style={styles.container}>
       {row.map((piece: PieceType | Empty, colIdx: number) => {
@@ -48,7 +60,9 @@ const BoardRow = ({
             ]}
             key={`col-${colIdx}`}
           >
-            <Piece piece={piece} testID={`piece-${rowIdx}-${colIdx}`} />
+            <View style={cooldownStyle(piece)}>
+              <Piece piece={piece} />
+            </View>
           </TouchableOpacity>
         )
       })}

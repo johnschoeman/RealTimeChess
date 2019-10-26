@@ -15,6 +15,7 @@ export interface Empty {
   side: null
   fenId: null
   color: null
+  cooldown?: null
 }
 
 export interface Piece {
@@ -38,6 +39,7 @@ export interface Piece {
   color: Side
   isPiece: boolean
   fenId: FenId
+  cooldown?: number
 }
 
 /**

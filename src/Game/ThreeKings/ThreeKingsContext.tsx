@@ -11,7 +11,7 @@ export interface ThreeKingsGameState extends GameState {
 }
 
 export const initialGameState: ThreeKingsGameState = {
-  board: GameHelpers.initialBoard,
+  board: GameHelpers.createBoard(),
   userSelectedTile: null,
   computerSelectedTile: null,
   countdownCount: 3,

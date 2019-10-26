@@ -2,8 +2,8 @@ import React from "react"
 import { render, cleanup } from "@testing-library/react-native"
 import "@testing-library/jest-native/extend-expect"
 
-import Piece from "../../Game/Piece"
-import { rook } from "../../utils/pieces"
+import Piece from "./Piece"
+import { rook } from "../utils/pieces"
 
 afterEach(cleanup)
 

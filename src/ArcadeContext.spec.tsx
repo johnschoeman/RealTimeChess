@@ -3,7 +3,7 @@ import { View, Text } from "react-native"
 import { render, cleanup } from "@testing-library/react-native"
 import "@testing-library/jest-native/extend-expect"
 
-import ArcadeContext, { ArcadeProvider } from "../ArcadeContext"
+import ArcadeContext, { ArcadeProvider } from "./ArcadeContext"
 
 afterEach(cleanup)
 

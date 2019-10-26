@@ -1,6 +1,6 @@
-import { selectMove, boardValue } from "../../../utils/ai/maximizing_ai"
+import { selectMove, boardValue } from "./maximizing_ai"
 
-import { createBoard } from "../../../utils/game_helpers"
+import { createBoard } from "../game_helpers"
 
 describe("selectMove", () => {
   describe("when there are available moves", () => {

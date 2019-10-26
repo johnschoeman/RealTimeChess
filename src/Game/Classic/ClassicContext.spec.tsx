@@ -3,10 +3,8 @@ import { View, Text } from "react-native"
 import { render, cleanup, wait } from "@testing-library/react-native"
 import "@testing-library/jest-native/extend-expect"
 
-import ClassicContext, {
-  ClassicProvider,
-} from "../../../Game/Classic/ClassicContext"
-import { GameHelpers } from "../../../utils"
+import ClassicContext, { ClassicProvider } from "./ClassicContext"
+import { GameHelpers } from "../../utils"
 
 afterEach(cleanup)
 

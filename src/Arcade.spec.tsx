@@ -2,11 +2,8 @@ import React from "react"
 import { render, cleanup, wait } from "@testing-library/react-native"
 import "@testing-library/jest-native/extend-expect"
 
-import ArcadeContext, {
-  ArcadeState,
-  initialArcadeState,
-} from "../ArcadeContext"
-import ArcadeScreen from "../Arcade"
+import ArcadeContext, { ArcadeState, initialArcadeState } from "./ArcadeContext"
+import ArcadeScreen from "./Arcade"
 
 afterEach(cleanup)
 

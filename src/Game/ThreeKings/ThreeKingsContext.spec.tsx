@@ -3,10 +3,8 @@ import { View, Text } from "react-native"
 import { render, cleanup, wait } from "@testing-library/react-native"
 import "@testing-library/jest-native/extend-expect"
 
-import ThreeKingsContext, {
-  ThreeKingsProvider,
-} from "../../../Game/ThreeKings/ThreeKingsContext"
-import { GameHelpers } from "../../../utils"
+import ThreeKingsContext, { ThreeKingsProvider } from "./ThreeKingsContext"
+import { GameHelpers } from "../../utils"
 
 afterEach(cleanup)
 

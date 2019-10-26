@@ -1,4 +1,4 @@
-import { chessMoves } from "../../../utils/chess/chess"
+import { chessMoves } from "./chess"
 
 describe("chessMoves", () => {
   test("it returns all the valid moves for given side", () => {})

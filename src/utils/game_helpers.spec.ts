@@ -11,10 +11,10 @@ import {
   boardToAscii,
   updateBoard,
   updateBoardWithMove,
-} from "../../utils/game_helpers"
+} from "./game_helpers"
 import { BoardFixtures } from "../__fixtures__"
 
-import { Move, Side, black, white } from "../../utils/chess/chess"
+import { Move, Side, black, white } from "./chess/chess"
 
 describe("createBoard", () => {
   describe("when not given a fen code", () => {

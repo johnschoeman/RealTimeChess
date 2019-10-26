@@ -1,4 +1,4 @@
-import { pawn } from "../../utils/pieces"
+import { pawn } from "./pieces"
 
 describe("pawn", () => {
   describe("when given a side of white", () => {

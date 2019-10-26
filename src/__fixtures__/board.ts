@@ -1,15 +1,7 @@
-import {
-  rook,
-  knight,
-  bishop,
-  queen,
-  king,
-  pawn,
-  empty,
-} from "../../utils/pieces"
-import { black, white } from "../../utils/chess/chess"
+import { rook, knight, bishop, queen, king, pawn, empty } from "../utils/pieces"
+import { black, white } from "../utils/chess/chess"
 
-import { Board } from "../../utils/game_helpers"
+import { Board } from "../utils/game_helpers"
 
 const r = () => new rook(black)
 const n = () => new knight(black)

@@ -1,6 +1,6 @@
 import { TextStyle } from "react-native"
 
-import * as Color from "./color"
+import * as Colors from "./colors"
 
 export const baseFontSize = 12
 export const largeFontSize = 24
@@ -12,18 +12,18 @@ export const helvetica = "Helvetica-Bold"
 const baseFont = helvetica
 
 export const landing: TextStyle = {
-  color: Color.white,
+  color: Colors.white,
   fontSize: largeFontSize,
   paddingBottom: 12,
   fontFamily: baseFont,
 }
 
 export const mainButton: TextStyle = {
-  color: Color.black,
+  color: Colors.black,
   fontSize: largeFontSize,
   fontFamily: baseFont,
 }
 
 export const header: TextStyle = {
-  color: Color.white,
+  color: Colors.white,
 }

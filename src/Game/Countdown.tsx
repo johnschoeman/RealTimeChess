@@ -1,7 +1,7 @@
 import React from "react"
 import { StyleSheet, Text, View } from "react-native"
 
-import { Color, Typography } from "../styles"
+import { Colors, Typography } from "../styles"
 
 const Countdown = ({ count }: { count: number }) => {
   return (
@@ -20,10 +20,10 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   heading: {
-    color: Color.yellow,
+    color: Colors.yellow,
     fontSize: Typography.countFontSize,
     fontWeight: Typography.heavyFontWeight,
-    shadowColor: Color.red,
+    shadowColor: Colors.red,
     shadowOffset: {
       width: 0,
       height: 5,

@@ -5,7 +5,7 @@ import Piece from "./Piece"
 import { PieceType } from "../utils/pieces"
 import { BoardRow as BoardRowType, Tile } from "../utils/game_helpers"
 
-import { Color } from "../styles"
+import { Colors } from "../styles"
 
 interface BoardRowProps {
   row: BoardRowType
@@ -30,12 +30,12 @@ const BoardRow = ({
         let userSelectedStyle = createSelectedStyle(
           tile,
           userSelectedTile,
-          Color.userHighlight
+          Colors.userHighlight
         )
         let computerSelectedStyle = createSelectedStyle(
           tile,
           computerSelectedTile,
-          Color.computerHighlight
+          Colors.computerHighlight
         )
         return (
           <TouchableOpacity
@@ -59,7 +59,7 @@ const BoardRow = ({
 function createTileStyle(tile: Tile) {
   const { rowIdx, colIdx } = tile
   const tileColor =
-    (rowIdx + colIdx) % 2 === 0 ? Color.tileWhite : Color.tileBlack
+    (rowIdx + colIdx) % 2 === 0 ? Colors.tileWhite : Colors.tileBlack
   return { backgroundColor: tileColor, borderColor: tileColor }
 }
 

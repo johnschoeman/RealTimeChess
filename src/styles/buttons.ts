@@ -1,6 +1,6 @@
 import { ViewStyle } from "react-native"
 
-import * as Colors from "./color"
+import * as Colors from "./colors"
 import * as Spacing from "./spacing"
 
 const base: ViewStyle = {

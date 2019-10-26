@@ -6,7 +6,7 @@ import Header from "../Header"
 import Classic from "./Classic"
 import ThreeKings from "./ThreeKings"
 
-import { Buttons, Color, Spacing } from "../styles"
+import { Buttons, Colors, Spacing } from "../styles"
 
 const GameScreen = () => {
   const { currentGame } = useContext(ArcadeContext)
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-start",
-    backgroundColor: Color.background,
+    backgroundColor: Colors.background,
   },
   headerContainer: {
     height: "22%",
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     flex: 5,
   },
   resetButton: {
-    color: Color.white,
+    color: Colors.white,
   },
   buttonContainer: {
     width: "100%",

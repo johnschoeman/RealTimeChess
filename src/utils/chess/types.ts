@@ -8,6 +8,29 @@ export type Side = "b" | "w"
 export const black: Side = "b"
 export const white: Side = "w"
 
+export interface Piece {
+  kind: string
+  /**
+   * The type of the piece to place
+   * - "p" for Pawn
+   * - "n" for Knight
+   * - "b" for Bishop
+   * - "r" for Rook
+   * - "q" for Queen
+   * - "k" for King
+   */
+  type: PieceType
+  side?: Side
+  /**
+   * The color of the piece
+   * - "b" for Black
+   * - "w" for White
+   */
+  color: Side
+  isPiece: boolean
+  fenId: FenId
+}
+
 /**
  * tuple of a parsed fen code
  * rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
@@ -140,26 +163,6 @@ export type InternalPiece = {
 }
 
 export type InternalBoard = (InternalPiece | null)[]
-
-export interface Piece {
-  /**
-   * The type of the piece to place
-   * - "p" for Pawn
-   * - "n" for Knight
-   * - "b" for Bishop
-   * - "r" for Rook
-   * - "q" for Queen
-   * - "k" for King
-   */
-  type: PieceType
-
-  /**
-   * The color of the piece
-   * - "b" for Black
-   * - "w" for White
-   */
-  color: Side
-}
 
 export interface ChessInstance {
   /**

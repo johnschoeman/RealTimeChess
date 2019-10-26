@@ -1,11 +1,4 @@
-import { FenId, Side, black } from "./chess/chess"
-
-interface Piece {
-  kind: string
-  side?: Side
-  isPiece: boolean
-  fenId: FenId
-}
+import { Side, Piece, black } from "./chess/chess"
 
 interface Empty extends Piece {}
 interface Pawn extends Piece {}
@@ -14,8 +7,6 @@ interface Bishop extends Piece {}
 interface Rook extends Piece {}
 interface Queen extends Piece {}
 interface King extends Piece {}
-
-type PieceType = Empty | Pawn | Knight | Bishop | Rook | Queen | King
 
 const empty = (function empty(this: Empty) {
   this.kind = "empty"
@@ -69,7 +60,6 @@ const king = (function king(this: King, side: Side) {
 export { empty, pawn, knight, bishop, rook, queen, king }
 export {
   Piece as PieceInterface,
-  PieceType,
   Empty,
   Pawn,
   Knight,

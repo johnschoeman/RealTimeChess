@@ -2,7 +2,7 @@ import React from "react"
 import { TouchableOpacity, View, StyleSheet } from "react-native"
 
 import Piece from "./Piece"
-import { PieceType } from "../utils/pieces"
+import { Piece as PieceType } from "../utils/chess/chess"
 import { BoardRow as BoardRowType, Tile } from "../utils/game_helpers"
 
 import { Colors } from "../styles"

@@ -2,16 +2,19 @@ import React, { createContext, useContext, useState, useEffect } from "react"
 
 import { GameHelpers } from "../../utils"
 import { MinimaxAI } from "../../utils/ai"
-import { Move, Side, black, white } from "../../utils/chess/chess"
+import { Move, Side, black, white, Piece } from "../../utils/chess/chess"
+import { Tile, Board } from "../../utils/game_helpers"
 import ArcadeContext from "../../ArcadeContext"
 
 export interface GameState {
-  board: GameHelpers.Board
-  userSelectedTile: GameHelpers.Tile | null
-  computerSelectedTile: GameHelpers.Tile | null
+  board: Board
+  userSelectedTile: Tile | null
+  computerSelectedTile: Tile | null
   countdownCount: number
+  userLives: number
+  computerLives: number
   resetBoard: () => void
-  selectUserTile: (toTile: GameHelpers.Tile) => void
+  selectUserTile: (toTile: Tile) => void
 }
 
 export const initialGameState: GameState = {
@@ -19,6 +22,8 @@ export const initialGameState: GameState = {
   userSelectedTile: null,
   computerSelectedTile: null,
   countdownCount: 3,
+  userLives: 3,
+  computerLives: 3,
   resetBoard: () => {},
   selectUserTile: () => {},
 }
@@ -27,37 +32,32 @@ const ThreeKingsContext = createContext<GameState>(initialGameState)
 
 const computerClockSpeed = 200
 
-interface GameProviderProps {
+interface ThreeKingsProviderProps {
   children: JSX.Element
 }
 
-const ThreeKingsProvider = ({ children }: GameProviderProps) => {
+const ThreeKingsProvider = ({ children }: ThreeKingsProviderProps) => {
   const { setCurrentWinner } = useContext(ArcadeContext)
 
-  const [board, setBoard] = useState<GameHelpers.Board>(
-    GameHelpers.initialBoard
+  const [board, setBoard] = useState<Board>(GameHelpers.initialBoard)
+  const [userSelectedTile, setUserSelectedTile] = useState<Tile | null>(null)
+  const [computerSelectedTile, setComputerSelectedTile] = useState<Tile | null>(
+    null
   )
-  const [
-    userSelectedTile,
-    setUserSelectedTile,
-  ] = useState<GameHelpers.Tile | null>(null)
-  const [
-    computerSelectedTile,
-    setComputerSelectedTile,
-  ] = useState<GameHelpers.Tile | null>(null)
   const [computerCurrentMove, setComputerCurrentMove] = useState<Move | null>(
     null
   )
   const [gameStep, setGameStep] = useState<number>(0)
   const [gameIsActive, setGameIsActive] = useState<boolean>(false)
-
   const [countdownCount, setCountdownCount] = useState<number>(3)
   const [isActive, setIsActive] = useState<boolean>(true)
+  const [userLives, setUserLives] = useState<number>(3)
+  const [computerLives, setComputerLives] = useState<number>(3)
 
   const tick = (): void => {
     if (gameIsActive) {
       setGameStep(gameStep + 1)
-      const winner: Side | null = GameHelpers.winner(board)
+      const winner: Side | null = calcWinner()
       if (winner == null) {
         const computerNextTile = getNextComputerTile()
         selectComputerTile(computerNextTile)
@@ -65,6 +65,16 @@ const ThreeKingsProvider = ({ children }: GameProviderProps) => {
         setGameIsActive(false)
         setCurrentWinner(winner)
       }
+    }
+  }
+
+  const calcWinner = (): Side | null => {
+    if (computerLives === 0) {
+      return white
+    } else if (userLives === 0) {
+      return black
+    } else {
+      return null
     }
   }
 
@@ -90,7 +100,7 @@ const ThreeKingsProvider = ({ children }: GameProviderProps) => {
     }
   })
 
-  const getNextComputerTile = (): GameHelpers.Tile | null => {
+  const getNextComputerTile = (): Tile | null => {
     if (computerCurrentMove == null) {
       const move = MinimaxAI.selectMove(board, black)
       if (move == null) {
@@ -115,8 +125,8 @@ const ThreeKingsProvider = ({ children }: GameProviderProps) => {
     setGameStep(0)
   }
 
-  const selectComputerTile = (toTile: GameHelpers.Tile | null) => {
-    const callBack = (tile: GameHelpers.Tile) => {
+  const selectComputerTile = (toTile: Tile | null) => {
+    const callBack = (tile: Tile) => {
       setComputerSelectedTile(tile)
     }
     if (toTile !== null) {
@@ -125,42 +135,65 @@ const ThreeKingsProvider = ({ children }: GameProviderProps) => {
     }
   }
 
-  const selectUserTile = (toTile: GameHelpers.Tile) => {
+  const selectUserTile = (toTile: Tile) => {
     const fromTile = userSelectedTile
-    const callBack = (tile: GameHelpers.Tile) => {
+    const callBack = (tile: Tile) => {
       setUserSelectedTile(tile)
     }
     selectTile(fromTile, toTile, white, callBack)
   }
 
   const selectTile = (
-    fromTile: GameHelpers.Tile | null,
-    toTile: GameHelpers.Tile | null,
+    fromTile: Tile | null,
+    toTile: Tile | null,
     side: Side,
     callBack: any
   ): void => {
     if (toTile === null) {
-      return
+      throw new Error(`Player: ${side} tried to select a null for a tile`)
     }
 
-    const toPiece = GameHelpers.getPiece(board, toTile)
-    if (fromTile === null && toPiece.isPiece) {
+    const toPiece: Piece = GameHelpers.getPiece(board, toTile)
+    const isSelectingAPiece = () => fromTile === null && toPiece.isPiece
+    const isSwitchingSelection = () =>
+      fromTile !== null && toPiece.side === side
+
+    if (isSelectingAPiece() || isSwitchingSelection()) {
       callBack(toTile)
     } else if (fromTile !== null) {
-      const isMoveValid = GameHelpers.validMove(board, fromTile, toTile, side)
+      handleAttack(board, fromTile, toTile, side, toPiece)
+      callBack(null)
+    }
+  }
 
-      if (isMoveValid) {
-        movePiece(fromTile, toTile)
-        callBack(null)
+  const handleAttack = (
+    board: Board,
+    fromTile: Tile,
+    toTile: Tile,
+    side: Side,
+    toPiece: Piece
+  ): void => {
+    const isMoveValid = GameHelpers.validMove(board, fromTile, toTile, side)
+    if (isMoveValid) {
+      const { fenId } = toPiece
+      if (fenId === "K") {
+        setUserLives(userLives - 1)
+        removePiece(fromTile)
+      } else if (fenId === "k") {
+        setComputerLives(computerLives - 1)
+        removePiece(fromTile)
       } else {
-        if (GameHelpers.getPiece(board, toTile).side === side) {
-          callBack(toTile)
-        }
+        movePiece(fromTile, toTile)
       }
     }
   }
 
-  const movePiece = (fromTile: GameHelpers.Tile, toTile: GameHelpers.Tile) => {
+  const removePiece = (tile: Tile) => {
+    const newBoard = GameHelpers.removePiece(board, tile)
+    setBoard(newBoard)
+  }
+
+  const movePiece = (fromTile: Tile, toTile: Tile) => {
     const newBoard = GameHelpers.updateBoard(board, fromTile, toTile)
     setBoard(newBoard)
   }
@@ -172,6 +205,8 @@ const ThreeKingsProvider = ({ children }: GameProviderProps) => {
         userSelectedTile,
         computerSelectedTile,
         countdownCount,
+        userLives,
+        computerLives,
         resetBoard: resetBoard,
         selectUserTile: selectUserTile,
       }}

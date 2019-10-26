@@ -11,6 +11,7 @@ import {
   boardToAscii,
   updateBoard,
   updateBoardWithMove,
+  removePiece,
 } from "./game_helpers"
 import { BoardFixtures } from "../__fixtures__"
 
@@ -425,6 +426,18 @@ describe("updateBoard", () => {
         expectBoardsToMatch(result, expected)
       })
     })
+  })
+})
+
+describe("removePiece", () => {
+  test("it returns a new board without the piece", () => {
+    const startBoard: Board = createBoard()
+
+    const result: Board = removePiece(startBoard, { rowIdx: 0, colIdx: 2 })
+
+    const expectedFen = "rn1qkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR KQkq - 0 1"
+    const expected: Board = createBoard(expectedFen)
+    expectBoardsToMatch(result, expected)
   })
 })
 

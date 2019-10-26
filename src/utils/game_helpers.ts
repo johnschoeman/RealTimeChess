@@ -2,6 +2,7 @@ import {
   ChessInstance,
   ShortMove,
   Square,
+  Piece,
   Move,
   Side,
   black,
@@ -9,19 +10,10 @@ import {
 } from "../utils/chess/chess"
 
 import Chess from "./chess/chess"
-import {
-  PieceType,
-  empty,
-  pawn,
-  knight,
-  bishop,
-  rook,
-  queen,
-  king,
-} from "./pieces"
+import { empty, pawn, knight, bishop, rook, queen, king } from "./pieces"
 import * as ArrayHelpers from "./array_helpers"
 
-export type BoardRow = PieceType[]
+export type BoardRow = Piece[]
 export type Board = BoardRow[]
 
 export interface Tile {
@@ -37,7 +29,7 @@ export interface ANTile {
 
 interface PieceWithTile {
   tile: Tile
-  piece: PieceType
+  piece: Piece
 }
 
 const FileToCol: { [key: string]: number } = {
@@ -74,17 +66,17 @@ export const createBoard = (fenCode: string = initialBoardFenCode): Board => {
   })
 }
 
-function fenCharToPieceSubArray(char: string): PieceType[] {
+function fenCharToPieceSubArray(char: string): BoardRow {
   if (isNaN(Number(char))) {
     return [createPieceByFenCode(char)]
   } else {
-    return Array<PieceType>(Number(char)).fill(new empty())
+    return Array<Piece>(Number(char)).fill(new empty())
   }
 }
 
 export const initialBoard = createBoard(initialBoardFenCode)
 
-function createPieceByFenCode(fenCode: string): PieceType {
+function createPieceByFenCode(fenCode: string): Piece {
   switch (fenCode) {
     case "r": {
       return new rook(black)
@@ -132,10 +124,10 @@ export const winner = (board: Board): Side | null => {
   const kingColors: Array<Side | undefined> = board.flatMap(
     (rank: BoardRow) => {
       return rank
-        .filter((piece: PieceType) => {
+        .filter((piece: Piece) => {
           return piece.kind === "king"
         })
-        .map((piece: PieceType) => {
+        .map((piece: Piece) => {
           return piece.side
         })
     }
@@ -179,10 +171,7 @@ export const squareToRCTile = (square: Square): Tile => {
   }
 }
 
-export function playerPieces(
-  board: PieceType[][],
-  side: Side
-): PieceWithTile[] {
+export function playerPieces(board: Board, side: Side): PieceWithTile[] {
   const pieces = []
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 8; j++) {
@@ -197,7 +186,7 @@ export function playerPieces(
   return pieces
 }
 
-export function getPiece(board: Board, tile: Tile): PieceType {
+export function getPiece(board: Board, tile: Tile): Piece {
   return board[tile.rowIdx][tile.colIdx]
 }
 
@@ -292,6 +281,13 @@ export function updateBoard(
   } else {
     return oldBoard
   }
+}
+
+export function removePiece(oldBoard: Board, tile: Tile): Board {
+  const { colIdx, rowIdx } = tile
+  const newBoard = ArrayHelpers.deepDup(oldBoard)
+  newBoard[rowIdx][colIdx] = new empty()
+  return newBoard
 }
 
 export function validMove(

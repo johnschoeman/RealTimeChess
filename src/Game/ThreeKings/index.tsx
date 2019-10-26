@@ -12,16 +12,24 @@ const ThreeKingsGame = () => {
     countdownCount,
     userSelectedTile,
     computerSelectedTile,
+    userLives,
+    computerLives,
     selectUserTile,
   } = useContext(ThreeKingsContext)
   return (
-    <Board
-      board={board}
-      countdownCount={countdownCount}
-      userSelectedTile={userSelectedTile}
-      computerSelectedTile={computerSelectedTile}
-      selectUserTile={selectUserTile}
-    />
+    <View>
+      <View>
+        <Text style={Typography.header}>userLives: {userLives}</Text>
+        <Text style={Typography.header}>computerLives: {computerLives}</Text>
+      </View>
+      <Board
+        board={board}
+        countdownCount={countdownCount}
+        userSelectedTile={userSelectedTile}
+        computerSelectedTile={computerSelectedTile}
+        selectUserTile={selectUserTile}
+      />
+    </View>
   )
 }
 

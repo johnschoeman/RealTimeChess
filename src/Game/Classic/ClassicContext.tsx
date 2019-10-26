@@ -27,11 +27,11 @@ const ClassicContext = createContext<GameState>(initialGameState)
 
 const computerClockSpeed = 200
 
-interface GameProviderProps {
+interface ClassicProviderProps {
   children: JSX.Element
 }
 
-const ClassicProvider = ({ children }: GameProviderProps) => {
+const ClassicProvider = ({ children }: ClassicProviderProps) => {
   const { setCurrentWinner } = useContext(ArcadeContext)
 
   const [board, setBoard] = useState<GameHelpers.Board>(
@@ -144,19 +144,27 @@ const ClassicProvider = ({ children }: GameProviderProps) => {
     }
 
     const toPiece = GameHelpers.getPiece(board, toTile)
-    if (fromTile === null && toPiece.isPiece) {
+    const isSelectingAPiece = () => fromTile === null && toPiece.isPiece
+    const isSwitchingSelection = () =>
+      fromTile !== null && toPiece.side === side
+
+    if (isSelectingAPiece() || isSwitchingSelection()) {
       callBack(toTile)
     } else if (fromTile !== null) {
-      const isMoveValid = GameHelpers.validMove(board, fromTile, toTile, side)
+      handleAttack(board, fromTile, toTile, side)
+      callBack(null)
+    }
+  }
 
-      if (isMoveValid) {
-        movePiece(fromTile, toTile)
-        callBack(null)
-      } else {
-        if (GameHelpers.getPiece(board, toTile).side === side) {
-          callBack(toTile)
-        }
-      }
+  const handleAttack = (
+    board: GameHelpers.Board,
+    fromTile: GameHelpers.Tile,
+    toTile: GameHelpers.Tile,
+    side: Side
+  ): void => {
+    const isMoveValid = GameHelpers.validMove(board, fromTile, toTile, side)
+    if (isMoveValid) {
+      movePiece(fromTile, toTile)
     }
   }
 

@@ -1,13 +1,12 @@
 import React from "react"
 import { View, StyleSheet, Image, ImageSourcePropType } from "react-native"
 
-import { FenId } from "../utils/chess/types"
-import { Pieces } from "../utils"
+import { Piece as PieceType, FenId } from "../utils/chess/chess"
 
 import { Images } from "../assets"
 
 interface PieceProps {
-  piece: Pieces.PieceInterface
+  piece: PieceType
   testID?: string
 }
 
@@ -19,7 +18,7 @@ const Piece = ({ piece, testID }: PieceProps) => (
 
 type PieceFlags = { [P in FenId]: ImageSourcePropType }
 
-const pieceImageSource = (piece: Pieces.PieceType): ImageSourcePropType => {
+const pieceImageSource = (piece: PieceType): ImageSourcePropType => {
   const styleMap: PieceFlags = {
     "0": Images.BlackPawn,
     r: Images.BlackRook,

@@ -398,7 +398,7 @@ const Chess = (fen: string = DEFAULT_POSITION): ChessInstance => {
     return [fen, turn, cflags, epflags, half_moves, move_number].join(" ")
   }
 
-  function put(piece: Piece, square: Square) {
+  function put(piece: InternalPiece, square: Square) {
     /* check for valid piece object */
     if (!("type" in piece && "color" in piece)) {
       return false

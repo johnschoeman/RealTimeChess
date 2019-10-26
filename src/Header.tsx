@@ -1,13 +1,15 @@
 import React from "react"
 import { View, StyleSheet, Image } from "react-native"
 
+import { Images } from "./assets"
+
 const Header = () => {
   return (
     <View style={styles.container}>
       <Image
         style={styles.headerImage}
         resizeMode="contain"
-        source={require("./assets/BoardHeader.png")}
+        source={Images.BoardHeader}
       />
     </View>
   )

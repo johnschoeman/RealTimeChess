@@ -4,18 +4,7 @@ import { View, StyleSheet, Image, ImageSourcePropType } from "react-native"
 import { FenId } from "../utils/chess/types"
 import { Pieces } from "../utils"
 
-const blackPawn = require("../assets/BlackPawn.png")
-const whitePawn = require("../assets/WhitePawn.png")
-const blackKnight = require("../assets/BlackKnight.png")
-const whiteKnight = require("../assets/WhiteKnight.png")
-const blackBishop = require("../assets/BlackBishop.png")
-const whiteBishop = require("../assets/WhiteBishop.png")
-const blackRook = require("../assets/BlackRook.png")
-const whiteRook = require("../assets/WhiteRook.png")
-const blackQueen = require("../assets/BlackQueen.png")
-const whiteQueen = require("../assets/WhiteQueen.png")
-const blackKing = require("../assets/BlackKing.png")
-const whiteKing = require("../assets/WhiteKing.png")
+import { Images } from "../assets"
 
 interface PieceProps {
   piece: Pieces.PieceInterface
@@ -32,19 +21,19 @@ type PieceFlags = { [P in FenId]: ImageSourcePropType }
 
 const pieceImageSource = (piece: Pieces.PieceType): ImageSourcePropType => {
   const styleMap: PieceFlags = {
-    "0": blackPawn,
-    r: blackRook,
-    n: blackKnight,
-    b: blackBishop,
-    q: blackQueen,
-    k: blackKing,
-    p: blackPawn,
-    R: whiteRook,
-    N: whiteKnight,
-    B: whiteBishop,
-    Q: whiteQueen,
-    K: whiteKing,
-    P: whitePawn,
+    "0": Images.BlackPawn,
+    r: Images.BlackRook,
+    n: Images.BlackKnight,
+    b: Images.BlackBishop,
+    q: Images.BlackQueen,
+    k: Images.BlackKing,
+    p: Images.BlackPawn,
+    R: Images.WhiteRook,
+    N: Images.WhiteKnight,
+    B: Images.WhiteBishop,
+    Q: Images.WhiteQueen,
+    K: Images.WhiteKing,
+    P: Images.WhitePawn,
   }
   return styleMap[piece.fenId]
 }

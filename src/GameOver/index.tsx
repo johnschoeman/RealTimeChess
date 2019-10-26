@@ -5,6 +5,7 @@ import Header from "../Header"
 import StartGameButtons from "../StartGameButtons"
 import ArcadeContext from "../ArcadeContext"
 
+import { Images } from "../assets"
 import { Spacing } from "../styles"
 
 const GameOver = () => {
@@ -17,15 +18,9 @@ const GameOver = () => {
 
       <View style={styles.imageContainer}>
         {currentWinner === "b" ? (
-          <Image
-            source={require("../assets/YouLose.png")}
-            testID={"game-over-lose"}
-          />
+          <Image source={Images.YouLose} testID={"game-over-lose"} />
         ) : (
-          <Image
-            source={require("../assets/YouWin.png")}
-            testID={"game-over-win"}
-          />
+          <Image source={Images.YouWin} testID={"game-over-win"} />
         )}
       </View>
 

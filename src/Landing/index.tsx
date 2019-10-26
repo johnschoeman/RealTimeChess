@@ -3,14 +3,12 @@ import { View, ImageBackground, StyleSheet } from "react-native"
 
 import StartGameButtons from "../StartGameButtons"
 
+import { Images } from "../assets"
 import { Spacing } from "../styles"
 
 const LandingScreen = () => {
   return (
-    <ImageBackground
-      source={require("../assets/Welcome.png")}
-      style={styles.container}
-    >
+    <ImageBackground source={Images.Welcome} style={styles.container}>
       <View style={styles.footer}>
         <StartGameButtons />
       </View>

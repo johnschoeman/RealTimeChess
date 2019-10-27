@@ -1,18 +1,20 @@
 import React from "react"
 import { View, StyleSheet, Image, ImageSourcePropType } from "react-native"
 
-import { Piece as PieceType, FenId } from "../utils/chess/chess"
+import { Piece as PieceType, Empty, FenId } from "../utils/chess/chess"
 
 import { Images } from "../assets"
 
 interface PieceProps {
-  piece: PieceType
+  piece: PieceType | Empty
   testID?: string
 }
 
 const Piece = ({ piece, testID }: PieceProps) => (
   <View style={styles.container} testID={testID}>
-    {piece.fenId === "0" ? null : <Image source={pieceImageSource(piece)} />}
+    {piece.kind === "empty" ? null : (
+      <Image source={pieceImageSource(piece as PieceType)} />
+    )}
   </View>
 )
 
@@ -20,7 +22,6 @@ type PieceFlags = { [P in FenId]: ImageSourcePropType }
 
 const pieceImageSource = (piece: PieceType): ImageSourcePropType => {
   const styleMap: PieceFlags = {
-    "0": Images.BlackPawn,
     r: Images.BlackRook,
     n: Images.BlackKnight,
     b: Images.BlackBishop,

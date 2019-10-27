@@ -158,16 +158,14 @@ const pieceValue = (fenId: FenId, rowIdx: number, colIdx: number): number => {
     case "K": {
       return pieceValue + kingEvalWhite[rowIdx][colIdx]
     }
-    case "0": {
-      return 0
-    }
   }
 }
 
 export function boardValue(board: Board): number {
   const values = board.flatMap((rank, rowIdx) => {
     return rank.map((piece, colIdx) => {
-      return pieceValue(piece.fenId, rowIdx, colIdx)
+      const { fenId } = piece
+      return fenId != null ? pieceValue(fenId, rowIdx, colIdx) : 0
     })
   })
 
@@ -183,7 +181,6 @@ function validMoves(board: Board, side: Side): Move[] {
 }
 
 const pieceValues: { [id in FenId]: number } = {
-  0: 0,
   p: -10,
   n: -30,
   b: -30,

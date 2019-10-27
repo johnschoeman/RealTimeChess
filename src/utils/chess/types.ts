@@ -8,6 +8,15 @@ export type Side = "b" | "w"
 export const black: Side = "b"
 export const white: Side = "w"
 
+export interface Empty {
+  kind: "empty"
+  isPiece: false
+  type: null
+  side: null
+  fenId: null
+  color: null
+}
+
 export interface Piece {
   kind: string
   /**
@@ -51,7 +60,6 @@ export type FenId =
   | "K"
   | "Q"
   | "P"
-  | "0"
 
 /**
  * One of the possible sqaures on a chess board in san format,

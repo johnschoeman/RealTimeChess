@@ -2,7 +2,7 @@ import React from "react"
 import { TouchableOpacity, View, StyleSheet } from "react-native"
 
 import Piece from "./Piece"
-import { Piece as PieceType } from "../utils/chess/chess"
+import { Piece as PieceType, Empty } from "../utils/chess/chess"
 import { BoardRow as BoardRowType, Tile } from "../utils/game_helpers"
 
 import { Colors } from "../styles"
@@ -24,7 +24,7 @@ const BoardRow = ({
 }: BoardRowProps) => {
   return (
     <View style={styles.container}>
-      {row.map((piece: PieceType, colIdx: number) => {
+      {row.map((piece: PieceType | Empty, colIdx: number) => {
         let tile = { rowIdx, colIdx }
         let tileStyle = createTileStyle(tile)
         let userSelectedStyle = createSelectedStyle(
@@ -48,7 +48,7 @@ const BoardRow = ({
             ]}
             key={`col-${colIdx}`}
           >
-            <Piece piece={piece} />
+            <Piece piece={piece} testID={`piece-${rowIdx}-${colIdx}`} />
           </TouchableOpacity>
         )
       })}

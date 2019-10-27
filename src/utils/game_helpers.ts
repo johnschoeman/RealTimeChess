@@ -3,6 +3,7 @@ import {
   ShortMove,
   Square,
   Piece,
+  Empty,
   Move,
   Side,
   black,
@@ -13,7 +14,7 @@ import Chess from "./chess/chess"
 import { empty, pawn, knight, bishop, rook, queen, king } from "./pieces"
 import * as ArrayHelpers from "./array_helpers"
 
-export type BoardRow = Piece[]
+export type BoardRow = (Piece | Empty)[]
 export type Board = BoardRow[]
 
 export interface Tile {
@@ -70,13 +71,13 @@ function fenCharToPieceSubArray(char: string): BoardRow {
   if (isNaN(Number(char))) {
     return [createPieceByFenCode(char)]
   } else {
-    return Array<Piece>(Number(char)).fill(new empty())
+    return Array<Piece | Empty>(Number(char)).fill(new empty())
   }
 }
 
 export const initialBoard = createBoard(initialBoardFenCode)
 
-function createPieceByFenCode(fenCode: string): Piece {
+function createPieceByFenCode(fenCode: string): Piece | Empty {
   switch (fenCode) {
     case "r": {
       return new rook(black)
@@ -121,15 +122,15 @@ function createPieceByFenCode(fenCode: string): Piece {
 }
 
 export const winner = (board: Board): Side | null => {
-  const kingColors: Array<Side | undefined> = board.flatMap(
-    (rank: BoardRow) => {
-      return rank
-        .filter((piece: Piece) => {
-          return piece.kind === "king"
-        })
-        .map((piece: Piece) => {
-          return piece.side
-        })
+  const kings: Array<Piece | Empty> = board.flatMap((rank: BoardRow) => {
+    return rank.filter((piece: Piece | Empty): boolean => {
+      return piece.kind === "king"
+    })
+  })
+
+  const kingColors: Array<Side | null | undefined> = kings.map(
+    (piece: Piece | Empty) => {
+      return piece.side
     }
   )
 
@@ -186,7 +187,7 @@ export function playerPieces(board: Board, side: Side): PieceWithTile[] {
   return pieces
 }
 
-export function getPiece(board: Board, tile: Tile): Piece {
+export function getPiece(board: Board, tile: Tile): Piece | Empty {
   return board[tile.rowIdx][tile.colIdx]
 }
 
@@ -311,7 +312,7 @@ export const generateFen = (board: Board, side: Side = white): string => {
   const fenChars: string[] = board.map(rank => {
     return rank
       .map(file => {
-        return file.fenId
+        return file.fenId || "0"
       })
       .join("")
   })
@@ -352,7 +353,7 @@ export const boardToAscii = (board: Board): string => {
     .map(rank => {
       return rank
         .map(piece => {
-          return piece.fenId
+          return piece.fenId || "0"
         })
         .join(" ")
     })

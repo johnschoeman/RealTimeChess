@@ -1053,5 +1053,6 @@ export {
   FenId,
   black,
   white,
+  Promotion,
 }
 export default Chess

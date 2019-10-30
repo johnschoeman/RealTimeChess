@@ -1,7 +1,8 @@
-import Chess, { ChessInstance, Move, Side, black } from "../chess/chess"
+import { Move, Side, black } from "../chess/chess"
 import { FenId } from "../chess/types"
-import { Board, generateFen, updateBoardWithMove } from "../game_helpers"
+import { Board, updateBoardWithMove } from "../game_helpers"
 import * as ArrayHelpers from "../array_helpers"
+import { validMoves } from "./ai_helpers"
 
 interface MoveWithValue {
   move: Move
@@ -172,12 +173,6 @@ export function boardValue(board: Board): number {
   return values.reduce((acc, pieceValue, _index) => {
     return pieceValue + acc
   })
-}
-
-function validMoves(board: Board, side: Side): Move[] {
-  const fen = generateFen(board, side)
-  const chessInstance: ChessInstance = Chess(fen)
-  return chessInstance.moves()
 }
 
 const pieceValues: { [id in FenId]: number } = {

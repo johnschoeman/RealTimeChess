@@ -1,6 +1,7 @@
-import Chess, { ChessInstance, Move, Side } from "../chess/chess"
-import { Board, generateFen, squareToRCTile, getPiece } from "../game_helpers"
+import { Move, Side } from "../chess/chess"
+import { Board, squareToRCTile, getPiece } from "../game_helpers"
 import { sample } from "../array_helpers"
+import { validMoves } from "./ai_helpers"
 
 export const selectMove = (board: Board, side: Side): Move | null => {
   const moves: Move[] = validMoves(board, side)
@@ -22,16 +23,5 @@ export const selectMove = (board: Board, side: Side): Move | null => {
     return sample<Move>(attackingMoves)
   } else {
     return sample<Move>(moves)
-  }
-}
-
-export function validMoves(board: Board, side: Side): Move[] {
-  const fen = generateFen(board, side)
-  const chessInstance: ChessInstance = Chess(fen)
-  try {
-    return chessInstance.moves()
-  } catch (e) {
-    console.log("chess instance errored looking for moves for: ", fen)
-    return []
   }
 }

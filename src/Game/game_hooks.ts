@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react"
 
 import ArcadeContext from "../ArcadeContext"
-import { MinimaxAI } from "../utils/ai"
+import { MaximizingAI } from "../utils/ai"
 import { GameHelpers } from "../utils"
 import { Board, Tile } from "../utils/game_helpers"
 import { Move, Side, black, white } from "../utils/chess/chess"
@@ -86,7 +86,7 @@ export const useGameState = (
 
   const getNextComputerTile = (): Tile | null => {
     if (computerCurrentMove == null) {
-      const move = MinimaxAI.selectMove(board, black)
+      const move = MaximizingAI.selectMove(board, black)
       if (move == null) {
         return null
       }

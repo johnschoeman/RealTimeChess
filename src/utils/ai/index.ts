@@ -1,4 +1,4 @@
 import * as RandomAI from "./random_ai"
-import * as MinimaxAI from "./maximizing_ai"
+import * as MaximizingAI from "./maximizing_ai"
 
-export { RandomAI, MinimaxAI }
+export { RandomAI, MaximizingAI }

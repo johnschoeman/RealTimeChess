@@ -1,9 +1,10 @@
 import React from "react"
-import { View, StyleSheet, Image, ImageSourcePropType } from "react-native"
+import { View, StyleSheet } from "react-native"
+import { SvgProps } from "react-native-svg"
 
 import { Piece as PieceType, Empty, FenId } from "../utils/chess/chess"
 
-import { Images } from "../assets"
+import { Icons } from "../assets"
 
 interface PieceProps {
   piece: PieceType | Empty
@@ -12,28 +13,28 @@ interface PieceProps {
 
 const Piece = ({ piece, testID }: PieceProps) => (
   <View style={styles.container} testID={testID}>
-    {piece.kind === "empty" ? null : (
-      <Image source={pieceImageSource(piece as PieceType)} />
-    )}
+    {piece.kind === "empty"
+      ? null
+      : React.createElement(pieceIcon(piece as PieceType), styles.piece)}
   </View>
 )
 
-type PieceFlags = { [P in FenId]: ImageSourcePropType }
+type PieceFlags = { [P in FenId]: React.StatelessComponent<SvgProps> }
 
-const pieceImageSource = (piece: PieceType): ImageSourcePropType => {
+const pieceIcon = (piece: PieceType) => {
   const styleMap: PieceFlags = {
-    r: Images.BlackRook,
-    n: Images.BlackKnight,
-    b: Images.BlackBishop,
-    q: Images.BlackQueen,
-    k: Images.BlackKing,
-    p: Images.BlackPawn,
-    R: Images.WhiteRook,
-    N: Images.WhiteKnight,
-    B: Images.WhiteBishop,
-    Q: Images.WhiteQueen,
-    K: Images.WhiteKing,
-    P: Images.WhitePawn,
+    r: Icons.BlackRook,
+    n: Icons.BlackKnight,
+    b: Icons.BlackBishop,
+    q: Icons.BlackQueen,
+    k: Icons.BlackKing,
+    p: Icons.BlackPawn,
+    R: Icons.WhiteRook,
+    N: Icons.WhiteKnight,
+    B: Icons.WhiteBishop,
+    Q: Icons.WhiteQueen,
+    K: Icons.WhiteKing,
+    P: Icons.WhitePawn,
   }
   return styleMap[piece.fenId]
 }
@@ -47,9 +48,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   piece: {
-    flex: 1,
-    maxHeight: 30,
-    maxWidth: 30,
+    width: 45,
+    height: 45,
   },
 })
 

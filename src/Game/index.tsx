@@ -7,7 +7,7 @@ import Classic from "./Classic"
 import ThreeKings from "./ThreeKings"
 import Cooldown from "./Cooldown"
 
-import { Buttons, Colors, Spacing } from "../styles"
+import { Buttons, Colors } from "../styles"
 
 const GameScreen = () => {
   const { currentGame } = useContext(ArcadeContext)

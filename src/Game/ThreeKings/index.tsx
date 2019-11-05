@@ -36,8 +36,12 @@ const ThreeKings = () => {
   return (
     <ThreeKingsProvider>
       <View style={styles.container} testID={"game"}>
-        <Text style={Typography.header}>ThreeKings</Text>
-        <ThreeKingsGame />
+        <View style={styles.headerContainer}>
+          <Text style={Typography.header}>ThreeKings</Text>
+        </View>
+        <View style={styles.gameContainer}>
+          <ThreeKingsGame />
+        </View>
       </View>
     </ThreeKingsProvider>
   )
@@ -46,8 +50,20 @@ const ThreeKings = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  headerContainer: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    width: "100%",
+  },
+  gameContainer: {
+    flex: 9,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
   },
 })
 

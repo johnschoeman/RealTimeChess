@@ -26,4 +26,5 @@ export const mainButton: TextStyle = {
 
 export const header: TextStyle = {
   color: Colors.white,
+  fontSize: largeFontSize,
 }

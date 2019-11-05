@@ -29,8 +29,12 @@ const Classic = () => {
   return (
     <ClassicProvider>
       <View style={styles.container} testID={"game"}>
-        <Text style={Typography.header}>Classic</Text>
-        <ClassicGame />
+        <View style={styles.headerContainer}>
+          <Text style={Typography.header}>Classic</Text>
+        </View>
+        <View style={styles.gameContainer}>
+          <ClassicGame />
+        </View>
       </View>
     </ClassicProvider>
   )
@@ -39,8 +43,20 @@ const Classic = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  headerContainer: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    width: "100%",
+  },
+  gameContainer: {
+    flex: 9,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
   },
 })
 

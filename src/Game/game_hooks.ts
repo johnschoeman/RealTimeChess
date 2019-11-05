@@ -48,7 +48,7 @@ export const useGameState = (
   decrementCooldowns: () => void = () => {}
 ) => {
   const computerClockSpeed = 200
-  const { setCurrentWinner } = useContext(ArcadeContext)
+  const { setCurrentWinner, currentGame } = useContext(ArcadeContext)
   const [board, setBoard] = useState<Board>(GameHelpers.createBoard())
   const [userSelectedTile, setUserSelectedTile] = useState<Tile | null>(null)
   const [computerSelectedTile, setComputerSelectedTile] = useState<Tile | null>(
@@ -137,8 +137,21 @@ export const useGameState = (
     if (isSelectingAPiece() || isSwitchingSelection()) {
       callBack(toTile)
     } else if (fromTile !== null) {
-      handleAttack(board, fromTile, toTile, side)
-      callBack(null)
+      try {
+        handleAttack(board, fromTile, toTile, side)
+      } catch (error) {
+        console.log(
+          "Error when trying to attack: ",
+          error,
+          currentGame,
+          board,
+          fromTile,
+          toTile,
+          side
+        )
+      } finally {
+        callBack(null)
+      }
     }
   }
 

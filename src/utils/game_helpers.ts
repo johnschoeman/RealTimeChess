@@ -210,6 +210,10 @@ export function updateBoardWithMove(oldBoard: Board, move: Move): Board {
   }
 }
 
+const clonePiece = (oldPiece: Piece | Empty): Piece | Empty => {
+  return oldPiece
+}
+
 export function updateBoard(
   oldBoard: Board,
   fromTile: Tile,
@@ -219,6 +223,7 @@ export function updateBoard(
   const { rowIdx: toRow, colIdx: toCol } = toTile
   const oldPiece = oldBoard[fromRow][fromCol]
   const { side, kind } = oldPiece
+  const newPiece = clonePiece(oldPiece)
 
   const isAPawnPromotion = (
     kind: string,
@@ -266,20 +271,18 @@ export function updateBoard(
     }
   }
 
+  const newBoard = ArrayHelpers.deepDup(oldBoard)
   if (side != null) {
-    const newBoard = ArrayHelpers.deepDup(oldBoard)
     newBoard[fromRow][fromCol] = new empty()
     if (isAPawnPromotion(kind, toRow, side)) {
       newBoard[toRow][toCol] = new queen(side)
     } else if (isACastle(kind, fromRow, fromCol, toCol, side)) {
       castleKing(newBoard, toCol, toRow, side)
     } else {
-      newBoard[toRow][toCol] = oldPiece
+      newBoard[toRow][toCol] = newPiece
     }
-    return newBoard
-  } else {
-    return oldBoard
   }
+  return newBoard
 }
 
 export function removePiece(oldBoard: Board, tile: Tile): Board {

@@ -44,7 +44,6 @@ export const useGameState = (
     toTile: Tile,
     side: Side
   ) => void,
-  decideWinner: () => Side | null,
   decrementCooldowns: () => void = () => {}
 ) => {
   const computerClockSpeed = 200
@@ -65,7 +64,7 @@ export const useGameState = (
   const tick = (): void => {
     if (gameIsActive) {
       setGameStep(gameStep + 1)
-      const winner: Side | null = decideWinner()
+      const winner = GameHelpers.winner(board)
       decrementCooldowns()
       if (winner == null) {
         const computerNextTile = getNextComputerTile()

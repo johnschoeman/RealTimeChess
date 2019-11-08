@@ -2,7 +2,7 @@ import React, { createContext, useState } from "react"
 
 import { useGameState, GameState } from "../game_hooks"
 import { GameHelpers } from "../../utils"
-import { Side, black, white } from "../../utils/chess/chess"
+import { Side } from "../../utils/chess/chess"
 import { Tile, Board } from "../../utils/game_helpers"
 
 export interface ThreeKingsGameState extends GameState {
@@ -31,24 +31,14 @@ const ThreeKingsProvider = ({ children }: ThreeKingsProviderProps) => {
   const [userLives, setUserLives] = useState<number>(3)
   const [computerLives, setComputerLives] = useState<number>(3)
 
-  const decideWinner = (): Side | null => {
-    if (computerLives === 0) {
-      return white
-    } else if (userLives === 0) {
-      return black
-    } else {
-      return null
-    }
-  }
-
   const handleAttack = (
     board: Board,
     fromTile: Tile,
     toTile: Tile,
     side: Side
   ): void => {
-    const isMoveValid = GameHelpers.validMove(board, fromTile, toTile, side)
     const toPiece = GameHelpers.getPiece(board, toTile)
+    const isMoveValid = GameHelpers.validMove(board, fromTile, toTile, side)
 
     const removePiece = (tile: Tile) => {
       const newBoard = GameHelpers.removePiece(board, tile)
@@ -61,12 +51,21 @@ const ThreeKingsProvider = ({ children }: ThreeKingsProviderProps) => {
 
     if (isMoveValid) {
       const { fenId } = toPiece
+
       if (fenId === "K") {
+        if (userLives === 1) {
+          movePiece(fromTile, toTile)
+        } else {
+          removePiece(fromTile)
+        }
         setUserLives(userLives - 1)
-        removePiece(fromTile)
       } else if (fenId === "k") {
+        if (computerLives === 1) {
+          movePiece(fromTile, toTile)
+        } else {
+          removePiece(fromTile)
+        }
         setComputerLives(computerLives - 1)
-        removePiece(fromTile)
       } else {
         movePiece(fromTile, toTile)
       }
@@ -81,7 +80,7 @@ const ThreeKingsProvider = ({ children }: ThreeKingsProviderProps) => {
     countdownCount,
     selectUserTile,
     resetBoard,
-  } = useGameState(handleAttack, decideWinner)
+  } = useGameState(handleAttack)
 
   return (
     <ThreeKingsContext.Provider

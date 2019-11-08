@@ -32,10 +32,6 @@ const CooldownProvider = ({ children }: CooldownProviderProps) => {
     })
   }
 
-  const decideWinner = (): Side | null => {
-    return GameHelpers.winner(board)
-  }
-
   const handleAttack = (
     board: Board,
     fromTile: Tile,
@@ -75,7 +71,7 @@ const CooldownProvider = ({ children }: CooldownProviderProps) => {
     countdownCount,
     selectUserTile,
     resetBoard,
-  } = useGameState(handleAttack, decideWinner, decrementCooldowns)
+  } = useGameState(handleAttack, decrementCooldowns)
 
   return (
     <CooldownContext.Provider

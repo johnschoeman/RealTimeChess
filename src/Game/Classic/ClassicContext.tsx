@@ -38,10 +38,6 @@ const ClassicProvider = ({ children }: ClassicProviderProps) => {
     }
   }
 
-  const decideWinner = (): Side | null => {
-    return GameHelpers.winner(board)
-  }
-
   const {
     board,
     setBoard,
@@ -50,7 +46,7 @@ const ClassicProvider = ({ children }: ClassicProviderProps) => {
     countdownCount,
     selectUserTile,
     resetBoard,
-  } = useGameState(handleAttack, decideWinner)
+  } = useGameState(handleAttack)
 
   return (
     <ClassicContext.Provider

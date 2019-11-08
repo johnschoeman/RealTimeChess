@@ -19,7 +19,7 @@ export interface Empty {
 }
 
 export interface Piece {
-  kind: string
+  kind: "king" | "queen" | "rook" | "bishop" | "knight" | "pawn"
   /**
    * The type of the piece to place
    * - "p" for Pawn

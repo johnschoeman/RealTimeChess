@@ -46,8 +46,13 @@ export const useGameState = (
   ) => void,
   decrementCooldowns: () => void = () => {}
 ) => {
-  const computerClockSpeed = 200
-  const { setCurrentWinner, currentGame } = useContext(ArcadeContext)
+  const {
+    setCurrentWinner,
+    currentGame,
+    computerClockSpeed,
+    gameIsActive,
+    setGameIsActive,
+  } = useContext(ArcadeContext)
   const [board, setBoard] = useState<Board>(GameHelpers.createBoard())
   const [userSelectedTile, setUserSelectedTile] = useState<Tile | null>(null)
   const [computerSelectedTile, setComputerSelectedTile] = useState<Tile | null>(
@@ -57,7 +62,6 @@ export const useGameState = (
     null
   )
   const [gameStep, setGameStep] = useState<number>(0)
-  const [gameIsActive, setGameIsActive] = useState<boolean>(false)
 
   const { countdownCount } = useCountDown(3, () => setGameIsActive(true))
 

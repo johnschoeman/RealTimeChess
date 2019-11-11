@@ -13,9 +13,11 @@
     "run-android": "yarn validate && react-native run-android"
   },
   "dependencies": {
+    "@react-native-community/slider": "^2.0.3",
     "chess.js": "^0.10.2",
     "react": "16.9.0",
     "react-native": "0.61.2",
+    "react-native-modal": "^11.5.3",
     "react-native-svg": "^9.13.3"
   },
   "devDependencies": {

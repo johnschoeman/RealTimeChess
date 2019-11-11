@@ -7,6 +7,9 @@ export const blue = "#31d0da"
 export const yellow = "#ffdd2d"
 export const red = "#c93101"
 
+export const transparentDark = "rgba(11,11,11,0.7)"
+export const transparentWhite = "rgba(255,255,255,0.9)"
+
 export const background = black
 export const tileBlack = darkGray
 export const tileWhite = lightGray

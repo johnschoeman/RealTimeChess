@@ -1,10 +1,8 @@
 import React, { useContext } from "react"
-import { View, Text, StyleSheet } from "react-native"
 
 import Board from "../Board"
 import CooldownContext, { CooldownProvider } from "./CooldownContext"
-
-import { Typography } from "../../styles"
+import GameContainer from "../GameContainer"
 
 const CooldownGame = () => {
   const {
@@ -28,36 +26,11 @@ const CooldownGame = () => {
 const Cooldown = () => {
   return (
     <CooldownProvider>
-      <View style={styles.container} testID={"game"}>
-        <View style={styles.headerContainer}>
-          <Text style={Typography.header}>Cooldown</Text>
-        </View>
-        <View style={styles.gameContainer}>
-          <CooldownGame />
-        </View>
-      </View>
+      <GameContainer title={"Cooldown"}>
+        <CooldownGame />
+      </GameContainer>
     </CooldownProvider>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "center",
-  },
-  headerContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-  },
-  gameContainer: {
-    flex: 9,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-  },
-})
 
 export default Cooldown

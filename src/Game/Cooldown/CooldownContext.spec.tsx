@@ -4,6 +4,7 @@ import { render, cleanup, wait } from "@testing-library/react-native"
 import "@testing-library/jest-native/extend-expect"
 
 import CooldownContext, { CooldownProvider } from "./CooldownContext"
+import ArcadeContext, { ArcadeProvider } from "../../ArcadeContext"
 import { GameHelpers } from "../../utils"
 
 afterEach(cleanup)
@@ -11,6 +12,9 @@ afterEach(cleanup)
 const renderGameProvider = () => {
   const TestGameConsumer = () => {
     const { userSelectedTile, board } = useContext(CooldownContext)
+    const { setComputerClockSpeed, setGameIsActive } = useContext(ArcadeContext)
+    setComputerClockSpeed(1)
+    setGameIsActive(true)
     return (
       <View>
         <Text testID={"user-selected-tile"}>
@@ -22,9 +26,11 @@ const renderGameProvider = () => {
   }
 
   return render(
-    <CooldownProvider>
-      <TestGameConsumer />
-    </CooldownProvider>
+    <ArcadeProvider>
+      <CooldownProvider>
+        <TestGameConsumer />
+      </CooldownProvider>
+    </ArcadeProvider>
   )
 }
 

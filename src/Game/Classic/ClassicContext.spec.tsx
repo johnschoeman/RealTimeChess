@@ -4,6 +4,7 @@ import { render, cleanup, wait, fireEvent } from "@testing-library/react-native"
 import "@testing-library/jest-native/extend-expect"
 
 import ClassicContext, { ClassicProvider } from "./ClassicContext"
+import ArcadeContext, { ArcadeProvider } from "../../ArcadeContext"
 import { GameHelpers } from "../../utils"
 
 afterEach(cleanup)
@@ -13,6 +14,9 @@ const renderGameProvider = () => {
     const { userSelectedTile, board, selectUserTile } = useContext(
       ClassicContext
     )
+    const { setComputerClockSpeed, setGameIsActive } = useContext(ArcadeContext)
+    setComputerClockSpeed(1)
+    setGameIsActive(true)
     return (
       <View>
         <Text testID={"user-selected-tile"}>
@@ -34,9 +38,11 @@ const renderGameProvider = () => {
   }
 
   return render(
-    <ClassicProvider>
-      <TestGameConsumer />
-    </ClassicProvider>
+    <ArcadeProvider>
+      <ClassicProvider>
+        <TestGameConsumer />
+      </ClassicProvider>
+    </ArcadeProvider>
   )
 }
 

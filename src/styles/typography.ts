@@ -28,3 +28,13 @@ export const header: TextStyle = {
   color: Colors.white,
   fontSize: largeFontSize,
 }
+
+export const darkHeader: TextStyle = {
+  color: Colors.black,
+  fontSize: largeFontSize,
+}
+
+export const label: TextStyle = {
+  color: Colors.black,
+  fontSize: baseFontSize,
+}

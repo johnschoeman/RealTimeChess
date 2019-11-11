@@ -28,9 +28,13 @@ describe("Aracade", () => {
         const arcadeState: ArcadeState = {
           currentGame: "Classic",
           currentWinner: "b",
+          computerClockSpeed: 200,
+          gameIsActive: true,
           onLanding: false,
           setCurrentGame: () => {},
           setCurrentWinner: () => {},
+          setComputerClockSpeed: () => {},
+          setGameIsActive: () => {},
           goToGame: () => {},
         }
         const { queryByTestId } = renderGameScreen(arcadeState)
@@ -47,9 +51,13 @@ describe("Aracade", () => {
         const arcadeState: ArcadeState = {
           currentGame: "Classic",
           currentWinner: "w",
+          computerClockSpeed: 200,
+          gameIsActive: true,
           onLanding: false,
           setCurrentGame: () => {},
           setCurrentWinner: () => {},
+          setComputerClockSpeed: () => {},
+          setGameIsActive: () => {},
           goToGame: () => {},
         }
         const { queryByTestId } = renderGameScreen(arcadeState)

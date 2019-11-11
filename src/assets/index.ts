@@ -10,6 +10,7 @@ import WhiteKnight from "./WhiteKnight.svg"
 import WhitePawn from "./WhitePawn.svg"
 import WhiteQueen from "./WhiteQueen.svg"
 import WhiteRook from "./WhiteRook.svg"
+import Settings from "./Settings.svg"
 
 const BoardHeader = require("./BoardHeader.png")
 const Heart = require("./Heart.png")
@@ -30,7 +31,9 @@ export const Icons = {
   WhitePawn,
   WhiteQueen,
   WhiteRook,
+  Settings,
 }
+
 export const Images = {
   BoardHeader,
   Heart,

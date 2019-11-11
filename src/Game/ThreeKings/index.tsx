@@ -4,6 +4,7 @@ import { View } from "react-native"
 import Board from "../Board"
 import Hearts from "./Hearts"
 import GameContainer from "../GameContainer"
+import Countdown from "../Countdown"
 import ThreeKingsContext, { ThreeKingsProvider } from "./ThreeKingsContext"
 
 const ThreeKingsGame = () => {
@@ -18,10 +19,10 @@ const ThreeKingsGame = () => {
   } = useContext(ThreeKingsContext)
   return (
     <View>
+      {countdownCount >= 0 ? <Countdown count={countdownCount} /> : null}
       <Hearts livesCount={computerLives} />
       <Board
         board={board}
-        countdownCount={countdownCount}
         userSelectedTile={userSelectedTile}
         computerSelectedTile={computerSelectedTile}
         selectUserTile={selectUserTile}

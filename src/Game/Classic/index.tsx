@@ -1,8 +1,10 @@
 import React, { useContext } from "react"
+import { View } from "react-native"
 
 import Board from "../Board"
-import ClassicContext, { ClassicProvider } from "./ClassicContext"
 import GameContainer from "../GameContainer"
+import Countdown from "../Countdown"
+import ClassicContext, { ClassicProvider } from "./ClassicContext"
 
 const ClassicGame = () => {
   const {
@@ -13,13 +15,15 @@ const ClassicGame = () => {
     selectUserTile,
   } = useContext(ClassicContext)
   return (
-    <Board
-      board={board}
-      countdownCount={countdownCount}
-      userSelectedTile={userSelectedTile}
-      computerSelectedTile={computerSelectedTile}
-      selectUserTile={selectUserTile}
-    />
+    <View>
+      {countdownCount >= 0 ? <Countdown count={countdownCount} /> : null}
+      <Board
+        board={board}
+        userSelectedTile={userSelectedTile}
+        computerSelectedTile={computerSelectedTile}
+        selectUserTile={selectUserTile}
+      />
+    </View>
   )
 }
 

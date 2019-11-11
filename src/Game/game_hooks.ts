@@ -10,12 +10,28 @@ export interface GameState {
   board: Board
   userSelectedTile: Tile | null
   computerSelectedTile: Tile | null
-  countdownCount: number
   resetBoard: () => void
   selectUserTile: (toTile: Tile) => void
 }
 
-const useCountDown = (count: number, callback: () => void) => {
+export const initialGameState: GameState = {
+  board: GameHelpers.createBoard(),
+  userSelectedTile: null,
+  computerSelectedTile: null,
+  resetBoard: () => {},
+  selectUserTile: () => {},
+}
+
+export interface GameStateWithCountdown extends GameState {
+  countdownCount: number
+}
+
+export const initialGameStateWithCountdown: GameStateWithCountdown = {
+  ...initialGameState,
+  countdownCount: 3,
+}
+
+export const useCountDown = (count: number, callback: () => void) => {
   const [countdownCount, setCountdownCount] = useState<number>(count)
   const [isActive, setIsActive] = useState<boolean>(true)
 
@@ -37,15 +53,17 @@ const useCountDown = (count: number, callback: () => void) => {
   return { countdownCount }
 }
 
-export const useGameState = (
-  handleAttack: (
-    board: Board,
-    fromTile: Tile,
-    toTile: Tile,
-    side: Side
-  ) => void,
-  decrementCooldowns: () => void = () => {}
-) => {
+interface mechanicOptions {
+  handleAttack: (board: Board, fromTile: Tile, toTile: Tile, side: Side) => void
+  decrementCooldowns?: () => void
+  tick?: () => void
+}
+
+export const useGameState = ({
+  handleAttack,
+  decrementCooldowns,
+  tick,
+}: mechanicOptions) => {
   const {
     setCurrentWinner,
     currentGame,
@@ -63,13 +81,13 @@ export const useGameState = (
   )
   const [gameStep, setGameStep] = useState<number>(0)
 
-  const { countdownCount } = useCountDown(3, () => setGameIsActive(true))
-
-  const tick = (): void => {
+  const defaultTick = (): void => {
     if (gameIsActive) {
       setGameStep(gameStep + 1)
       const winner = GameHelpers.winner(board)
-      decrementCooldowns()
+      if (decrementCooldowns) {
+        decrementCooldowns()
+      }
       if (winner == null) {
         const computerNextTile = getNextComputerTile()
         selectComputerTile(computerNextTile)
@@ -81,7 +99,8 @@ export const useGameState = (
   }
 
   useEffect(() => {
-    const intervalID = setInterval(tick, computerClockSpeed)
+    const onTick = tick ? tick : defaultTick
+    const intervalID = setInterval(onTick, computerClockSpeed)
     return () => {
       clearInterval(intervalID)
     }
@@ -134,8 +153,14 @@ export const useGameState = (
 
     const toPiece = GameHelpers.getPiece(board, toTile)
     const isSelectingAPiece = () => fromTile === null && toPiece.isPiece
-    const isSwitchingSelection = () =>
-      fromTile !== null && toPiece.side === side
+    const isSwitchingSelection = () => {
+      if (fromTile === null) {
+        return false
+      } else {
+        const fromPiece = GameHelpers.getPiece(board, fromTile)
+        return toPiece.side === fromPiece.side
+      }
+    }
 
     if (isSelectingAPiece() || isSwitchingSelection()) {
       callBack(toTile)
@@ -171,8 +196,8 @@ export const useGameState = (
     setBoard,
     userSelectedTile,
     computerSelectedTile,
-    countdownCount,
     selectUserTile,
     resetBoard,
+    setGameIsActive,
   }
 }

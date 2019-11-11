@@ -1,12 +1,20 @@
 import React, { createContext, useState } from "react"
 
 import { Side } from "./utils/chess/types"
-export type Game = "Classic" | "ThreeKings" | "Cooldown"
+export type Game = "Classic" | "ThreeKings" | "Cooldown" | "Playground"
 
 export const Games: { [k in Game]: Game } = {
   Classic: "Classic",
   ThreeKings: "ThreeKings",
   Cooldown: "Cooldown",
+  Playground: "Playground",
+}
+
+export type Screen = "Landing" | "Game"
+
+export const Screens: { [screen in Screen]: Screen } = {
+  Landing: "Landing",
+  Game: "Game",
 }
 
 export interface ArcadeState {
@@ -14,25 +22,25 @@ export interface ArcadeState {
   currentWinner: Side | null
   computerClockSpeed: number
   gameIsActive: boolean
-  onLanding: boolean
+  currentScreen: Screen
   setCurrentGame: (game: Game) => void
   setCurrentWinner: (side: Side | null) => void
   setComputerClockSpeed: (speed: number) => void
   setGameIsActive: (state: boolean) => void
-  goToGame: () => void
+  setCurrentScreen: (screen: Screen) => void
 }
 
 export const initialArcadeState = {
-  currentGame: "Classic" as Game,
+  currentGame: Games.Classic,
   currentWinner: null,
-  computerClockSpeed: 600,
+  computerClockSpeed: 1000,
   gameIsActive: false,
-  onLanding: true,
+  currentScreen: Screens.Landing,
   setCurrentGame: () => {},
   setCurrentWinner: () => {},
   setGameIsActive: () => {},
   setComputerClockSpeed: () => {},
-  goToGame: () => {},
+  setCurrentScreen: () => {},
 }
 
 const ArcadeContext = createContext<ArcadeState>(initialArcadeState)
@@ -54,13 +62,9 @@ const ArcadeProvider = ({ children }: GameProviderProps) => {
   const [gameIsActive, setGameIsActive] = useState<boolean>(
     initialArcadeState.gameIsActive
   )
-  const [onLanding, setOnLanding] = useState<boolean>(
-    initialArcadeState.onLanding
+  const [currentScreen, setCurrentScreen] = useState<Screen>(
+    initialArcadeState.currentScreen
   )
-
-  const goToGame = () => {
-    setOnLanding(false)
-  }
 
   return (
     <ArcadeContext.Provider
@@ -69,12 +73,12 @@ const ArcadeProvider = ({ children }: GameProviderProps) => {
         currentWinner,
         computerClockSpeed,
         gameIsActive,
-        onLanding,
+        currentScreen,
         setCurrentGame,
         setCurrentWinner,
         setComputerClockSpeed,
         setGameIsActive,
-        goToGame,
+        setCurrentScreen,
       }}
     >
       {children}

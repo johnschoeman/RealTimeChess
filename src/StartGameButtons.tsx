@@ -1,50 +1,54 @@
 import React, { useContext } from "react"
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native"
 
-import AracadeContext from "./ArcadeContext"
+import AracadeContext, { Screens, Games, Game } from "./ArcadeContext"
 
 import { Buttons, Typography } from "./styles"
 
 const StartGameButtons = () => {
-  const { setCurrentGame, setCurrentWinner, goToGame } = useContext(
+  const { setCurrentGame, setCurrentWinner, setCurrentScreen } = useContext(
     AracadeContext
   )
 
-  const handlePressClassGame = () => {
-    setCurrentGame("Classic")
+  const handlePress = (game: Game) => {
+    setCurrentGame(game)
     setCurrentWinner(null)
-    goToGame()
+    setCurrentScreen(Screens.Game)
   }
 
-  const handlePressThreeKings = () => {
-    setCurrentGame("ThreeKings")
-    setCurrentWinner(null)
-    goToGame()
-  }
+  const handlePressClassGame = () => handlePress(Games.Classic)
+  const handlePressThreeKings = () => handlePress(Games.ThreeKings)
+  const handlePressCooldown = () => handlePress(Games.Cooldown)
+  const handlePressPlayground = () => handlePress(Games.Playground)
 
-  const handlePressCooldown = () => {
-    setCurrentGame("Cooldown")
-    setCurrentWinner(null)
-    goToGame()
+  const StartGameButton = ({
+    onPress,
+    title,
+  }: {
+    onPress: () => void
+    title: Game
+  }) => {
+    return (
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={onPress} style={styles.button}>
+          <Text style={Typography.mainButton}>{title.toUpperCase()}</Text>
+        </TouchableOpacity>
+      </View>
+    )
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={handlePressClassGame} style={styles.button}>
-          <Text style={Typography.mainButton}>PLAY CLASSIC</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={handlePressThreeKings} style={styles.button}>
-          <Text style={Typography.mainButton}>PLAY 3 KINGS</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={handlePressCooldown} style={styles.button}>
-          <Text style={Typography.mainButton}>COOLDOWN</Text>
-        </TouchableOpacity>
-      </View>
+      <StartGameButton onPress={handlePressClassGame} title={Games.Classic} />
+      <StartGameButton
+        onPress={handlePressThreeKings}
+        title={Games.ThreeKings}
+      />
+      <StartGameButton onPress={handlePressCooldown} title={Games.Cooldown} />
+      <StartGameButton
+        onPress={handlePressPlayground}
+        title={Games.Playground}
+      />
     </View>
   )
 }

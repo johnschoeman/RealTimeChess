@@ -2,7 +2,12 @@ import React from "react"
 import { render, cleanup, wait } from "@testing-library/react-native"
 import "@testing-library/jest-native/extend-expect"
 
-import ArcadeContext, { ArcadeState, initialArcadeState } from "./ArcadeContext"
+import ArcadeContext, {
+  ArcadeState,
+  initialArcadeState,
+  Games,
+  Screens,
+} from "./ArcadeContext"
 import ArcadeScreen from "./Arcade"
 
 afterEach(cleanup)
@@ -26,16 +31,16 @@ describe("Aracade", () => {
     describe("and when black has won the game", () => {
       test("a 'You Lose' message is visable", async () => {
         const arcadeState: ArcadeState = {
-          currentGame: "Classic",
+          currentGame: Games.Classic,
           currentWinner: "b",
           computerClockSpeed: 200,
           gameIsActive: true,
-          onLanding: false,
+          currentScreen: Screens.Game,
           setCurrentGame: () => {},
           setCurrentWinner: () => {},
           setComputerClockSpeed: () => {},
           setGameIsActive: () => {},
-          goToGame: () => {},
+          setCurrentScreen: () => {},
         }
         const { queryByTestId } = renderGameScreen(arcadeState)
 
@@ -49,16 +54,16 @@ describe("Aracade", () => {
     describe("and when white has won the game", () => {
       test("a 'You Won' message is visable", async () => {
         const arcadeState: ArcadeState = {
-          currentGame: "Classic",
+          currentGame: Games.Classic,
           currentWinner: "w",
           computerClockSpeed: 200,
           gameIsActive: true,
-          onLanding: false,
+          currentScreen: Screens.Game,
           setCurrentGame: () => {},
           setCurrentWinner: () => {},
           setComputerClockSpeed: () => {},
           setGameIsActive: () => {},
-          goToGame: () => {},
+          setCurrentScreen: () => {},
         }
         const { queryByTestId } = renderGameScreen(arcadeState)
 

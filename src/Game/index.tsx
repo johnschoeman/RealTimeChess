@@ -6,6 +6,7 @@ import Header from "../Header"
 import Classic from "./Classic"
 import ThreeKings from "./ThreeKings"
 import Cooldown from "./Cooldown"
+import Playground from "./Playground"
 
 import { Buttons, Colors } from "../styles"
 
@@ -22,6 +23,9 @@ const GameScreen = () => {
       }
       case "Cooldown": {
         return <Cooldown />
+      }
+      case "Playground": {
+        return <Playground />
       }
     }
   }

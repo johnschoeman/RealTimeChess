@@ -7,9 +7,16 @@ export const largeFontSize = 24
 export const countFontSize = 180
 
 export const heavyFontWeight = "600"
+export const heaviestFontWeight = "900"
 
 export const helvetica = "Helvetica-Bold"
 const baseFont = helvetica
+
+export const smallWhiteBold: TextStyle = {
+  color: Colors.white,
+  fontSize: baseFontSize,
+  fontWeight: heaviestFontWeight,
+}
 
 export const landing: TextStyle = {
   color: Colors.white,

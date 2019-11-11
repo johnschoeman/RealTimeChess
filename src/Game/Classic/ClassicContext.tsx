@@ -3,18 +3,16 @@ import React, { createContext } from "react"
 import { GameHelpers } from "../../utils"
 import { Side } from "../../utils/chess/chess"
 import { Board, Tile } from "../../utils/game_helpers"
-import { GameState, useGameState } from "../game_hooks"
+import {
+  GameStateWithCountdown,
+  initialGameStateWithCountdown,
+  useGameState,
+  useCountDown,
+} from "../game_hooks"
 
-export const initialGameState: GameState = {
-  board: GameHelpers.createBoard(),
-  userSelectedTile: null,
-  computerSelectedTile: null,
-  countdownCount: 3,
-  resetBoard: () => {},
-  selectUserTile: () => {},
-}
-
-const ClassicContext = createContext<GameState>(initialGameState)
+const ClassicContext = createContext<GameStateWithCountdown>(
+  initialGameStateWithCountdown
+)
 
 interface ClassicProviderProps {
   children: JSX.Element
@@ -43,10 +41,11 @@ const ClassicProvider = ({ children }: ClassicProviderProps) => {
     setBoard,
     userSelectedTile,
     computerSelectedTile,
-    countdownCount,
     selectUserTile,
     resetBoard,
-  } = useGameState(handleAttack)
+    setGameIsActive,
+  } = useGameState({ handleAttack })
+  const { countdownCount } = useCountDown(3, () => setGameIsActive(true))
 
   return (
     <ClassicContext.Provider

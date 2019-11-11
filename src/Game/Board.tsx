@@ -3,13 +3,11 @@ import { View, StyleSheet } from "react-native"
 
 import { Board as BoardType, Tile } from "../utils/game_helpers"
 import BoardRow from "./BoardRow"
-import Countdown from "./Countdown"
 
 import { Layout } from "../styles"
 
 interface BoardProps {
   board: BoardType
-  countdownCount: number
   userSelectedTile: Tile | null
   computerSelectedTile: Tile | null
   selectUserTile: (tile: Tile) => void
@@ -17,14 +15,12 @@ interface BoardProps {
 
 const Board = ({
   board,
-  countdownCount,
   userSelectedTile,
   computerSelectedTile,
   selectUserTile,
 }: BoardProps) => {
   return (
     <View style={styles.container}>
-      {countdownCount >= 0 ? <Countdown count={countdownCount} /> : null}
       {board.map((row, rowIdx) => {
         return (
           <View style={styles.row} key={`row-${rowIdx}`}>

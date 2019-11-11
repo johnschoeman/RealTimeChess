@@ -1,27 +1,29 @@
 import React, { createContext, useState } from "react"
 
-import { useGameState, GameState } from "../game_hooks"
 import { GameHelpers } from "../../utils"
 import { Side } from "../../utils/chess/chess"
 import { Tile, Board } from "../../utils/game_helpers"
+import {
+  useGameState,
+  GameStateWithCountdown,
+  initialGameStateWithCountdown,
+  useCountDown,
+} from "../game_hooks"
 
-export interface ThreeKingsGameState extends GameState {
+export interface ThreeKingsGameState extends GameStateWithCountdown {
   userLives: number
   computerLives: number
 }
 
-export const initialGameState: ThreeKingsGameState = {
-  board: GameHelpers.createBoard(),
-  userSelectedTile: null,
-  computerSelectedTile: null,
-  countdownCount: 3,
+export const initialThreeKingsGameState: ThreeKingsGameState = {
+  ...initialGameStateWithCountdown,
   userLives: 3,
   computerLives: 3,
-  resetBoard: () => {},
-  selectUserTile: () => {},
 }
 
-const ThreeKingsContext = createContext<ThreeKingsGameState>(initialGameState)
+const ThreeKingsContext = createContext<ThreeKingsGameState>(
+  initialThreeKingsGameState
+)
 
 interface ThreeKingsProviderProps {
   children: JSX.Element
@@ -77,10 +79,11 @@ const ThreeKingsProvider = ({ children }: ThreeKingsProviderProps) => {
     setBoard,
     userSelectedTile,
     computerSelectedTile,
-    countdownCount,
     selectUserTile,
     resetBoard,
-  } = useGameState(handleAttack)
+    setGameIsActive,
+  } = useGameState({ handleAttack })
+  const { countdownCount } = useCountDown(3, () => setGameIsActive(true))
 
   return (
     <ThreeKingsContext.Provider

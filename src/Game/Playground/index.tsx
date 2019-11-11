@@ -2,21 +2,19 @@ import React, { useContext } from "react"
 import { View } from "react-native"
 
 import Board from "../Board"
-import Countdown from "../Countdown"
 import GameContainer from "../GameContainer"
-import CooldownContext, { CooldownProvider } from "./CooldownContext"
+import PlaygroundContext, { PlaygroundProvider } from "./PlaygroundContext"
 
-const CooldownGame = () => {
+const PlaygroundGame = () => {
   const {
     board,
-    countdownCount,
     userSelectedTile,
     computerSelectedTile,
     selectUserTile,
-  } = useContext(CooldownContext)
+  } = useContext(PlaygroundContext)
+
   return (
     <View>
-      {countdownCount >= 0 ? <Countdown count={countdownCount} /> : null}
       <Board
         board={board}
         userSelectedTile={userSelectedTile}
@@ -27,14 +25,14 @@ const CooldownGame = () => {
   )
 }
 
-const Cooldown = () => {
+const ThreeKings = () => {
   return (
-    <CooldownProvider>
-      <GameContainer title={"Cooldown"}>
-        <CooldownGame />
+    <PlaygroundProvider>
+      <GameContainer title={"Playground"}>
+        <PlaygroundGame />
       </GameContainer>
-    </CooldownProvider>
+    </PlaygroundProvider>
   )
 }
 
-export default Cooldown
+export default ThreeKings

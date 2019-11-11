@@ -8,19 +8,39 @@ const base: ViewStyle = {
   justifyContent: "center",
 }
 
+const small: ViewStyle = {
+  padding: 4,
+  width: "80%",
+}
+
 const large: ViewStyle = {
   maxHeight: 60,
   padding: 10,
+}
+
+const square: ViewStyle = {
+  borderRadius: 2,
 }
 
 const rounded: ViewStyle = {
   borderRadius: 30,
 }
 
+const red: ViewStyle = {
+  backgroundColor: Colors.red,
+}
+
 export const largeRounded: ViewStyle = {
   ...base,
   ...large,
   ...rounded,
+}
+
+export const smallSquareRed: ViewStyle = {
+  ...base,
+  ...small,
+  ...square,
+  ...red,
 }
 
 export const primaryContainer: ViewStyle = {

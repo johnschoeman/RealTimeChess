@@ -4,18 +4,16 @@ import { GameHelpers } from "../../utils"
 import { Piece, Side } from "../../utils/chess/chess"
 import { Board, Tile } from "../../utils/game_helpers"
 
-import { useGameState, GameState } from "../game_hooks"
+import {
+  useGameState,
+  GameStateWithCountdown,
+  initialGameStateWithCountdown,
+  useCountDown,
+} from "../game_hooks"
 
-const initialGameState: GameState = {
-  board: GameHelpers.createBoard(),
-  userSelectedTile: null,
-  computerSelectedTile: null,
-  countdownCount: 3,
-  resetBoard: () => {},
-  selectUserTile: () => {},
-}
-
-const CooldownContext = createContext<GameState>(initialGameState)
+const CooldownContext = createContext<GameStateWithCountdown>(
+  initialGameStateWithCountdown
+)
 
 interface CooldownProviderProps {
   children: JSX.Element
@@ -68,10 +66,11 @@ const CooldownProvider = ({ children }: CooldownProviderProps) => {
     setBoard,
     userSelectedTile,
     computerSelectedTile,
-    countdownCount,
     selectUserTile,
     resetBoard,
-  } = useGameState(handleAttack, decrementCooldowns)
+    setGameIsActive,
+  } = useGameState({ handleAttack, decrementCooldowns })
+  const { countdownCount } = useCountDown(3, () => setGameIsActive(true))
 
   return (
     <CooldownContext.Provider

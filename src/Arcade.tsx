@@ -3,6 +3,7 @@ import { View, StyleSheet } from "react-native"
 
 import ArcadeContext, { Screens } from "./ArcadeContext"
 import LandingScreen from "./Landing"
+import MenuScreen from "./Menu"
 import GameScreen from "./Game"
 import GameOverScreen from "./GameOver"
 
@@ -13,6 +14,9 @@ const Arcade = () => {
     switch (currentScreen) {
       case Screens.Landing: {
         return <LandingScreen />
+      }
+      case Screens.Menu: {
+        return <MenuScreen />
       }
       case Screens.Game: {
         return currentWinner == null ? <GameScreen /> : <GameOverScreen />

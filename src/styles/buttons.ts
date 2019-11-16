@@ -43,9 +43,18 @@ export const smallSquareRed: ViewStyle = {
   ...red,
 }
 
+export const largeBlueBorder: ViewStyle = {
+  ...base,
+  ...large,
+  ...rounded,
+  borderWidth: 1,
+  borderColor: Colors.blue,
+  backgroundColor: Colors.transparentFull,
+}
+
 export const primaryContainer: ViewStyle = {
   backgroundColor: Colors.white,
-  height: Spacing.xLarge,
+  height: Spacing.xxLarge,
   borderRadius: Spacing.large,
   padding: Spacing.xSmall,
 }

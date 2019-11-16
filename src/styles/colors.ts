@@ -9,6 +9,7 @@ export const red = "#c93101"
 
 export const transparentDark = "rgba(11,11,11,0.7)"
 export const transparentWhite = "rgba(255,255,255,0.9)"
+export const transparentFull = "rgba(255,255,255,0.0)"
 
 export const background = black
 export const tileBlack = darkGray

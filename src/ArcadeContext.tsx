@@ -10,10 +10,11 @@ export const Games: { [k in Game]: Game } = {
   Playground: "Playground",
 }
 
-export type Screen = "Landing" | "Game"
+export type Screen = "Landing" | "Menu" | "Game"
 
 export const Screens: { [screen in Screen]: Screen } = {
   Landing: "Landing",
+  Menu: "Menu",
   Game: "Game",
 }
 

@@ -1,15 +1,24 @@
 import React, { useContext } from "react"
-import { View, Image, StyleSheet } from "react-native"
+import { View, TouchableOpacity, Text, Image, StyleSheet } from "react-native"
 
 import Header from "../Header"
-import StartGameButtons from "../StartGameButtons"
-import ArcadeContext from "../ArcadeContext"
+import ArcadeContext, { Screens } from "../ArcadeContext"
 
 import { Images } from "../assets"
-import { Spacing } from "../styles"
+import { Spacing, Buttons, Typography } from "../styles"
 
 const GameOver = () => {
-  const { currentWinner } = useContext(ArcadeContext)
+  const { currentWinner, setCurrentWinner, setCurrentScreen } = useContext(
+    ArcadeContext
+  )
+
+  const handleOnPressPlayAgain = () => {
+    setCurrentWinner(null)
+  }
+
+  const handleOnPressMainMenu = () => {
+    setCurrentScreen(Screens.Menu)
+  }
   return (
     <View style={styles.container} testID={"game-over"}>
       <View style={styles.headerContainer}>
@@ -25,7 +34,18 @@ const GameOver = () => {
       </View>
 
       <View style={styles.footer}>
-        <StartGameButtons />
+        <TouchableOpacity
+          onPress={handleOnPressPlayAgain}
+          style={styles.playAgainContainer}
+        >
+          <Text style={styles.playAgainText}>INSERT COIN</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleOnPressMainMenu}
+          style={styles.goToMainContainer}
+        >
+          <Text style={styles.goToMainText}>RETURN TO MAIN MENU</Text>
+        </TouchableOpacity>
       </View>
     </View>
   )
@@ -52,6 +72,20 @@ const styles = StyleSheet.create({
     paddingLeft: Spacing.medium,
     paddingRight: Spacing.medium,
     height: "22%",
+  },
+  playAgainContainer: {
+    ...Buttons.largeBlueBorder,
+  },
+  playAgainText: {
+    ...Typography.largeWhite,
+  },
+  goToMainContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: Spacing.large,
+  },
+  goToMainText: {
+    ...Typography.smallWhite,
   },
 })
 

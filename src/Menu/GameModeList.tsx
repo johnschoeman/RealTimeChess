@@ -1,11 +1,17 @@
 import React, { useContext } from "react"
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native"
+import {
+  View,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native"
 
-import AracadeContext, { Screens, Games, Game } from "./ArcadeContext"
+import AracadeContext, { Screens, Games, Game } from "../ArcadeContext"
 
-import { Buttons, Typography } from "./styles"
+import { Typography, Colors } from "../styles"
 
-const StartGameButtons = () => {
+const GameModeList = () => {
   const { setCurrentGame, setCurrentWinner, setCurrentScreen } = useContext(
     AracadeContext
   )
@@ -38,7 +44,7 @@ const StartGameButtons = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <StartGameButton onPress={handlePressClassGame} title={Games.Classic} />
       <StartGameButton
         onPress={handlePressThreeKings}
@@ -49,22 +55,24 @@ const StartGameButtons = () => {
         onPress={handlePressPlayground}
         title={Games.Playground}
       />
-    </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     width: "100%",
-    justifyContent: "space-between",
   },
   buttonContainer: {
-    ...Buttons.primaryContainer,
+    paddingVertical: 12,
   },
   button: {
-    ...Buttons.primary,
+    backgroundColor: Colors.white,
+    height: 120,
+    borderRadius: 4,
+    paddingHorizontal: 20,
+    paddingTop: 12,
   },
 })
 
-export default StartGameButtons
+export default GameModeList

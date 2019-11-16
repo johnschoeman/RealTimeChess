@@ -20,7 +20,7 @@ const Settings = () => {
   const sliderValue = (1100 - computerClockSpeed) / 100
 
   const handleOnPressMainMenu = () => {
-    setCurrentScreen(Screens.Landing)
+    setCurrentScreen(Screens.Menu)
     setGameIsActive(false)
   }
 

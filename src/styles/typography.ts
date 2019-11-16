@@ -18,6 +18,17 @@ export const smallWhiteBold: TextStyle = {
   fontWeight: heaviestFontWeight,
 }
 
+export const smallWhite: TextStyle = {
+  color: Colors.white,
+  fontSize: baseFontSize,
+}
+
+export const largeWhite: TextStyle = {
+  color: Colors.white,
+  fontSize: largeFontSize,
+  fontWeight: heaviestFontWeight,
+}
+
 export const landing: TextStyle = {
   color: Colors.white,
   fontSize: largeFontSize,

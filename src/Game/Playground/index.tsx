@@ -1,16 +1,11 @@
 import React, { useState, useContext } from "react"
-import {
-  Animated,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-} from "react-native"
+import { View, StyleSheet, TouchableOpacity, Text } from "react-native"
 
 import Board from "../Board"
 import GameContainer from "../GameContainer"
 import PlaygroundContext, { PlaygroundProvider } from "./PlaygroundContext"
 import Piece from "../Piece"
+import Snappable from "./Snappable"
 import { pawn } from "../../utils/pieces"
 
 import { Typography, Colors } from "../../styles"
@@ -25,14 +20,6 @@ const PlaygroundGame = () => {
 
   const [pieceOnLeft, setPieceOnLeft] = useState<boolean>(true)
 
-  const handleOnPress = () => {
-    setPieceOnLeft(!pieceOnLeft)
-    Animated.timing(new Animated.Value(0), {
-      toValue: 1,
-      duration: 2000,
-    }).start()
-  }
-
   return (
     <View>
       <Board
@@ -41,18 +28,12 @@ const PlaygroundGame = () => {
         computerSelectedTile={computerSelectedTile}
         selectUserTile={selectUserTile}
       />
-      <TouchableOpacity onPress={handleOnPress}>
-        <Text style={Typography.header}>Move</Text>
-      </TouchableOpacity>
 
-      <Animated.View style={styles.container}>
-        <View style={styles.square}>
-          {pieceOnLeft ? <Piece piece={new pawn("b")} /> : null}
-        </View>
-        <View style={styles.square}>
-          {!pieceOnLeft ? <Piece piece={new pawn("b")} /> : null}
-        </View>
-      </Animated.View>
+      <View style={styles.container}>
+        <Snappable>
+          <Piece piece={new pawn("b")} />
+        </Snappable>
+      </View>
     </View>
   )
 }

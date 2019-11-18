@@ -1,11 +1,25 @@
 import React from "react"
-import { TouchableOpacity, View, StyleSheet } from "react-native"
+import {
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  UIManager,
+  Platform,
+  LayoutAnimation,
+} from "react-native"
 
 import Piece from "./Piece"
 import { Piece as PieceType, Empty } from "../utils/chess/chess"
 import { BoardRow as BoardRowType, Tile } from "../utils/game_helpers"
 
 import { Colors } from "../styles"
+
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true)
+}
 
 interface BoardRowProps {
   row: BoardRowType
@@ -30,8 +44,25 @@ const BoardRow = ({
     }
 
     return isPiece && cooldown && cooldown > 0
-      ? { flex: 1, width: "100%", backgroundColor: cooldownColor(cooldown) }
+      ? {
+          flex: 1,
+          width: "100%",
+          backgroundColor: cooldownColor(cooldown),
+        }
       : null
+  }
+
+  const handleOnPress = (tile: { rowIdx: number; colIdx: number }) => {
+    return () => {
+      LayoutAnimation.configureNext(
+        LayoutAnimation.create(
+          500,
+          "easeInEaseOut",
+          LayoutAnimation.Properties.scaleXY
+        )
+      )
+      selectUserTile(tile)
+    }
   }
 
   return (
@@ -51,7 +82,7 @@ const BoardRow = ({
         )
         return (
           <TouchableOpacity
-            onPress={() => selectUserTile(tile)}
+            onPress={handleOnPress(tile)}
             style={[
               styles.tile,
               tileStyle,
@@ -60,7 +91,12 @@ const BoardRow = ({
             ]}
             key={`col-${colIdx}`}
           >
-            <View style={cooldownStyle(piece)}>
+            <View
+              style={[
+                { justifyContent: "center", alignItems: "center" },
+                cooldownStyle(piece),
+              ]}
+            >
               <Piece piece={piece} />
             </View>
           </TouchableOpacity>

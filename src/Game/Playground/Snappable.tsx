@@ -1,6 +1,12 @@
-import React, { Component } from "react"
-import { StyleSheet } from "react-native"
-import { PanGestureHandler, State } from "react-native-gesture-handler"
+import React, { useState } from "react"
+import { View, Text, StyleSheet } from "react-native"
+import {
+  PanGestureHandler,
+  State,
+  PanGestureHandlerGestureEvent,
+  PanGestureHandlerStateChangeEvent,
+  TouchableOpacity,
+} from "react-native-gesture-handler"
 import Animated from "react-native-reanimated"
 
 const {
@@ -45,7 +51,7 @@ function runSpring(
   }
 
   return [
-    cond(clockRunning(clock), 0, [
+    cond(clockRunning(clock), 100, [
       set(state.finished, 0),
       set(state.velocity, velocity),
       set(state.position, value),
@@ -58,75 +64,102 @@ function runSpring(
   ]
 }
 
-class Snappable extends Component {
-  constructor(props) {
-    super(props)
+interface SnappableProps {
+  children: JSX.Element
+}
 
-    const TOSS_SEC = 0.2
+const Snappable = ({ children }: SnappableProps) => {
+  const [offsetX, setOffsetX] = useState<number>(20)
+  const [offsetY, setOffsetY] = useState<number>(10)
+  Animated.useCode(() => set(transX, add(_transX, offsetX)), [offsetX])
+  Animated.useCode(() => set(transY, add(_transY, offsetY)), [offsetY])
+  const [foo, setFoo] = useState<number>(0)
 
-    const dragX = new Value(0)
-    const state = new Value(-1)
-    const dragVX = new Value(0)
+  const dragX = new Value(0)
+  const dragY = new Value(0)
+  const state = new Value(-1)
+  const dragVX = new Value(0)
 
-    this._onGestureEvent = event([
-      { nativeEvent: { translationX: dragX, velocityX: dragVX, state: state } },
-    ])
+  const transX = new Value<number>(offsetX - 50)
+  const transY = new Value<number>(offsetY - 50)
+  const prevDragX = new Value(0)
+  const prevDragY = new Value(0)
 
-    const transX = new Value<number>()
-    const prevDragX = new Value(0)
+  const clock = new Clock()
 
-    const clock = new Clock()
+  const snapPointX = new Value(offsetX)
+  const snapPointY = new Value(offsetY)
 
-    // If transX has not yet been defined we stay in the center (value is 0).
-    // When transX is defined, it means drag has already occured. In such a case
-    // we want to snap to -100 if the final position of the block is below 0
-    // and to 100 otherwise.
-    // We also take into account gesture velocity at the moment of release. To
-    // do that we calculate final position of the block as if it was moving for
-    // TOSS_SEC seconds with a constant speed the block had when released (dragVX).
-    // So the formula for the final position is:
-    //   finalX = transX + TOSS_SEC * dragVelocityX
-    //
-    const snapPoint = cond(
-      lessThan(add(transX, multiply(TOSS_SEC, dragVX)), 0),
-      -100,
-      100
-    )
-
-    this._transX = cond(
-      eq(state, State.ACTIVE),
-      [
-        stopClock(clock),
-        set(transX, add(transX, sub(dragX, prevDragX))),
-        set(prevDragX, dragX),
+  const _transX = cond(
+    eq(state, State.ACTIVE),
+    [
+      //   stopClock(clock),
+      //   set(transX, add(transX, sub(dragX, prevDragX))),
+      //   set(prevDragX, dragX),
+      //   transX,
+    ],
+    [
+      //   set(prevDragX, offsetX),
+      set(
         transX,
-      ],
-      [
-        set(prevDragX, 0),
-        set(
-          transX,
-          cond(defined(transX), runSpring(clock, transX, dragVX, snapPoint), 0)
-        ),
-      ]
-    )
+        cond(defined(transX), runSpring(clock, transX, dragVX, snapPointX), 0)
+      ),
+    ]
+  )
+
+  const _transY = cond(
+    eq(state, State.ACTIVE),
+    [
+      //   stopClock(clock),
+      //   set(transY, add(transY, sub(dragY, prevDragY))),
+      //   set(prevDragY, dragY),
+      //   transY,
+    ],
+    [
+      //   set(prevDragY, offsetY),
+      set(
+        transY,
+        cond(defined(transY), runSpring(clock, transY, dragVX, snapPointY), 0)
+      ),
+    ]
+  )
+
+  const handleOnGestureEvent = (event: PanGestureHandlerGestureEvent) => {
+    setFoo(foo + 1)
   }
 
-  render() {
-    const { children, ...rest } = this.props
-    return (
+  const handleOnHandlerStateChange = (
+    event: PanGestureHandlerStateChangeEvent
+  ) => {}
+
+  const handleOnPress = () => {
+    setOffsetX(offsetX + 50)
+    setOffsetY(offsetY - 50)
+  }
+
+  return (
+    <View>
+      <TouchableOpacity onPress={handleOnPress}>
+        <Text>Move</Text>
+      </TouchableOpacity>
+
       <PanGestureHandler
-        {...rest}
         maxPointers={1}
         minDist={10}
-        onGestureEvent={this._onGestureEvent}
-        onHandlerStateChange={this._onGestureEvent}
+        onGestureEvent={handleOnGestureEvent}
+        onHandlerStateChange={handleOnGestureEvent}
       >
-        <Animated.View style={{ transform: [{ translateX: this._transX }] }}>
+        <Animated.View
+          style={{ transform: [{ translateX: _transX, translateY: _transY }] }}
+        >
           {children}
+          <View>
+            <Text>{foo}</Text>
+          </View>
         </Animated.View>
       </PanGestureHandler>
-    )
-  }
+    </View>
+  )
 }
 
 export default Snappable

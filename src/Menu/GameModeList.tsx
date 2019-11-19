@@ -1,14 +1,16 @@
 import React, { useContext } from "react"
 import {
   View,
+  Image,
   ScrollView,
   Text,
   TouchableOpacity,
   StyleSheet,
+  ImageSourcePropType,
 } from "react-native"
 
 import AracadeContext, { Screens, Games, Game } from "../ArcadeContext"
-
+import { Images } from "../assets"
 import { Typography, Colors } from "../styles"
 
 const GameModeList = () => {
@@ -29,49 +31,44 @@ const GameModeList = () => {
 
   const StartGameButton = ({
     onPress,
-    title,
+    source,
   }: {
     onPress: () => void
-    title: Game
+    source: ImageSourcePropType
   }) => {
     return (
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={onPress} style={styles.button}>
-          <Text style={Typography.mainButton}>{title.toUpperCase()}</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={onPress} style={styles.buttonContainer}>
+        <Image
+          source={source}
+          resizeMode={"contain"}
+          style={styles.button}
+        ></Image>
+      </TouchableOpacity>
     )
   }
 
   return (
     <ScrollView style={styles.container}>
-      <StartGameButton onPress={handlePressClassGame} title={Games.Classic} />
+      <StartGameButton onPress={handlePressClassGame} source={Images.Basic} />
       <StartGameButton
         onPress={handlePressThreeKings}
-        title={Games.ThreeKings}
+        source={Images.ThreeKings}
       />
-      <StartGameButton onPress={handlePressCooldown} title={Games.Cooldown} />
-      <StartGameButton
-        onPress={handlePressPlayground}
-        title={Games.Playground}
-      />
+      <StartGameButton onPress={handlePressCooldown} source={Images.Cooldown} />
+      <StartGameButton onPress={handlePressPlayground} source={Images.Basic} />
     </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-  },
+  container: {},
   buttonContainer: {
-    paddingVertical: 12,
+    height: 110,
+    marginBottom: 10,
   },
   button: {
-    backgroundColor: Colors.white,
-    height: 120,
-    borderRadius: 4,
-    paddingHorizontal: 20,
-    paddingTop: 12,
+    flex: 1,
+    width: undefined,
   },
 })
 

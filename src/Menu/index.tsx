@@ -1,21 +1,22 @@
 import React from "react"
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, ImageBackground } from "react-native"
 
 import Header from "../Header"
 import GameModeList from "./GameModeList"
 
 import { Spacing } from "../styles"
+import { Images } from "../assets"
 
 const MenuScreen = () => {
   return (
-    <View style={styles.container}>
+    <ImageBackground source={Images.Starry} style={styles.container}>
       <View style={styles.headerContainer}>
         <Header />
       </View>
       <View style={styles.gameModeListContainer}>
         <GameModeList />
       </View>
-    </View>
+    </ImageBackground>
   )
 }
 
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
   gameModeListContainer: {
     flex: 1,
     paddingTop: Spacing.large,
-    paddingHorizontal: Spacing.medium,
+    paddingHorizontal: Spacing.small,
   },
 })
 

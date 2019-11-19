@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, ImageBackground } from "react-native"
 
 import ArcadeContext, { Game } from "../ArcadeContext"
 import Header from "../Header"
@@ -8,7 +8,8 @@ import ThreeKings from "./ThreeKings"
 import Cooldown from "./Cooldown"
 import Playground from "./Playground"
 
-import { Buttons, Colors } from "../styles"
+import { Buttons, Colors, Spacing } from "../styles"
+import { Images } from "../assets"
 
 const GameScreen = () => {
   const { currentGame } = useContext(ArcadeContext)
@@ -31,13 +32,17 @@ const GameScreen = () => {
   }
 
   return (
-    <View style={styles.container} testID={"game-screen"}>
+    <ImageBackground
+      source={Images.Starry}
+      style={styles.container}
+      testID={"game-screen"}
+    >
       <View style={styles.headerContainer}>
         <Header />
       </View>
 
       <View style={styles.gameContainer}>{selectGame(currentGame)}</View>
-    </View>
+    </ImageBackground>
   )
 }
 
@@ -51,6 +56,7 @@ const styles = StyleSheet.create({
     height: "22%",
     justifyContent: "flex-start",
     width: "100%",
+    paddingHorizontal: Spacing.medium,
   },
   gameContainer: {
     flex: 5,

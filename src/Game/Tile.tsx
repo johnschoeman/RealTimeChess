@@ -1,5 +1,12 @@
-import React from "react"
-import { View, StyleSheet, TouchableOpacity, ViewStyle } from "react-native"
+import React, { useState, useEffect } from "react"
+import {
+  Animated,
+  Easing,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ViewStyle,
+} from "react-native"
 
 import Piece from "./Piece"
 import { Piece as PieceType, Empty } from "../utils/chess/chess"
@@ -22,17 +29,27 @@ const Tile = ({
   userSelected,
   computerSelected,
 }: TileProps) => {
+  const [animatedValue] = useState<Animated.Value>(new Animated.Value(1))
+
+  useEffect(() => {
+    Animated.timing(animatedValue, { toValue: 0.3, duration: 1000 }).start()
+  })
+
   const tileStyle = createTileStyle(tile, userSelected, computerSelected)
 
   const handleOnPress = () => {
     selectUserTile(tile)
   }
 
+  const animatedStyle: ViewStyle = { opacity: animatedValue }
+
   return (
     <TouchableOpacity onPress={handleOnPress} style={[styles.tile, tileStyle]}>
-      <View style={[styles.pieceContainer, cooldownStyle(piece)]}>
+      <Animated.View
+        style={[styles.pieceContainer, cooldownStyle(piece), animatedStyle]}
+      >
         <Piece piece={piece} />
-      </View>
+      </Animated.View>
     </TouchableOpacity>
   )
 }

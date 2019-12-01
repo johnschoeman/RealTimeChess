@@ -1,6 +1,6 @@
-import React from "react"
-import { View, StyleSheet } from "react-native"
-import { SvgProps } from "react-native-svg"
+import React, { useState, useEffect } from "react"
+import { Animated, Easing, View, StyleSheet, ViewStyle } from "react-native"
+import { Svg, SvgProps } from "react-native-svg"
 
 import { Piece as PieceType, Empty, FenId } from "../utils/chess/chess"
 
@@ -8,16 +8,33 @@ import { Icons } from "../assets"
 
 interface PieceProps {
   piece: PieceType | Empty
+  animatedStyle?: ViewStyle
   testID?: string
 }
 
-const Piece = ({ piece, testID }: PieceProps) => (
-  <View style={styles.container} testID={testID}>
-    {piece.kind === "empty"
-      ? null
-      : React.createElement(pieceIcon(piece as PieceType), styles.piece)}
-  </View>
-)
+const Piece = ({ piece, animatedStyle, testID }: PieceProps) => {
+  const [animatedValue] = useState<Animated.Value>(new Animated.Value(30))
+
+  useEffect(() => {
+    Animated.timing(animatedValue, {
+      toValue: 50,
+      duration: 3000,
+      easing: Easing.bounce,
+    }).start()
+  })
+
+  return (
+    <Animated.View style={[styles.container, animatedStyle]} testID={testID}>
+      {piece.kind === "empty" ? null : (
+        /* : React.createElement(pieceIcon(piece as PieceType), styles.piece)} */
+        /* <Icons.BlackRook width={"100%"} height={"100%"} viewBox={"0 0 60 60"} /> */
+        <Svg width="100%" height="100%">
+          {pieceIcon(piece)}
+        </Svg>
+      )}
+    </Animated.View>
+  )
+}
 
 type PieceFlags = { [P in FenId]: React.StatelessComponent<SvgProps> }
 
@@ -36,7 +53,13 @@ const pieceIcon = (piece: PieceType) => {
     K: Icons.WhiteKing,
     P: Icons.WhitePawn,
   }
-  return styleMap[piece.fenId]
+  const icon = styleMap[piece.fenId]
+
+  const AnimatedPiece = Animated.createAnimatedComponent(
+    React.createElement(icon, styles.piece)
+  )
+
+  return AnimatedPiece
 }
 
 const styles = StyleSheet.create({
@@ -48,8 +71,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   piece: {
-    width: 45,
-    height: 45,
+    width: "100%",
+    height: "100%",
   },
 })
 

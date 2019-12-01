@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react"
 import {
   Animated,
   Easing,
-  View,
   StyleSheet,
   TouchableOpacity,
   ViewStyle,
@@ -29,26 +28,29 @@ const Tile = ({
   userSelected,
   computerSelected,
 }: TileProps) => {
-  const [animatedValue] = useState<Animated.Value>(new Animated.Value(1))
+  const [animatedValue] = useState<Animated.Value>(new Animated.Value(30))
 
   useEffect(() => {
-    Animated.timing(animatedValue, { toValue: 0.3, duration: 1000 }).start()
+    Animated.timing(animatedValue, {
+      toValue: 50,
+      duration: 3000,
+      easing: Easing.bounce,
+    }).start()
   })
 
   const tileStyle = createTileStyle(tile, userSelected, computerSelected)
 
   const handleOnPress = () => {
+    Animated.timing(animatedValue, { toValue: 1.0, duration: 1000 }).start()
     selectUserTile(tile)
   }
 
-  const animatedStyle: ViewStyle = { opacity: animatedValue }
+  const animatedStyle: ViewStyle = { height: animatedValue }
 
   return (
     <TouchableOpacity onPress={handleOnPress} style={[styles.tile, tileStyle]}>
-      <Animated.View
-        style={[styles.pieceContainer, cooldownStyle(piece), animatedStyle]}
-      >
-        <Piece piece={piece} />
+      <Animated.View style={[styles.pieceContainer, cooldownStyle(piece)]}>
+        <Piece piece={piece} animatedStyle={animatedStyle} />
       </Animated.View>
     </TouchableOpacity>
   )

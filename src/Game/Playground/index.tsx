@@ -30,9 +30,7 @@ const PlaygroundGame = () => {
       />
 
       <View style={styles.container}>
-        <Snappable>
-          <Piece piece={new pawn("b")} />
-        </Snappable>
+        <Piece piece={new pawn("b")} />
       </View>
     </View>
   )

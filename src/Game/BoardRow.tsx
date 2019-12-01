@@ -1,32 +1,19 @@
 import React from "react"
-import {
-  TouchableOpacity,
-  View,
-  StyleSheet,
-  UIManager,
-  Platform,
-  LayoutAnimation,
-} from "react-native"
+import { View, StyleSheet } from "react-native"
 
-import Piece from "./Piece"
+import Tile from "./Tile"
 import { Piece as PieceType, Empty } from "../utils/chess/chess"
-import { BoardRow as BoardRowType, Tile } from "../utils/game_helpers"
-
-import { Colors } from "../styles"
-
-if (
-  Platform.OS === "android" &&
-  UIManager.setLayoutAnimationEnabledExperimental
-) {
-  UIManager.setLayoutAnimationEnabledExperimental(true)
-}
+import {
+  BoardRow as BoardRowType,
+  Tile as TileType,
+} from "../utils/game_helpers"
 
 interface BoardRowProps {
   row: BoardRowType
   rowIdx: number
-  userSelectedTile: Tile | null
-  computerSelectedTile: Tile | null
-  selectUserTile: (tile: Tile) => void
+  userSelectedTile: TileType | null
+  computerSelectedTile: TileType | null
+  selectUserTile: (tile: TileType) => void
 }
 
 const BoardRow = ({
@@ -36,96 +23,33 @@ const BoardRow = ({
   computerSelectedTile,
   selectUserTile,
 }: BoardRowProps) => {
-  const cooldownStyle = (piece: PieceType | Empty) => {
-    const { isPiece, cooldown } = piece
-    const cooldownColor = (cooldown: number): string => {
-      const base = cooldown / 10
-      return `rgba(64, 95, 237, ${base})`
-    }
-
-    return isPiece && cooldown && cooldown > 0
-      ? {
-          flex: 1,
-          width: "100%",
-          backgroundColor: cooldownColor(cooldown),
-        }
-      : null
-  }
-
-  const handleOnPress = (tile: { rowIdx: number; colIdx: number }) => {
-    return () => {
-      LayoutAnimation.configureNext(
-        LayoutAnimation.create(
-          500,
-          "easeInEaseOut",
-          LayoutAnimation.Properties.scaleXY
-        )
-      )
-      selectUserTile(tile)
-    }
-  }
-
   return (
     <View style={styles.container}>
       {row.map((piece: PieceType | Empty, colIdx: number) => {
         let tile = { rowIdx, colIdx }
-        let tileStyle = createTileStyle(tile)
-        let userSelectedStyle = createSelectedStyle(
-          tile,
-          userSelectedTile,
-          Colors.userHighlight
-        )
-        let computerSelectedStyle = createSelectedStyle(
-          tile,
-          computerSelectedTile,
-          Colors.computerHighlight
-        )
+        let userSelected = isSelected(tile, userSelectedTile)
+        let computerSelected = isSelected(tile, computerSelectedTile)
         return (
-          <TouchableOpacity
-            onPress={handleOnPress(tile)}
-            style={[
-              styles.tile,
-              tileStyle,
-              userSelectedStyle,
-              computerSelectedStyle,
-            ]}
-            key={`col-${colIdx}`}
-          >
-            <View
-              style={[
-                { justifyContent: "center", alignItems: "center" },
-                cooldownStyle(piece),
-              ]}
-            >
-              <Piece piece={piece} />
-            </View>
-          </TouchableOpacity>
+          <Tile
+            tile={tile}
+            selectUserTile={selectUserTile}
+            piece={piece}
+            userSelected={userSelected}
+            computerSelected={computerSelected}
+          />
         )
       })}
     </View>
   )
 }
 
-function createTileStyle(tile: Tile) {
-  const { rowIdx, colIdx } = tile
-  const tileColor =
-    (rowIdx + colIdx) % 2 === 0 ? Colors.tileWhite : Colors.tileBlack
-  return { backgroundColor: tileColor, borderColor: tileColor }
-}
-
-const createSelectedStyle = (
-  tile: Tile,
-  selectedTile: Tile | null,
-  color: string
-) => {
+const isSelected = (tile: TileType, selectedTile: TileType | null) => {
   if (selectedTile !== null) {
     const { rowIdx, colIdx } = tile
     const { rowIdx: selectedRowIdx, colIdx: selectedColIdx } = selectedTile
     return rowIdx === selectedRowIdx && colIdx === selectedColIdx
-      ? { borderColor: color }
-      : {}
   } else {
-    return {}
+    return false
   }
 }
 
@@ -135,19 +59,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     height: "100%",
-  },
-  tile: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 4,
-  },
-  piece: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    maxHeight: 30,
-    width: 30,
   },
 })
 

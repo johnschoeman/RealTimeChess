@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Animated, Easing, View, StyleSheet, ViewStyle } from "react-native"
-import { Svg, SvgProps } from "react-native-svg"
+import { Svg, SvgProps, Circle } from "react-native-svg"
 
 import { Piece as PieceType, Empty, FenId } from "../utils/chess/chess"
 
@@ -29,7 +29,7 @@ const Piece = ({ piece, animatedStyle, testID }: PieceProps) => {
         /* : React.createElement(pieceIcon(piece as PieceType), styles.piece)} */
         /* <Icons.BlackRook width={"100%"} height={"100%"} viewBox={"0 0 60 60"} /> */
         <Svg width="100%" height="100%">
-          {pieceIcon(piece)}
+          <AnimatedBlackKnight />
         </Svg>
       )}
     </Animated.View>

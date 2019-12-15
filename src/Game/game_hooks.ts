@@ -31,15 +31,15 @@ export const initialGameStateWithCountdown: GameStateWithCountdown = {
   countdownCount: 3,
 }
 
-export const useCountDown = (count: number, callback: () => void) => {
-  const [countdownCount, setCountdownCount] = useState<number>(count)
+export const useCountDown = (initialCount: number, callback: () => void) => {
+  const [countdownCount, setCountdownCount] = useState<number>(initialCount)
   const [isActive, setIsActive] = useState<boolean>(true)
 
   useEffect(() => {
     let intervalId: number = 0
     if (isActive) {
       intervalId = setInterval(() => {
-        setCountdownCount((countdownCount: number) => countdownCount - 1)
+        setCountdownCount((count: number) => count - 1)
       }, 1000)
       if (countdownCount < 0) {
         setIsActive(false)
@@ -53,7 +53,7 @@ export const useCountDown = (count: number, callback: () => void) => {
   return { countdownCount }
 }
 
-interface mechanicOptions {
+interface MechanicOptions {
   handleAttack: (board: Board, fromTile: Tile, toTile: Tile, side: Side) => void
   decrementCooldowns?: () => void
   tick?: () => void
@@ -63,7 +63,7 @@ export const useGameState = ({
   handleAttack,
   decrementCooldowns,
   tick,
-}: mechanicOptions) => {
+}: MechanicOptions) => {
   const {
     setCurrentWinner,
     currentGame,
@@ -163,7 +163,9 @@ export const useGameState = ({
     }
 
     if (isSelectingAPiece() || isSwitchingSelection()) {
-      callBack(toTile)
+      if (toPiece.side === side) {
+        callBack(toTile)
+      }
     } else if (fromTile !== null) {
       try {
         handleAttack(board, fromTile, toTile, side)

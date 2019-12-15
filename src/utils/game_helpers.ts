@@ -360,3 +360,9 @@ export const boardToAscii = (board: Board): string => {
     })
     .join("\n")
 }
+
+export const tilesAreEqual = (tileA: Tile, tileB: Tile): boolean => {
+  const { colIdx: colA, rowIdx: rowA } = tileA
+  const { colIdx: colB, rowIdx: rowB } = tileB
+  return colA === colB && rowA === rowB
+}

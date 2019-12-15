@@ -3,7 +3,11 @@ import { TouchableOpacity, View, StyleSheet } from "react-native"
 
 import Piece from "./Piece"
 import { Piece as PieceType, Empty } from "../utils/chess/chess"
-import { BoardRow as BoardRowType, Tile } from "../utils/game_helpers"
+import {
+  BoardRow as BoardRowType,
+  Tile,
+  tilesAreEqual,
+} from "../utils/game_helpers"
 
 import { Colors } from "../styles"
 
@@ -34,34 +38,31 @@ const BoardRow = ({
       : null
   }
 
+  const tileIsSelected = (tile: Tile) => {
+    return (
+      (userSelectedTile ? tilesAreEqual(tile, userSelectedTile) : false) ||
+      (computerSelectedTile ? tilesAreEqual(tile, computerSelectedTile) : false)
+    )
+  }
+
   return (
     <View style={styles.container}>
       {row.map((piece: PieceType | Empty, colIdx: number) => {
-        let tile = { rowIdx, colIdx }
-        let tileStyle = createTileStyle(tile)
-        let userSelectedStyle = createSelectedStyle(
-          tile,
-          userSelectedTile,
-          Colors.userHighlight
-        )
-        let computerSelectedStyle = createSelectedStyle(
-          tile,
-          computerSelectedTile,
-          Colors.computerHighlight
-        )
+        const tile = { rowIdx, colIdx }
+        const tileStyle = createTileStyle(tile)
+        const handleOnPress = () => {
+          selectUserTile(tile)
+        }
+        const isSelected = tileIsSelected(tile)
+
         return (
           <TouchableOpacity
-            onPress={() => selectUserTile(tile)}
-            style={[
-              styles.tile,
-              tileStyle,
-              userSelectedStyle,
-              computerSelectedStyle,
-            ]}
-            key={`col-${colIdx}`}
+            onPress={handleOnPress}
+            style={[styles.tile, tileStyle]}
+            key={`tile-${rowIdx}-${colIdx}`}
           >
-            <View style={cooldownStyle(piece)}>
-              <Piece piece={piece} />
+            <View key={`col-${colIdx}`} style={cooldownStyle(piece)}>
+              <Piece piece={piece} isSelected={isSelected} />
             </View>
           </TouchableOpacity>
         )
@@ -75,22 +76,6 @@ function createTileStyle(tile: Tile) {
   const tileColor =
     (rowIdx + colIdx) % 2 === 0 ? Colors.tileWhite : Colors.tileBlack
   return { backgroundColor: tileColor, borderColor: tileColor }
-}
-
-const createSelectedStyle = (
-  tile: Tile,
-  selectedTile: Tile | null,
-  color: string
-) => {
-  if (selectedTile !== null) {
-    const { rowIdx, colIdx } = tile
-    const { rowIdx: selectedRowIdx, colIdx: selectedColIdx } = selectedTile
-    return rowIdx === selectedRowIdx && colIdx === selectedColIdx
-      ? { borderColor: color }
-      : {}
-  } else {
-    return {}
-  }
 }
 
 const styles = StyleSheet.create({

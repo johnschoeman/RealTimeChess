@@ -1,55 +1,97 @@
-import React from "react"
-import { View, StyleSheet } from "react-native"
-import { SvgProps } from "react-native-svg"
+import React, { useState } from "react"
+import { Animated, Easing, StyleSheet, Image } from "react-native"
 
-import { Piece as PieceType, Empty, FenId } from "../utils/chess/chess"
+import { Piece as PieceType, Empty } from "../utils/chess/chess"
 
-import { Icons } from "../assets"
+import { Images } from "../assets"
 
 interface PieceProps {
   piece: PieceType | Empty
+  isSelected?: boolean
   testID?: string
 }
 
-const Piece = ({ piece, testID }: PieceProps) => (
-  <View style={styles.container} testID={testID}>
-    {piece.kind === "empty"
-      ? null
-      : React.createElement(pieceIcon(piece as PieceType), styles.piece)}
-  </View>
-)
+const Piece = ({ piece, isSelected = false, testID }: PieceProps) => {
+  const [scaleValue] = useState<Animated.Value>(new Animated.Value(1))
 
-type PieceFlags = { [P in FenId]: React.StatelessComponent<SvgProps> }
-
-const pieceIcon = (piece: PieceType) => {
-  const styleMap: PieceFlags = {
-    r: Icons.BlackRook,
-    n: Icons.BlackKnight,
-    b: Icons.BlackBishop,
-    q: Icons.BlackQueen,
-    k: Icons.BlackKing,
-    p: Icons.BlackPawn,
-    R: Icons.WhiteRook,
-    N: Icons.WhiteKnight,
-    B: Icons.WhiteBishop,
-    Q: Icons.WhiteQueen,
-    K: Icons.WhiteKing,
-    P: Icons.WhitePawn,
+  if (isSelected) {
+    Animated.timing(scaleValue, {
+      toValue: 1.5,
+      duration: 500,
+      easing: Easing.bounce,
+    }).start()
+  } else {
+    Animated.timing(scaleValue, {
+      toValue: 1,
+      duration: 500,
+      easing: Easing.bounce,
+    }).start()
   }
-  return styleMap[piece.fenId]
+
+  const selectImageSource = (piece: PieceType) => {
+    switch (piece.fenId) {
+      case "p": {
+        return Images.BlackPawn
+      }
+      case "r": {
+        return Images.BlackRook
+      }
+      case "b": {
+        return Images.BlackBishop
+      }
+      case "n": {
+        return Images.BlackKnight
+      }
+      case "q": {
+        return Images.BlackQueen
+      }
+      case "k": {
+        return Images.BlackKing
+      }
+      case "P": {
+        return Images.WhitePawn
+      }
+      case "R": {
+        return Images.WhiteRook
+      }
+      case "B": {
+        return Images.WhiteBishop
+      }
+      case "N": {
+        return Images.WhiteKnight
+      }
+      case "Q": {
+        return Images.WhiteQueen
+      }
+      case "K": {
+        return Images.WhiteKing
+      }
+    }
+  }
+
+  const scaleStyle = {
+    transform: [{ scale: scaleValue }],
+  }
+
+  return (
+    <Animated.View
+      style={{ ...styles.container, ...scaleStyle }}
+      testID={testID}
+    >
+      {piece.kind !== "empty" ? (
+        <Image source={selectImageSource(piece)} />
+      ) : null}
+    </Animated.View>
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: "100%",
-    width: "100%",
+    width: 30,
+    height: 30,
     justifyContent: "center",
     alignItems: "center",
-  },
-  piece: {
-    width: 45,
-    height: 45,
   },
 })
 

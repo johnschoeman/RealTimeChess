@@ -1,9 +1,7 @@
 import React, { useContext } from "react"
 import {
-  View,
   Image,
   ScrollView,
-  Text,
   TouchableOpacity,
   StyleSheet,
   ImageSourcePropType,
@@ -11,7 +9,6 @@ import {
 
 import AracadeContext, { Screens, Games, Game } from "../ArcadeContext"
 import { Images } from "../assets"
-import { Typography, Colors } from "../styles"
 
 const GameModeList = () => {
   const { setCurrentGame, setCurrentWinner, setCurrentScreen } = useContext(

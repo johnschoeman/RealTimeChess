@@ -1,32 +1,17 @@
 import React from "react"
 import { TouchableOpacity, View, StyleSheet } from "react-native"
 
-import Piece from "./Piece"
-import { Piece as PieceType, Empty } from "../utils/chess/chess"
 import { Tile as TileType } from "../utils/game_helpers"
 
-import { Colors } from "../styles"
+import { Layout, Colors } from "../styles"
 
 interface TileProps {
   tile: { rowIdx: number; colIdx: number }
-  piece: PieceType | Empty
   selected: boolean
-  onPress: () => void
+  selectUserTile: (tile: TileType) => void
 }
 
-const Tile = ({ tile, piece, selected, onPress }: TileProps) => {
-  const cooldownStyle = (piece: PieceType | Empty) => {
-    const { isPiece, cooldown } = piece
-    const cooldownColor = (cooldown: number): string => {
-      const base = cooldown / 10
-      return `rgba(64, 95, 237, ${base})`
-    }
-
-    return isPiece && cooldown && cooldown > 0
-      ? { flex: 1, width: "100%", backgroundColor: cooldownColor(cooldown) }
-      : null
-  }
-
+const Tile = ({ tile, selected, selectUserTile }: TileProps) => {
   const createTileStyle = (tile: TileType) => {
     const { rowIdx, colIdx } = tile
     const tileColor =
@@ -36,31 +21,27 @@ const Tile = ({ tile, piece, selected, onPress }: TileProps) => {
 
   const tileStyle = createTileStyle(tile)
 
+  const selectedStyle = (selected: boolean) => {
+    return selected ? { backgroundColor: Colors.yellow } : null
+  }
+
+  const handleOnPress = () => {
+    selectUserTile(tile)
+  }
+
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={[styles.tile, tileStyle]}
-    >
-      <View style={cooldownStyle(piece)}>
-        <Piece piece={piece} isSelected={selected} />
-      </View>
+    <TouchableOpacity onPress={handleOnPress}>
+      <View
+        style={[styles.container, tileStyle, selectedStyle(selected)]}
+      ></View>
     </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
-  tile: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 4,
-  },
-  piece: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    maxHeight: 30,
-    width: 30,
+  container: {
+    width: Layout.tileWidth,
+    height: Layout.tileHeight,
   },
 })
 

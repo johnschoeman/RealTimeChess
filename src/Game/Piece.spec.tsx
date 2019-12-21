@@ -10,7 +10,17 @@ afterEach(cleanup)
 describe("Piece", () => {
   test("it renders with a provided piece prop", () => {
     const piece = new rook("b")
-    const { getByTestId } = render(<Piece piece={piece} testID={"rook"} />)
+    const tile = { rowIdx: 0, colIdx: 0 }
+    const selected = false
+    const { getByTestId } = render(
+      <Piece
+        piece={piece}
+        tile={tile}
+        isSelected={selected}
+        selectUserTile={() => {}}
+        testID={"rook"}
+      />
+    )
 
     expect(getByTestId("rook")).toBeDefined()
   })

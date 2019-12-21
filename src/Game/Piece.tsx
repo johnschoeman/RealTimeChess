@@ -1,17 +1,35 @@
-import React, { useState } from "react"
-import { Animated, Easing, StyleSheet, Image } from "react-native"
+import React, { useState, useContext } from "react"
+import {
+  View,
+  TouchableOpacity,
+  Animated,
+  Easing,
+  StyleSheet,
+  Image,
+} from "react-native"
 
-import { Piece as PieceType, Empty } from "../utils/chess/chess"
+import { Piece as PieceType } from "../utils/chess/chess"
+import { Tile as TileType } from "../utils/game_helpers"
+import { Tile } from "../utils/game_helpers"
 
 import { Images } from "../assets"
+import { Layout } from "../styles"
 
 interface PieceProps {
-  piece: PieceType | Empty
-  isSelected?: boolean
+  piece: PieceType
+  tile: Tile
+  isSelected: boolean
+  selectUserTile: (tile: TileType) => void
   testID?: string
 }
 
-const Piece = ({ piece, isSelected = false, testID }: PieceProps) => {
+const Piece = ({
+  piece,
+  tile,
+  isSelected,
+  selectUserTile,
+  testID,
+}: PieceProps) => {
   const [scaleValue] = useState<Animated.Value>(new Animated.Value(1))
 
   if (isSelected) {
@@ -69,29 +87,50 @@ const Piece = ({ piece, isSelected = false, testID }: PieceProps) => {
     }
   }
 
-  const scaleStyle = {
-    transform: [{ scale: scaleValue }],
+  const cooldownStyle = (piece: PieceType) => {
+    const { cooldown } = piece
+    const cooldownColor = (cooldown: number): string => {
+      const base = cooldown / 10
+      return `rgba(64, 95, 237, ${base})`
+    }
+    return cooldown && cooldown > 0
+      ? { backgroundColor: cooldownColor(cooldown) }
+      : null
+  }
+
+  const transformStyle = {
+    transform: [
+      { scale: scaleValue },
+    ],
+  }
+
+  const handleOnPress = () => {
+    selectUserTile(tile)
   }
 
   return (
     <Animated.View
-      style={{ ...styles.container, ...scaleStyle }}
+      style={{ ...styles.container, ...transformStyle }}
       testID={testID}
     >
-      {piece.kind !== "empty" ? (
-        <Image source={selectImageSource(piece)} />
-      ) : null}
+      <TouchableOpacity onPress={handleOnPress}>
+        <View style={[styles.image, cooldownStyle(piece)]}>
+          <Image source={selectImageSource(piece)} />
+        </View>
+      </TouchableOpacity>
     </Animated.View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    width: 30,
-    height: 30,
+    position: "absolute",
+  },
+  image: {
     justifyContent: "center",
     alignItems: "center",
+    width: Layout.tileWidth,
+    height: Layout.tileHeight,
   },
 })
 

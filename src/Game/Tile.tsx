@@ -76,7 +76,19 @@ const Tile = ({ tile, piece, selected, onPress }: TileProps) => {
     transY.setValue(y)
   }
 
-  const handleOnHandlerStateChange = () => {
+  const handleOnHandlerStateChange = (event: PanGestureHandlerGestureEvent) => {
+    const { x, y, absoluteX, absoluteY, state } = event.nativeEvent
+    switch (state) {
+      case (State.END): {
+        console.log("dropped at: ", absoluteX, " ", absoluteY)
+      }
+      case (State.BEGAN): {
+        console.log("beggan at: ", absoluteX, " ", absoluteY)
+      }
+      default: {
+        console.log("")
+      }
+    }
     transX.setValue(
       cond(
         eq(state, State.ACTIVE),

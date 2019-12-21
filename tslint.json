@@ -40,9 +40,9 @@
     "no-construct": true,
     "no-debugger": true,
     "no-duplicate-variable": true,
-    "no-empty": true,
+    "no-empty": false,
     "no-eval": true,
-    "no-null-keyword": true,
+    "no-null-keyword": false,
     "no-shadowed-variable": true,
     "no-string-literal": true,
     "no-switch-case-fall-through": true,
@@ -50,7 +50,7 @@
     "no-var-keyword": true,
     "radix": true,
     "switch-default": true,
-    "triple-equals": [true, "allow-undefined-check"],
+    "triple-equals": [true, "allow-undefined-check", "allow-null-check"],
     "eofline": false,
     "indent": [true, "spaces"],
     "max-line-length": [true, 150],
@@ -58,7 +58,7 @@
     "no-trailing-whitespace": true,
     "object-literal-sort-keys": false,
     "trailing-comma": [
-      true,
+      false,
       {
         "multiline": "always",
         "singleline": "never"
@@ -79,7 +79,7 @@
       "check-finally",
       "check-whitespace"
     ],
-    "quotemark": [true, "single", "avoid-escape"],
+    "quotemark": [false, "double", "avoid-escape"],
     "semicolon": [true, "never", "ignore-interfaces"],
     "variable-name": [true, "allow-leading-underscore", "ban-keywords"],
     "whitespace": [

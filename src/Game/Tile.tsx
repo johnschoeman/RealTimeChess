@@ -81,16 +81,14 @@ const Tile = ({ tile, piece, selected, onPress }: TileProps) => {
       cond(
         eq(state, State.ACTIVE),
         [],
-        [
-          set(
-            transX,
-            cond(
-              defined(transX),
-              0,
-              0
-            )
-          ),
-        ]
+        [set(transX, cond(defined(transX), 0, 0))]
+      )
+    )
+    transY.setValue(
+      cond(
+        eq(state, State.ACTIVE),
+        [],
+        [set(transY, cond(defined(transY), 0, 0))]
       )
     )
   }

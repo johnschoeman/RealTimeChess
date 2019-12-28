@@ -9,7 +9,7 @@ import {
 } from "react-native"
 
 import { Piece as PieceType } from "../utils/chess/chess"
-import { Tile as TileType } from "../utils/game_helpers"
+import { Tile as TileType, tilesAreEqual } from "../utils/game_helpers"
 import UIContext from "./UIContext"
 import { Tile } from "../utils/game_helpers"
 
@@ -31,7 +31,7 @@ const Piece = ({
   selectUserTile,
   testID,
 }: PieceProps) => {
-  const { pieceUIs } = useContext(UIContext)
+  const { movingPieces, finishMovingPiece } = useContext(UIContext)
   const [scaleValue] = useState<Animated.Value>(new Animated.Value(1))
   const { rowIdx, colIdx } = tile
   const xPos = colIdx * Layout.tileWidth
@@ -39,29 +39,24 @@ const Piece = ({
   const [transX] = useState<Animated.Value>(new Animated.Value(xPos))
   const [transY] = useState<Animated.Value>(new Animated.Value(yPos))
 
-  const { fenId } = piece
-
-  if (fenId && pieceUIs[fenId]) {
-    const pieceUI = pieceUIs[fenId]
-    if (pieceUI && pieceUI.isMoving) {
-      const { toTile } = pieceUI
-      if (toTile) {
-        const { rowIdx, colIdx } = toTile
-        const x = colIdx * Layout.tileWidth
-        const y = rowIdx * Layout.tileHeight
-        Animated.timing(transX, {
-          toValue: x,
-          duration: 1000,
-          easing: Easing.bounce,
-        }).start()
-        Animated.timing(transY, {
-          toValue: y,
-          duration: 1000,
-          easing: Easing.bounce,
-        }).start()
-      }
+  movingPieces.forEach(({fromTile, toTile}) => {
+    if (tilesAreEqual(fromTile, tile)) {
+      const { rowIdx, colIdx } = toTile
+      const x = colIdx * Layout.tileWidth
+      const y = rowIdx * Layout.tileHeight
+      Animated.timing(transX, {
+        toValue: x,
+        duration: 1000,
+        easing: Easing.linear,
+      }).start()
+      Animated.timing(transY, {
+        toValue: y,
+        duration: 1000,
+        easing: Easing.linear,
+      }).start()
+      finishMovingPiece(fromTile, toTile)
     }
-  }
+  })
 
   if (isSelected) {
     Animated.timing(scaleValue, {

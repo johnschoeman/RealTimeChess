@@ -1,26 +1,22 @@
 import React, { createContext, useState } from "react"
 
-import { FenId } from "../utils/chess/types"
 import { Tile } from "../utils/game_helpers"
 
-interface PieceUI {
-  isMoving: boolean
-  toTile: Tile | null
+interface MovingPiece {
+  fromTile: Tile
+  toTile: Tile
 }
-
-type PieceUIs = { [k in FenId]?: PieceUI }
 
 export interface UIState {
-  pieceUIs: PieceUIs
-}
-
-const initialPieceUIs = {
-  Q: { isMoving: false, toTile: null },
-  q: { isMoving: false, toTile: null },
+  movingPieces: MovingPiece[]
+  movePiece: (fromTile: Tile, toTile: Tile, callback: () => void) => void
+  finishMovingPiece: (fromTile: Tile, toTile: Tile) => void
 }
 
 export const initialUIState = {
-  pieceUIs: initialPieceUIs,
+  movingPieces: [],
+  movePiece: () => {},
+  finishMovingPiece: () => {}
 }
 
 interface UIProviderProps {
@@ -30,12 +26,27 @@ interface UIProviderProps {
 const UIContext = createContext<UIState>(initialUIState)
 
 const UIProvider = ({ children }: UIProviderProps) => {
-  const [pieceUIs, setPieceUIs] = useState<PieceUIs>(initialPieceUIs)
+  const [movingPieces, setMovingPieces] = useState<MovingPiece[]>([])
+
+  const movePiece = (fromTile: Tile, toTile: Tile, callback: () => void) => {
+    setMovingPieces([...movingPieces, {fromTile, toTile}])
+    setTimeout(callback, 1000)
+  }
+
+  const finishMovingPiece = (fromTile: Tile, toTile: Tile) => {
+    const oldPieces = [...movingPieces]
+    const newMovingPieces = oldPieces.filter(({fromTile: from, toTile: to}) => {
+      return fromTile !== from && toTile !== to
+    }) 
+    setMovingPieces(newMovingPieces)
+  }
 
   return (
     <UIContext.Provider
       value={{
-        pieceUIs,
+        movingPieces,
+        movePiece,
+        finishMovingPiece
       }}
     >
       {children}

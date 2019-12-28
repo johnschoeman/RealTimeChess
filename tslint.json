@@ -57,6 +57,7 @@
     "no-require-imports": false,
     "no-trailing-whitespace": true,
     "object-literal-sort-keys": false,
+    "prefer-for-of": true,
     "trailing-comma": [
       false,
       {

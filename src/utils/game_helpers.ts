@@ -55,6 +55,15 @@ const RankToRow: { [key: string]: number } = {
   "1": 7,
 }
 
+const colToFile = ["a", "b", "c", "d", "e", "f", "g", "h"]
+const rowToRank = ["8", "7", "6", "5", "4", "3", "2", "1"]
+
+export const squares: Square[] = [...colToFile].flatMap(file => {
+  return [...rowToRank].map(rank => {
+    return (file + rank) as Square
+  })
+})
+
 const initialBoardFenCode =
   "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
@@ -142,9 +151,6 @@ export const winner = (board: Board): Side | null => {
 }
 
 export const tileRCtoAN = (tile: Tile): ANTile => {
-  const colToFile = ["a", "b", "c", "d", "e", "f", "g", "h"]
-  const rowToRank = ["8", "7", "6", "5", "4", "3", "2", "1"]
-
   const rank = rowToRank[tile.rowIdx]
   const file = colToFile[tile.colIdx]
   const square: Square = (file + rank) as Square
@@ -168,6 +174,13 @@ export const squareToRCTile = (square: Square): Tile => {
     colIdx: FileToCol[file],
     rowIdx: RankToRow[rank],
   }
+}
+
+export const tileToSquare = (tile: Tile): Square => {
+  const { rowIdx, colIdx } = tile
+  const rank = rowToRank[rowIdx]
+  const file = colToFile[colIdx]
+  return (file + rank) as Square
 }
 
 export function playerPieces(board: Board, side: Side): PieceWithTile[] {

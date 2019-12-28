@@ -2,6 +2,7 @@ import React, { useContext } from "react"
 import { View, StyleSheet, ImageBackground } from "react-native"
 
 import ArcadeContext, { Game } from "../ArcadeContext"
+import { UIProvider } from "./UIContext"
 import Header from "../Header"
 import Classic from "./Classic"
 import ThreeKings from "./ThreeKings"
@@ -41,7 +42,9 @@ const GameScreen = () => {
         <Header />
       </View>
 
-      <View style={styles.gameContainer}>{selectGame(currentGame)}</View>
+      <UIProvider>
+        <View style={styles.gameContainer}>{selectGame(currentGame)}</View>
+      </UIProvider>
     </ImageBackground>
   )
 }

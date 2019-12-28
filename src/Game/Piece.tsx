@@ -10,6 +10,7 @@ import {
 
 import { Piece as PieceType } from "../utils/chess/chess"
 import { Tile as TileType } from "../utils/game_helpers"
+import UIContext from "./UIContext"
 import { Tile } from "../utils/game_helpers"
 
 import { Images } from "../assets"
@@ -30,7 +31,37 @@ const Piece = ({
   selectUserTile,
   testID,
 }: PieceProps) => {
+  const { pieceUIs } = useContext(UIContext)
   const [scaleValue] = useState<Animated.Value>(new Animated.Value(1))
+  const { rowIdx, colIdx } = tile
+  const xPos = colIdx * Layout.tileWidth
+  const yPos = rowIdx * Layout.tileHeight
+  const [transX] = useState<Animated.Value>(new Animated.Value(xPos))
+  const [transY] = useState<Animated.Value>(new Animated.Value(yPos))
+
+  const { fenId } = piece
+
+  if (fenId && pieceUIs[fenId]) {
+    const pieceUI = pieceUIs[fenId]
+    if (pieceUI && pieceUI.isMoving) {
+      const { toTile } = pieceUI
+      if (toTile) {
+        const { rowIdx, colIdx } = toTile
+        const x = colIdx * Layout.tileWidth
+        const y = rowIdx * Layout.tileHeight
+        Animated.timing(transX, {
+          toValue: x,
+          duration: 1000,
+          easing: Easing.bounce,
+        }).start()
+        Animated.timing(transY, {
+          toValue: y,
+          duration: 1000,
+          easing: Easing.bounce,
+        }).start()
+      }
+    }
+  }
 
   if (isSelected) {
     Animated.timing(scaleValue, {
@@ -100,6 +131,8 @@ const Piece = ({
 
   const transformStyle = {
     transform: [
+      { translateX: transX },
+      { translateY: transY },
       { scale: scaleValue },
     ],
   }

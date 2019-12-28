@@ -1,5 +1,12 @@
 import React, { useContext } from "react"
-import { View, TouchableOpacity, Text, Image, StyleSheet } from "react-native"
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  Image,
+  ImageBackground,
+  StyleSheet,
+} from "react-native"
 
 import Header from "../Header"
 import ArcadeContext, { Screens } from "../ArcadeContext"
@@ -20,16 +27,30 @@ const GameOver = () => {
     setCurrentScreen(Screens.Menu)
   }
   return (
-    <View style={styles.container} testID={"game-over"}>
+    <ImageBackground
+      source={Images.Starry}
+      style={styles.container}
+      testID={"game-over"}
+    >
       <View style={styles.headerContainer}>
         <Header />
       </View>
 
       <View style={styles.imageContainer}>
         {currentWinner === "b" ? (
-          <Image source={Images.YouLose} testID={"game-over-lose"} />
+          <Image
+            source={Images.YouLose}
+            resizeMode="contain"
+            testID={"game-over-lose"}
+            style={styles.image}
+          />
         ) : (
-          <Image source={Images.YouWin} testID={"game-over-win"} />
+          <Image
+            source={Images.YouWin}
+            resizeMode="contain"
+            testID={"game-over-win"}
+            style={styles.image}
+          />
         )}
       </View>
 
@@ -47,14 +68,13 @@ const GameOver = () => {
           <Text style={styles.goToMainText}>RETURN TO MAIN MENU</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ImageBackground>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: Spacing.medium,
     paddingBottom: Spacing.xLarge,
   },
   headerContainer: {
@@ -62,11 +82,15 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     width: "100%",
     paddingTop: Spacing.medium,
+    paddingHorizontal: Spacing.medium,
   },
   imageContainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  image: {
+    width: "100%",
   },
   footer: {
     paddingLeft: Spacing.medium,

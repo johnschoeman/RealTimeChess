@@ -12,12 +12,14 @@ import { Piece as PieceType } from "../utils/chess/chess"
 import { Tile as TileType, tilesAreEqual } from "../utils/game_helpers"
 import UIContext from "./UIContext"
 import { Tile } from "../utils/game_helpers"
+import { MoveAttempt } from '../Game/game_hooks'
 
 import { Images } from "../assets"
 import { Layout } from "../styles"
 
 interface PieceProps {
   piece: PieceType
+  movingPieces: MoveAttempt[]
   tile: Tile
   isSelected: boolean
   selectUserTile: (tile: TileType) => void
@@ -26,12 +28,13 @@ interface PieceProps {
 
 const Piece = ({
   piece,
+  movingPieces,
   tile,
   isSelected,
   selectUserTile,
   testID,
 }: PieceProps) => {
-  const { movingPieces, finishMovingPiece } = useContext(UIContext)
+  /* const { movingPieces, finishMovingPiece } = useContext(UIContext) */
   const [scaleValue] = useState<Animated.Value>(new Animated.Value(1))
   const { rowIdx, colIdx } = tile
   const xPos = colIdx * Layout.tileWidth
@@ -46,12 +49,12 @@ const Piece = ({
       const y = rowIdx * Layout.tileHeight
       Animated.timing(transX, {
         toValue: x,
-        duration: 1000,
+        duration: 5000,
         easing: Easing.linear,
       }).start()
       Animated.timing(transY, {
         toValue: y,
-        duration: 1000,
+        duration: 5000,
         easing: Easing.linear,
       }).start()
       finishMovingPiece(fromTile, toTile)

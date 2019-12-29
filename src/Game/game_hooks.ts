@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from "react"
 import ArcadeContext from "../ArcadeContext"
 import { MaximizingAI } from "../utils/ai"
 import { GameHelpers } from "../utils"
-import { Board, Tile } from "../utils/game_helpers"
+import { Board, Tile, boardToAscii } from "../utils/game_helpers"
 import { Move, Side, black, white } from "../utils/chess/chess"
 
 export interface GameState {
@@ -59,6 +59,13 @@ interface MechanicOptions {
   tick?: () => void
 }
 
+export interface MoveAttempt {
+  fromTile: Tile
+  toTile: Tile
+  side: Side
+  expireTime: number
+}
+
 export const useGameState = ({
   handleAttack,
   decrementCooldowns,
@@ -72,6 +79,7 @@ export const useGameState = ({
     setGameIsActive,
   } = useContext(ArcadeContext)
   const [board, setBoard] = useState<Board>(GameHelpers.createBoard())
+  const [moveQueue, setMoveQueue] = useState<MoveAttempt[]>([])
   const [userSelectedTile, setUserSelectedTile] = useState<Tile | null>(null)
   const [computerSelectedTile, setComputerSelectedTile] = useState<Tile | null>(
     null
@@ -83,11 +91,11 @@ export const useGameState = ({
 
   const defaultTick = (): void => {
     if (gameIsActive) {
-      setGameStep(gameStep + 1)
-      const winner = GameHelpers.winner(board)
       if (decrementCooldowns) {
         decrementCooldowns()
       }
+      // manageMoveQueue()
+      const winner = GameHelpers.winner(board)
       if (winner == null) {
         const computerNextTile = getNextComputerTile()
         selectComputerTile(computerNextTile)
@@ -98,6 +106,14 @@ export const useGameState = ({
     }
   }
 
+  // const manageMoveQueue = () => {
+  //   const nextQueue = [...moveQueue]
+  //   nextQueue.map((move) => {
+  //     const { timeRemaining } = move
+  //     move.timeRemaining = timeRemaining - computerClockSpeed
+  //   })
+  // }
+
   useEffect(() => {
     const onTick = tick ? tick : defaultTick
     const intervalID = setInterval(onTick, computerClockSpeed)
@@ -105,6 +121,50 @@ export const useGameState = ({
       clearInterval(intervalID)
     }
   })
+
+  const fastTick = () => {
+    if (gameIsActive) {
+      setGameStep(gameStep + 1)
+      manageMoveQueue()
+    }
+  }
+
+  useEffect(() => {
+    const intervalID = setInterval(fastTick, 1)
+    return () => {
+      clearInterval(intervalID)
+    }
+  })
+
+  const manageMoveQueue = () => {
+    const now = Date.now()
+    const newMoves = [...moveQueue].map((move) => {
+      const {expireTime} = move
+      if (expireTime < now) {
+        const { fromTile, toTile, side} = move
+        attemptMove(fromTile, toTile, side)
+        return null
+      } else {
+        return {...move }
+      }
+    }).filter((move) => move !== null)
+    setMoveQueue(newMoves)
+  }
+
+  const attemptMove = (fromTile: Tile, toTile: Tile, side: Side) => {
+    const isMoveValid = GameHelpers.validMove(board, fromTile, toTile, side)
+    if (isMoveValid) {
+      const newBoard = GameHelpers.updateBoard(board, fromTile, toTile)
+      setBoard(newBoard)
+    }
+  }
+
+  const queueMove = (fromTile: Tile, toTile: Tile, side: Side, moveDuration: number) => {
+    const now = Date.now()
+    const expireTime = now + moveDuration
+    setMoveQueue([...moveQueue, {fromTile, toTile, side, expireTime}])
+    console.log("queueMove: ", gameStep)
+  }
 
   const getNextComputerTile = (): Tile | null => {
     if (computerCurrentMove == null) {
@@ -201,5 +261,6 @@ export const useGameState = ({
     selectUserTile,
     resetBoard,
     setGameIsActive,
+    queueMove,
   }
 }

@@ -9,13 +9,13 @@ interface MovingPiece {
 
 export interface UIState {
   movingPieces: MovingPiece[]
-  movePiece: (fromTile: Tile, toTile: Tile, callback: () => void) => void
+  animateMove: (fromTile: Tile, toTile: Tile) => void
   finishMovingPiece: (fromTile: Tile, toTile: Tile) => void
 }
 
 export const initialUIState = {
   movingPieces: [],
-  movePiece: () => {},
+  animateMove: () => {},
   finishMovingPiece: () => {}
 }
 
@@ -28,9 +28,8 @@ const UIContext = createContext<UIState>(initialUIState)
 const UIProvider = ({ children }: UIProviderProps) => {
   const [movingPieces, setMovingPieces] = useState<MovingPiece[]>([])
 
-  const movePiece = (fromTile: Tile, toTile: Tile, callback: () => void) => {
+  const animateMove = (fromTile: Tile, toTile: Tile) => {
     setMovingPieces([...movingPieces, {fromTile, toTile}])
-    setTimeout(callback, 1000)
   }
 
   const finishMovingPiece = (fromTile: Tile, toTile: Tile) => {
@@ -45,7 +44,7 @@ const UIProvider = ({ children }: UIProviderProps) => {
     <UIContext.Provider
       value={{
         movingPieces,
-        movePiece,
+        animateMove,
         finishMovingPiece
       }}
     >

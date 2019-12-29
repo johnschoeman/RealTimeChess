@@ -34,7 +34,7 @@ export interface ArcadeState {
 export const initialArcadeState = {
   currentGame: Games.Classic,
   currentWinner: null,
-  computerClockSpeed: 1000,
+  computerClockSpeed: 10000,
   gameIsActive: false,
   currentScreen: Screens.Landing,
   setCurrentGame: () => {},

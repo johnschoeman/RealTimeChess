@@ -8,6 +8,7 @@ import { Move, Side, black, white } from "../utils/chess/chess"
 
 export interface GameState {
   board: Board
+  moveQueue: MoveAttempt[]
   userSelectedTile: Tile | null
   computerSelectedTile: Tile | null
   resetBoard: () => void
@@ -16,6 +17,7 @@ export interface GameState {
 
 export const initialGameState: GameState = {
   board: GameHelpers.createBoard(),
+  moveQueue: [],
   userSelectedTile: null,
   computerSelectedTile: null,
   resetBoard: () => {},
@@ -152,18 +154,17 @@ export const useGameState = ({
   }
 
   const attemptMove = (fromTile: Tile, toTile: Tile, side: Side) => {
-    const isMoveValid = GameHelpers.validMove(board, fromTile, toTile, side)
-    if (isMoveValid) {
+    // const isMoveValid = GameHelpers.validMove(board, fromTile, toTile, side)
+    // if (isMoveValid) {
       const newBoard = GameHelpers.updateBoard(board, fromTile, toTile)
       setBoard(newBoard)
-    }
+    // }
   }
 
   const queueMove = (fromTile: Tile, toTile: Tile, side: Side, moveDuration: number) => {
     const now = Date.now()
     const expireTime = now + moveDuration
     setMoveQueue([...moveQueue, {fromTile, toTile, side, expireTime}])
-    console.log("queueMove: ", gameStep)
   }
 
   const getNextComputerTile = (): Tile | null => {
@@ -261,6 +262,7 @@ export const useGameState = ({
     selectUserTile,
     resetBoard,
     setGameIsActive,
+    moveQueue,
     queueMove,
   }
 }

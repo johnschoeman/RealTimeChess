@@ -91,6 +91,7 @@ export const useGameState = ({
 
   const defaultTick = (): void => {
     console.log("C")
+    console.log(gameIsActive)
     if (gameIsActive) {
       if (decrementCooldowns) {
         decrementCooldowns()
@@ -110,26 +111,21 @@ export const useGameState = ({
 
   useEffect(() => {
     const onTick = tick ? tick : defaultTick
-    const intervalID = setInterval(onTick, computerClockSpeed)
-    console.log('intervalID: ', intervalID)
+    const computerIntervalID = setInterval(onTick, computerClockSpeed)
+    // const animationIntervalID = setInterval(fastTick, 1)
+    console.log('intervalID: ', computerIntervalID)
     return () => {
-      clearInterval(intervalID)
+      clearInterval(computerIntervalID)
+      // clearInterval(animationIntervalID)
     }
   })
 
   const fastTick = () => {
     if (gameIsActive) {
-      setGameStep(gameStep + 1)
-      manageMoveQueue()
+      // setGameStep(gameStep + 1)
+      // manageMoveQueue()
     }
   }
-
-  useEffect(() => {
-    const intervalID = setInterval(fastTick, 1)
-    return () => {
-      clearInterval(intervalID)
-    }
-  })
 
   const manageMoveQueue = () => {
     const now = Date.now()

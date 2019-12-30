@@ -8,7 +8,6 @@ import { Move, Side, black, white } from "../utils/chess/chess"
 
 export interface GameState {
   board: Board
-  moveQueue: MoveAttempt[]
   userSelectedTile: Tile | null
   computerSelectedTile: Tile | null
   resetBoard: () => void
@@ -17,7 +16,6 @@ export interface GameState {
 
 export const initialGameState: GameState = {
   board: GameHelpers.createBoard(),
-  moveQueue: [],
   userSelectedTile: null,
   computerSelectedTile: null,
   resetBoard: () => {},
@@ -92,13 +90,15 @@ export const useGameState = ({
   const [gameStep, setGameStep] = useState<number>(0)
 
   const defaultTick = (): void => {
+    console.log("C")
     if (gameIsActive) {
       if (decrementCooldowns) {
         decrementCooldowns()
       }
-      // manageMoveQueue()
+      console.log("B")
       const winner = GameHelpers.winner(board)
       if (winner == null) {
+        console.log("A")
         const computerNextTile = getNextComputerTile()
         selectComputerTile(computerNextTile)
       } else {
@@ -108,17 +108,10 @@ export const useGameState = ({
     }
   }
 
-  // const manageMoveQueue = () => {
-  //   const nextQueue = [...moveQueue]
-  //   nextQueue.map((move) => {
-  //     const { timeRemaining } = move
-  //     move.timeRemaining = timeRemaining - computerClockSpeed
-  //   })
-  // }
-
   useEffect(() => {
     const onTick = tick ? tick : defaultTick
     const intervalID = setInterval(onTick, computerClockSpeed)
+    console.log('intervalID: ', intervalID)
     return () => {
       clearInterval(intervalID)
     }
@@ -154,11 +147,8 @@ export const useGameState = ({
   }
 
   const attemptMove = (fromTile: Tile, toTile: Tile, side: Side) => {
-    // const isMoveValid = GameHelpers.validMove(board, fromTile, toTile, side)
-    // if (isMoveValid) {
-      const newBoard = GameHelpers.updateBoard(board, fromTile, toTile)
-      setBoard(newBoard)
-    // }
+    const newBoard = GameHelpers.updateBoard(board, fromTile, toTile)
+    setBoard(newBoard)
   }
 
   const queueMove = (fromTile: Tile, toTile: Tile, side: Side, moveDuration: number) => {

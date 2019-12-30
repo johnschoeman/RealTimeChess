@@ -20,7 +20,7 @@ interface ClassicProviderProps {
 }
 
 const ClassicProvider = ({ children }: ClassicProviderProps) => {
-  const { animateMove } = useContext(UIContext)
+  /* const { animateMove } = useContext(UIContext) */
 
   const handleAttack = (
     board: Board,
@@ -30,7 +30,7 @@ const ClassicProvider = ({ children }: ClassicProviderProps) => {
   ): void => {
     const isMoveValid = GameHelpers.validMove(board, fromTile, toTile, side)
     if (isMoveValid) {
-      animateMove(fromTile, toTile)
+      /* animateMove(fromTile, toTile) */
       queueMove(fromTile, toTile, side, 5000)
     }
   }
